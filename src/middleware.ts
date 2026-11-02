@@ -60,7 +60,7 @@ export function middleware(req: NextRequest) {
     return res;
   }
   const res = NextResponse.next();
-  if (process.env.DEV_BASIC_AUTH) res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  if (process.env.DEV_BASIC_AUTH || process.env.DEV_NOINDEX === "true") res.headers.set("X-Robots-Tag", "noindex, nofollow");
   return res;
 }
 
