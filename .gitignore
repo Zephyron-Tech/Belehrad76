@@ -2,9 +2,18 @@ node_modules/
 .next/
 out/
 dist/
+coverage/
 .env
 .env.*
 !.env.example
 *.log
 .DS_Store
 .vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# lokální vývoj
+.pgdata/
+.mail-outbox/
+test-results/
+playwright-report/

@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.github
+.env
+.env.*
+!.env.example
+.pgdata
+.mail-outbox
+data
+backups
+foto
+test-results
+playwright-report
+coverage
+*.log

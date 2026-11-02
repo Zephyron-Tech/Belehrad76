@@ -1,0 +1,92 @@
+# Produkce: image se stahuje z GHCR (CI ho tam nahraje), `build: .` slouží pro lokální `docker compose up --build`.
+# Na serveru: /home/rychlik/footbaleshop, za Traefikem (síť web_proxy, resolver myresolver).
+# Proměnné: soubor .env vedle tohoto souboru (viz .env.example; zapisuje ho deploy workflow).
+services:
+  app:
+    image: ghcr.io/zephyron-tech/footbaleshop:latest
+    build: .
+    container_name: belehrad-eshop
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://eshop:${POSTGRES_PASSWORD}@db:5432/eshop
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - web_proxy
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web_proxy
+      - traefik.http.routers.belehrad.rule=Host(`belehrad76.cz`) || Host(`www.belehrad76.cz`) || Host(`belehrad1976.cz`) || Host(`www.belehrad1976.cz`)
+      - traefik.http.routers.belehrad.entrypoints=websecure
+      - traefik.http.routers.belehrad.tls.certresolver=myresolver
+      - traefik.http.services.belehrad.loadbalancer.server.port=3000
+
+  db:
+    image: postgres:17-alpine
+    container_name: belehrad-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eshop
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: eshop
+      TZ: Europe/Prague
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eshop -d eshop"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  # Každých 5 minut zruší nezaplacené objednávky po vypršení rezervace (vrací boxy na sklad)
+  cron:
+    image: curlimages/curl:8.11.1
+    container_name: belehrad-cron
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - app
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          sleep 300
+          curl -fsS -m 60 -H "Authorization: Bearer $$CRON_SECRET" http://app:3000/api/cron/expire || echo "expire failed"
+        done
+    networks:
+      - internal
+
+  # Denní záloha databáze, uchovává se 14 dní (./backups). Zálohy kopírujte i mimo server.
+  backup:
+    image: postgres:17-alpine
+    container_name: belehrad-backup
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      TZ: Europe/Prague
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          f=/backups/eshop-$$(date +%Y%m%d-%H%M).sql.gz
+          pg_dump -h db -U eshop eshop | gzip > "$$f" && echo "zaloha $$f" || echo "zaloha selhala"
+          find /backups -name 'eshop-*.sql.gz' -mtime +14 -delete
+          sleep 86400
+        done
+    networks:
+      - internal
+
+networks:
+  web_proxy:
+    external: true
+  internal:

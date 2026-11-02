@@ -2,7 +2,7 @@
 
 ## 1. Kontext
 
-Limitovaná edice slivovice k 50. výročí vítězství na ME v Bělehradě 1976. Web/e-shop (belehrad76.cz, belehrad1976.cz) slouží k prodeji edice a propagaci na sociálních sítích. Část výnosu jde Nadaci fotbalových internacionálů (100 Kč z každé lahve). Adresář `C:\Users\rychl\eshop` je prázdný, jde o nový projekt (greenfield).
+Limitovaná edice slivovice k 50. výročí vítězství na ME v Bělehradě 1976. Web/e-shop (belehrad76.cz, belehrad1976.cz) slouží k prodeji edice a propagaci na sociálních sítích. Výtěžek edice jde Nadaci fotbalových internacionálů (na webu se neuvádí žádná částka). Implementace a provoz viz `README.md`.
 
 **Prodávající:** Petite Eiffel, s.r.o., IČO 10788433, DIČ CZ10788433, U Tiskárny 616/9, Přívoz, 702 00 Ostrava, jednatel Jan Kukula. V předmětu podnikání má prodej lihovin. Údaje jsou z kurzy.cz (stav z justice.cz k 28. 4. 2026) a před spuštěním je třeba je ověřit ve výpisu z OR a v živnostenském rejstříku.
 

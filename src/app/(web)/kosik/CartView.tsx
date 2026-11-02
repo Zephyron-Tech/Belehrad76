@@ -1,0 +1,138 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect } from "react";
+import { useCart } from "@/components/cart/CartProvider";
+import { usePricedCart } from "@/components/cart/usePricedCart";
+import { formatCzk } from "@/lib/format";
+
+export function CartView() {
+  const { lines, ready, setQuantity, remove, replace } = useCart();
+  const { data, loading, error } = usePricedCart(lines, ready);
+
+  // Srovnat košík se serverem (vyprodané / neaktivní položky, upravené počty)
+  useEffect(() => {
+    if (!data || data.issues.length === 0) return;
+    const next = data.lines.map((l) => ({ slug: l.slug, quantity: l.quantity }));
+    const same = next.length === lines.length && next.every((n) => lines.some((l) => l.slug === n.slug && l.quantity === n.quantity));
+    if (!same) replace(next);
+  }, [data, lines, replace]);
+
+  if (!ready || (loading && !data)) return <p className="mt-8 text-muted">Načítám košík…</p>;
+  if (error) return <p className="mt-8 text-danger">{error}</p>;
+
+  if (!data || data.lines.length === 0) {
+    return (
+      <div className="mt-8 border border-line bg-panel p-8 text-center">
+        <p className="text-cream">Košík je prázdný.</p>
+        {data?.issues.map((i) => (
+          <p key={i.slug} className="mt-2 text-sm text-warn">
+            {i.message}
+          </p>
+        ))}
+        <Link href="/eshop" className="mt-6 inline-block bg-gold px-6 py-3 font-bold uppercase tracking-wider text-ink">
+          Do e-shopu
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8">
+      {data.issues.length > 0 && (
+        <div className="mb-6 border border-warn/60 bg-warn/10 p-4 text-sm text-cream" role="status">
+          {data.issues.map((i) => (
+            <p key={i.slug}>{i.message}</p>
+          ))}
+        </div>
+      )}
+
+      <ul className="divide-y divide-line border-y border-line">
+        {data.lines.map((line) => (
+          <li key={line.slug} className="flex gap-4 py-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={line.imageUrl}
+              alt=""
+              className={`h-24 w-20 shrink-0 border border-line object-cover ${line.type === "BOTTLE" ? "label-paper" : ""}`}
+            />
+            <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <Link href={`/produkt/${line.slug}`} className="font-serif text-lg text-cream hover:text-gold-light">
+                  {line.name}
+                </Link>
+                <p className="text-sm text-muted">{formatCzk(line.unitPriceCzk)} / ks</p>
+                {line.madeToOrder && <p className="text-xs text-muted">Vyrábí se na objednávku</p>}
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center border border-line" role="group" aria-label={`Počet – ${line.name}`}>
+                  <button
+                    type="button"
+                    className="px-3 py-2 text-gold-light disabled:opacity-40"
+                    onClick={() => setQuantity(line.slug, line.quantity - 1)}
+                    disabled={line.quantity <= 1}
+                    aria-label="Méně"
+                  >
+                    −
+                  </button>
+                  <span className="w-10 text-center" aria-live="polite">
+                    {line.quantity}
+                  </span>
+                  <button
+                    type="button"
+                    className="px-3 py-2 text-gold-light disabled:opacity-40"
+                    onClick={() => setQuantity(line.slug, line.quantity + 1)}
+                    disabled={line.quantity >= line.maxQuantity}
+                    aria-label="Více"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="w-28 text-right font-semibold text-gold-light">{formatCzk(line.lineTotalCzk)}</p>
+                <button type="button" onClick={() => remove(line.slug)} className="text-sm text-muted underline hover:text-danger">
+                  Odebrat
+                </button>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <dl className="ml-auto mt-6 max-w-sm space-y-2 text-sm">
+        <div className="flex justify-between">
+          <dt className="text-muted">Zboží</dt>
+          <dd>{formatCzk(data.itemsTotalCzk)}</dd>
+        </div>
+        <div className="flex justify-between">
+          <dt className="text-muted">Doprava na adresu</dt>
+          <dd>{formatCzk(data.shipping.SHIPPING)}</dd>
+        </div>
+        {data.pickupEnabled && (
+          <div className="flex justify-between">
+            <dt className="text-muted">nebo osobní převzetí na FAČR</dt>
+            <dd>zdarma</dd>
+          </div>
+        )}
+        <div className="flex justify-between border-t border-line pt-2 text-base font-bold">
+          <dt>Celkem s dopravou na adresu</dt>
+          <dd className="text-gold-light">{formatCzk(data.itemsTotalCzk + data.shipping.SHIPPING)}</dd>
+        </div>
+      </dl>
+
+      {data.hasMadeToOrder && <p className="mt-6 border-l-2 border-gold pl-3 text-sm text-cream/85">{data.leadTime}</p>}
+
+      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+        <Link href="/eshop" className="border border-line px-6 py-3 text-center text-cream hover:border-gold">
+          Pokračovat v nákupu
+        </Link>
+        {data.salesOpen ? (
+          <Link href="/pokladna" className="bg-gold px-8 py-3 text-center font-bold uppercase tracking-wider text-ink hover:bg-gold-light">
+            K objednávce
+          </Link>
+        ) : (
+          <p className="text-sm text-muted">Prodej zatím není spuštěn.</p>
+        )}
+      </div>
+    </div>
+  );
+}

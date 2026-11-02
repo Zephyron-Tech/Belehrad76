@@ -1,0 +1,75 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getActiveProducts } from "@/lib/catalog";
+import { getSettings } from "@/lib/settings";
+import { formatCzk } from "@/lib/format";
+import { maybeExpireStaleOrders } from "@/lib/orders/expire";
+import { PlayerCard } from "@/components/PlayerCard";
+import { StockBadge } from "@/components/StockBadge";
+import { AddToCart } from "@/components/cart/AddToCart";
+
+export const metadata: Metadata = { title: "E-shop" };
+
+export default async function EshopPage() {
+  maybeExpireStaleOrders();
+  const [settings, products] = await Promise.all([getSettings(), getActiveProducts()]);
+  const boxes = products.filter((p) => p.type === "BOX");
+  const bottles = products.filter((p) => p.type === "BOTTLE");
+  const salesOpen = settings.bool("sales.open");
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-14">
+      <h1 className="font-serif text-4xl font-bold text-gold">E-shop</h1>
+      <p className="mt-3 max-w-2xl text-cream/80">
+        Limitovaná edice slivovice Mistři Evropy – Bělehrad 1976. Výtěžek edice jde na podporu Nadace fotbalových
+        internacionálů.
+      </p>
+      {!salesOpen && (
+        <p className="mt-6 border border-warn/60 bg-warn/10 p-4 text-cream">Prodej bude brzy spuštěn. Děkujeme za trpělivost.</p>
+      )}
+
+      {boxes.map((box) => (
+        <section key={box.id} className="mt-10 grid gap-8 border border-line bg-panel p-5 md:grid-cols-[1.2fr_1fr] md:p-8">
+          <Link href={`/produkt/${box.slug}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={box.imageUrl} alt={`${box.name} – vizualizace`} className="w-full border border-line" />
+          </Link>
+          <div className="flex flex-col">
+            <h2 className="font-serif text-3xl font-bold text-cream">
+              <Link href={`/produkt/${box.slug}`} className="hover:text-gold-light">
+                {box.name}
+              </Link>
+            </h2>
+            <p className="mt-3 text-cream/85">{box.shortDescription}</p>
+            <p className="mt-5 font-serif text-4xl font-bold text-gold-light">{formatCzk(box.priceCzk)}</p>
+            <p className="mt-1 text-sm text-muted">
+              Doprava {formatCzk(settings.num("shipping.box_czk"))} za box, nebo osobní převzetí na FAČR zdarma.
+            </p>
+            <div className="mt-4">
+              <StockBadge stock={box.stock} />
+            </div>
+            <div className="mt-6">
+              {salesOpen && <AddToCart slug={box.slug} max={Math.min(box.stock ?? 0, settings.num("order.max_boxes"))} />}
+            </div>
+          </div>
+        </section>
+      ))}
+
+      <section id="kusovky" className="mt-16 scroll-mt-20">
+        <h2 className="font-serif text-3xl font-bold text-gold">Kusovky – jednotlivé lahve</h2>
+        <p className="mt-2 max-w-2xl text-cream/80">
+          Lahev slivovice 50 % s portrétem vybraného hráče. {settings.str("bottle.lead_time")} Doprava{" "}
+          {formatCzk(settings.num("shipping.bottle_czk"))} za kus, nebo osobní převzetí na FAČR zdarma.
+        </p>
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {bottles.map((p) => (
+            <div key={p.id} className="flex flex-col gap-2">
+              <PlayerCard product={p} />
+              {salesOpen && <AddToCart slug={p.slug} max={settings.num("order.max_bottles")} compact />}
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

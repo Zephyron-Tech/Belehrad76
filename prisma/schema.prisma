@@ -1,0 +1,235 @@
+// Datový model e-shopu „Mistři Evropy – Bělehrad 1976“.
+// Konfigurace (ceny, sklad, doprava, texty, hráči) se upravuje přímo v databázi:
+// tabulky Product, Setting a Page. Administrace je jen pro objednávky.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductType {
+  BOX
+  BOTTLE
+}
+
+enum OrderStatus {
+  PENDING // přijatá, čeká na platbu
+  PAID // zaplacená
+  SHIPPED // odeslaná / připravená k převzetí
+  COMPLETED // dokončená
+  CANCELLED // zrušená
+}
+
+enum PaymentMethod {
+  GOPAY
+  BANK_TRANSFER
+}
+
+enum DeliveryMethod {
+  SHIPPING
+  PICKUP
+}
+
+/// Produkty: 1 box + 13 kusovek. Upravuje se v DB.
+model Product {
+  id               Int         @id @default(autoincrement())
+  slug             String      @unique
+  type             ProductType
+  name             String
+  /// Jméno hráče (jen u kusovek)
+  playerName       String?
+  /// Číslo dresu hráče (jen u kusovek)
+  playerNumber     Int?
+  shortDescription String      @default("")
+  /// Popis v Markdownu
+  description      String      @default("")
+  /// Cena za kus v Kč včetně DPH
+  priceCzk         Int
+  /// Skladem k prodeji. NULL = neomezeně (kusovky se vyrábějí na objednávku).
+  stock            Int?
+  /// Vyrábí se až po objednání (zobrazí se dodací lhůta)
+  madeToOrder      Boolean     @default(false)
+  /// Hlavní obrázek (cesta v /public nebo plná URL)
+  imageUrl         String
+  /// Další obrázky galerie
+  galleryUrls      String[]    @default([])
+  sortOrder        Int         @default(0)
+  active           Boolean     @default(true)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  orderItems OrderItem[]
+}
+
+/// Konfigurace webu klíč → hodnota (ceny dopravy, texty, kontakty, ...). Upravuje se v DB.
+model Setting {
+  key         String   @id
+  value       String
+  description String   @default("")
+  updatedAt   DateTime @updatedAt
+}
+
+/// Delší texty v Markdownu (obchodní podmínky, ochrana osobních údajů, příběh, ...). Upravuje se v DB.
+model Page {
+  slug      String   @id
+  title     String
+  /// Obsah v Markdownu
+  body      String
+  /// Zobrazit jako samostatnou stránku na adrese /{slug}
+  published Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id             Int            @id @default(autoincrement())
+  /// Číslo objednávky = variabilní symbol
+  number         String         @unique
+  /// Neuhodnutelný token pro stránku objednávky zákazníka
+  publicToken    String         @unique
+  status         OrderStatus    @default(PENDING)
+  paymentMethod  PaymentMethod
+  deliveryMethod DeliveryMethod
+
+  itemsTotalCzk Int
+  shippingCzk   Int
+  totalCzk      Int
+
+  // Kontakt
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+
+  // Doručovací adresa (u osobního převzetí prázdná)
+  street  String?
+  city    String?
+  zip     String?
+  country String  @default("CZ")
+
+  // Fakturační údaje (volitelné)
+  companyName String?
+  ico         String?
+  dic         String?
+
+  note         String?
+  internalNote String?
+
+  // Slavnostní večer 30. 11. 2026
+  eveningInterest Boolean @default(false)
+  companionName   String?
+
+  // Souhlasy
+  marketingConsent Boolean  @default(false)
+  consentsAt       DateTime
+  /// Souhlas s marketingovými cookies v okamžiku objednávky (Meta Conversions API)
+  trackingConsent  Boolean  @default(false)
+  fbp              String?
+  fbc              String?
+
+  // Sklad: rezervace boxů od vytvoření objednávky do zaplacení / vypršení
+  stockReserved Boolean   @default(false)
+  reservedUntil DateTime?
+
+  paidAt                    DateTime?
+  paymentConfirmationSentAt DateTime?
+  ownerNotifiedAt           DateTime?
+  /// Událost Purchase odeslaná do Meta Conversions API
+  capiSentAt                DateTime?
+
+  carrier           String?
+  trackingNumber    String?
+  shippedAt         DateTime?
+  shippedMailSentAt DateTime?
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+  anonymizedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items    OrderItem[]
+  payments Payment[]
+  audit    AuditLog[]
+
+  @@index([status, createdAt])
+  @@index([reservedUntil])
+}
+
+model OrderItem {
+  id           Int         @id @default(autoincrement())
+  orderId      Int
+  order        Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    Int
+  product      Product     @relation(fields: [productId], references: [id])
+  /// Kopie údajů v okamžiku objednávky
+  name         String
+  type         ProductType
+  unitPriceCzk Int
+  quantity     Int
+  madeToOrder  Boolean     @default(false)
+}
+
+/// Platby v GoPay (jedna objednávka může mít víc pokusů o platbu)
+model Payment {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  /// ID platby v GoPay
+  gopayId   String   @unique
+  state     String
+  amountCzk Int
+  gwUrl     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Záznam změn bez osobních údajů (kdy, odkud, co).
+model AuditLog {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  /// např. status_change, export_orders, export_evening, login_ok, login_failed, anonymize
+  action     String
+  orderId    Int?
+  order      Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus?
+  /// system, gopay, admin
+  source     String
+  /// Volitelné jméno / iniciály toho, kdo změnu provedl (účet je společný)
+  actor      String?
+  ip         String?
+  detail     String?
+
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+/// Jediný společný účet administrace. Heslo a 2FA se nastavují skriptem `npm run admin:setup`.
+model AdminUser {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  passwordHash   String
+  totpSecret     String
+  failedAttempts Int       @default(0)
+  lockedUntil    DateTime?
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  sessions AdminSession[]
+}
+
+model AdminSession {
+  /// SHA-256 hash tokenu z cookie
+  id         String    @id
+  userId     Int
+  user       AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  lastSeenAt DateTime  @default(now())
+  expiresAt  DateTime
+}

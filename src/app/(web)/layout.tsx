@@ -1,0 +1,47 @@
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { getSettings } from "@/lib/settings";
+import { env } from "@/lib/env";
+import { AGE_COOKIE } from "@/lib/consent";
+import { CartProvider } from "@/components/cart/CartProvider";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { AgeGate } from "@/components/AgeGate";
+import { CookieConsent } from "@/components/CookieConsent";
+
+// Sklad, ceny a texty se čtou z databáze při každém požadavku
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  const description = settings.str("seo.description");
+  return {
+    description,
+    openGraph: {
+      type: "website",
+      locale: "cs_CZ",
+      siteName: "Mistři Evropy – Bělehrad 1976",
+      title: "Mistři Evropy – Bělehrad 1976",
+      description,
+      images: [{ url: "/img/box.jpg", width: 1186, height: 662, alt: "Box Mistři Evropy – Bělehrad 1976" }],
+    },
+  };
+}
+
+export default async function WebLayout({ children }: { children: React.ReactNode }) {
+  const [settings, jar] = await Promise.all([getSettings(), cookies()]);
+  const ageVerified = jar.get(AGE_COOKIE)?.value === "1";
+
+  return (
+    <CartProvider>
+      <a href="#obsah" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[200] focus:bg-gold focus:p-2 focus:text-ink">
+        Přeskočit na obsah
+      </a>
+      <SiteHeader salesOpen={settings.bool("sales.open")} />
+      <main id="obsah">{children}</main>
+      <SiteFooter settings={settings} />
+      <AgeGate verified={ageVerified} />
+      <CookieConsent ga4Id={env.ga4Id || undefined} metaPixelId={env.metaPixelId || undefined} />
+    </CartProvider>
+  );
+}
