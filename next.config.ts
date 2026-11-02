@@ -12,7 +12,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Obrázky: prohlížeč je drží 1 den a další týden je smí použít, zatímco si na pozadí ověří novou verzi.
+      // (Krátká doba, protože finální fotky se budou nahrávat pod stejnými názvy.)
+      {
+        source: "/img/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+    ];
   },
 };
 
