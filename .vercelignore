@@ -1,0 +1,11 @@
+.pgdata
+.mail-outbox
+.env
+.env.*
+foto
+test-results
+playwright-report
+tests
+tests-e2e
+data
+backups

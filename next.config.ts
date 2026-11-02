@@ -11,6 +11,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Písma pro PDF potvrzení se čtou z disku – na Vercelu je nutné je přibalit k serverovým funkcím
+  outputFileTracingIncludes: {
+    "/**/*": ["./assets/fonts/**/*"],
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

@@ -176,7 +176,7 @@ test("administrace: bez přihlášení nic, přihlášení s 2FA, platba převod
   await page.getByRole("button", { name: "Připraveno k převzetí" }).click();
   await expect(page.getByText("Připravená k převzetí").first()).toBeVisible();
   await page.getByRole("button", { name: "Předáno zákazníkovi → Dokončená" }).click();
-  await expect(page.getByText("Dokončená").first()).toBeVisible();
+  await expect(page.getByText("Objednávka je uzavřená, další změny stavu nejsou možné.")).toBeVisible();
   await expect(page.getByText(/administrace · E2E/).first()).toBeVisible();
 
   const order = await prisma.order.findUniqueOrThrow({ where: { number: transferOrderNumber } });

@@ -51,6 +51,12 @@ export async function sendMail(mail: OutgoingMail) {
   });
   if (sentMailLog.length > 200) sentMailLog.shift();
 
+  // Na Vercelu nelze zapisovat na disk – bez SMTP jen zalogovat
+  if (!env.smtp.host && process.env.VERCEL) {
+    console.log(`[mail] (bez SMTP, neodesláno) ${mail.subject} → ${mail.to}`);
+    return;
+  }
+
   if (!env.smtp.host && "message" in info && Buffer.isBuffer(info.message)) {
     const dir = path.resolve(env.mailOutboxDir);
     await fs.mkdir(dir, { recursive: true });

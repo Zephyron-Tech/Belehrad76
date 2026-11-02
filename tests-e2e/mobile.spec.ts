@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 test("mobil: bez vodorovného posouvání, menu a hlavní stránky", async ({ page, context }) => {
+  const url = process.env.E2E_BASE_URL ?? "http://localhost:3000";
   await context.addCookies([
-    { name: "age_verified", value: "1", url: "http://localhost:3000" },
-    { name: "cookie_consent", value: "v1:a0:m0", url: "http://localhost:3000" },
+    { name: "age_verified", value: "1", url },
+    { name: "cookie_consent", value: "v1:a0:m0", url },
   ]);
   for (const path of ["/", "/eshop", "/produkt/box-mistri-evropy", "/pokladna", "/obchodni-podminky"]) {
     await page.goto(path);

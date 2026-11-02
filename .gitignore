@@ -17,3 +17,7 @@ next-env.d.ts
 .mail-outbox/
 test-results/
 playwright-report/
+
+.vercel
+.env*
+!.env.example

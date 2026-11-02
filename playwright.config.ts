@@ -7,6 +7,9 @@ import { defineConfig, devices } from "@playwright/test";
  *   npm run test:e2e
  */
 const channel = process.env.PW_CHANNEL ?? "msedge";
+// Vývojová verze za heslem (DEV_BASIC_AUTH): E2E_HTTP_CREDENTIALS="jmeno:heslo"
+const [httpUser, httpPass] = (process.env.E2E_HTTP_CREDENTIALS ?? "").split(":");
+const httpCredentials = httpUser && httpPass ? { username: httpUser, password: httpPass } : undefined;
 
 export default defineConfig({
   testDir: "tests-e2e",
@@ -16,6 +19,7 @@ export default defineConfig({
   reporter: [["list"]],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:3000",
+    httpCredentials,
     locale: "cs-CZ",
     timezoneId: "Europe/Prague",
     trace: "retain-on-failure",

@@ -1,11 +1,39 @@
+import crypto from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 
+/** Cesty volané službami (GoPay, cron, healthcheck) – bez hesla vývojové verze */
+const BASIC_AUTH_EXEMPT = ["/api/gopay/notify", "/api/cron/", "/api/health"];
+
 /**
+ * Vývojová verze (DEV_BASIC_AUTH="jmeno:heslo"): celý web za HTTP heslem a noindex.
+ * Na ostré verzi proměnnou nenastavovat.
+ */
+function devBasicAuth(req: NextRequest): NextResponse | null {
+  const expected = (process.env.DEV_BASIC_AUTH ?? "").trim();
+  if (!expected) return null;
+  if (BASIC_AUTH_EXEMPT.some((p) => req.nextUrl.pathname.startsWith(p))) return null;
+
+  const header = req.headers.get("authorization") ?? "";
+  const given = header.startsWith("Basic ") ? Buffer.from(header.slice(6), "base64").toString() : "";
+  const ok =
+    given.length === expected.length && crypto.timingSafeEqual(Buffer.from(given), Buffer.from(expected));
+  if (ok) return null;
+  return new NextResponse("Vývojová verze – přístup jen s heslem.", {
+    status: 401,
+    headers: { "WWW-Authenticate": 'Basic realm="Mistri Evropy DEV", charset="UTF-8"', "X-Robots-Tag": "noindex, nofollow" },
+  });
+}
+
+/**
+ * - Vývojová verze za heslem (DEV_BASIC_AUTH).
  * - Přesměrování vedlejších domén (např. belehrad1976.cz) na hlavní doménu (PRIMARY_HOST).
  * - /admin: bez cookie session rovnou na přihlášení, hlavička noindex.
  *   (Skutečné ověření session probíhá na serveru v requireAdmin / getAdminSession.)
  */
 export function middleware(req: NextRequest) {
+  const denied = devBasicAuth(req);
+  if (denied) return denied;
+
   const primary = (process.env.PRIMARY_HOST ?? "").trim().toLowerCase();
   const host = (req.headers.get("host") ?? "").toLowerCase().split(":")[0];
   const isApi = req.nextUrl.pathname.startsWith("/api/");
@@ -31,7 +59,9 @@ export function middleware(req: NextRequest) {
     res.headers.set("Cache-Control", "no-store");
     return res;
   }
-  return NextResponse.next();
+  const res = NextResponse.next();
+  if (process.env.DEV_BASIC_AUTH) res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return res;
 }
 
 export const config = {
