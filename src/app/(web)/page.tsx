@@ -54,8 +54,12 @@ export default async function HomePage() {
               <Link href="/eshop#kusovky" className="border border-gold/70 px-6 py-3 font-semibold text-gold-light hover:bg-gold/10">
                 Jednotlivé lahve
               </Link>
-              {box && <StockBadge stock={box.stock} />}
             </div>
+            {box && (
+              <div className="mt-4">
+                <StockBadge stock={box.stock} />
+              </div>
+            )}
           </div>
           <Seal size={220} className="mx-auto hidden opacity-95 md:block" />
         </div>

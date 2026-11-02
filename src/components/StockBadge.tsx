@@ -7,7 +7,7 @@ export function StockBadge({ stock }: { stock: number | null }) {
   }
   return (
     <span className="inline-block border border-gold/60 px-3 py-1 text-sm font-semibold text-gold-light">
-      Zbývá {stock} {plural(stock, "box", "boxy", "boxů")}
+      Už {plural(stock, "zbývá jen", "zbývají jen", "zbývá jen")} {stock} {plural(stock, "box", "boxy", "boxů")}
     </span>
   );
 }
