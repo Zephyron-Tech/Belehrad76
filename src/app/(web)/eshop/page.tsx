@@ -54,7 +54,12 @@ export default async function EshopPage() {
               <StockBadge stock={box.stock} />
             </div>
             <div className="mt-6">
-              {salesOpen && <AddToCart slug={box.slug} max={Math.min(box.stock ?? 0, settings.num("order.max_boxes"))} />}
+              {salesOpen && (
+                <>
+                  <AddToCart slug={box.slug} max={Math.min(box.stock ?? 0, settings.num("order.max_boxes"))} />
+                  <p className="mt-2 text-xs text-muted">Pokud chcete dát gól, dejte box do košíku.</p>
+                </>
+              )}
             </div>
           </div>
         </section>

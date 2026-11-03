@@ -44,7 +44,7 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               {box && (
                 <Link
-                  href={`/produkt/${box.slug}`}
+                  href="/eshop"
                   className="bg-gold px-6 py-3 font-bold uppercase tracking-wider text-ink transition hover:bg-gold-light"
                 >
                   Objednat box
