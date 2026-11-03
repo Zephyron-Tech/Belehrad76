@@ -86,7 +86,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await passGates(page);
 
   // Úvod: příběh, Nadace bez částky, večer
-  await expect(page.getByRole("heading", { name: "Mistři Evropy", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Mistři Evropy/ })).toBeVisible();
   await expect(page.getByText(/Výtěžek edice jde na podporu/).first()).toBeVisible();
   await expect(page.locator("body")).not.toContainText("100 Kč z");
 

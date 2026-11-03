@@ -222,6 +222,16 @@ p {
   background: var(--ink);
   color: var(--cream);
 }
+/* na krémovém poli je hlavní tlačítko černé (zlatá na krémové splývá) */
+.field-paper .btn:not(.btn-quiet):not(:disabled):not([data-added="true"]) {
+  background: var(--ink);
+  color: var(--cream);
+}
+@media (hover: hover) {
+  .field-paper .btn:not(.btn-quiet):not(:disabled):not([data-added="true"]):hover {
+    background: #2a231a;
+  }
+}
 /* tichá varianta: plná tónová plocha, žádný rámeček */
 .btn-quiet {
   background: var(--panel-2);
@@ -672,6 +682,193 @@ p {
   }
 }
 
+/* --- Počet kusů: tónová plocha, tlačítka a číslo uvnitř --- */
+.stepper {
+  display: inline-flex;
+  align-items: stretch;
+  min-height: 3.25rem;
+  background: var(--control, var(--panel-2));
+}
+.stepper button {
+  width: 3rem;
+  font-size: 1.25rem;
+  color: inherit;
+  touch-action: manipulation;
+  transition:
+    background-color var(--t-hover) ease,
+    transform var(--t-press) var(--ease-out);
+}
+.stepper button:active:not(:disabled) {
+  transform: scale(0.9);
+}
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+@media (hover: hover) {
+  .stepper button:hover:not(:disabled) {
+    background: color-mix(in srgb, currentColor 10%, transparent);
+  }
+}
+.stepper input {
+  width: 3rem;
+  background: transparent;
+  text-align: center;
+  font-size: max(16px, var(--step-body));
+  font-weight: 600;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.stepper input::-webkit-inner-spin-button,
+.stepper input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.field-paper {
+  --control: #d9cfba;
+}
+
+/* Po přidání tlačítko krátce potvrdí změnou barvy */
+.btn.add-btn[data-added="true"] {
+  background: var(--seal);
+  color: var(--cream);
+}
+
+/* --- Řádek lahve v e-shopu --- */
+.player-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  padding-block: 1rem;
+}
+.player-row__link {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.player-row__thumb {
+  display: block;
+  aspect-ratio: 352 / 600;
+  overflow: clip;
+}
+.player-row__thumb img {
+  transition: transform 400ms var(--ease-out);
+}
+.player-row__buy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+@media (hover: hover) {
+  .player-row__link:hover img {
+    transform: scale(1.06);
+  }
+  .player-row__link:hover .display {
+    color: var(--gold-light);
+  }
+}
+@media (max-width: 479px) {
+  .player-row {
+    grid-template-columns: 1fr;
+  }
+  .player-row__buy {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 5.75rem;
+  }
+}
+
+/* Volba dopravy a platby: plocha, vybraná má zlatý obrys (ovládací prvek, ne dekorace) */
+.option-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--panel);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition:
+    background-color var(--t-hover) ease,
+    outline-color var(--t-hover) ease;
+}
+.option-tile[data-selected="true"] {
+  background: var(--panel-2);
+  outline-color: var(--gold);
+}
+.option-tile:has(:focus-visible) {
+  outline-color: var(--gold-light);
+}
+@media (hover: hover) {
+  .option-tile:hover {
+    background: var(--panel-2);
+  }
+}
+
+/* Řádek košíku */
+.cart-line {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: 1rem;
+}
+.cart-line__thumb {
+  display: block;
+  width: 4.5rem;
+  aspect-ratio: 352 / 600;
+  overflow: clip;
+}
+.cart-line__controls {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+}
+@media (min-width: 640px) {
+  .cart-line {
+    grid-template-columns: 4.5rem 1fr auto;
+  }
+  .cart-line__controls {
+    grid-column: auto;
+  }
+}
+
+/* Kroky nákupu */
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  color: var(--muted);
+}
+.steps [aria-current="step"] {
+  color: var(--cream);
+  font-weight: 600;
+}
+
+/* Odkazy na sousední hráče: šipka popojede ve směru */
+.sibling .display {
+  transition:
+    color var(--t-hover) ease,
+    transform var(--t-ui) var(--ease-out);
+}
+@media (hover: hover) {
+  .sibling:hover .display {
+    color: var(--gold-light);
+    transform: translateX(-0.25em);
+  }
+  .sibling.text-right:hover .display {
+    transform: translateX(0.25em);
+  }
+}
+
 /* --- Text z Markdownu (příběh, právní stránky) --- */
 .prose-edice {
   line-height: 1.6;
@@ -874,5 +1071,47 @@ p {
 @media (prefers-reduced-motion: reduce) {
   .goal-kick.is-playing * {
     animation: none !important;
+  }
+}
+
+/* --- Věková brána: celoplošné pole s pečetí --- */
+.age-gate__seal {
+  width: 110vmax;
+  height: 110vmax;
+  right: -52vmax;
+  bottom: -58vmax;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .age-gate {
+    animation: fade-in 280ms ease both;
+  }
+  .age-gate__seal {
+    animation: hero-disc 1200ms var(--ease-expo) both;
+    transform: scale(0.9) rotate(-14deg);
+    opacity: 0;
+  }
+  .age-gate__body > * {
+    animation: rise-in 600ms var(--ease-out) both;
+  }
+  .age-gate__body > :nth-child(2) {
+    animation-delay: 80ms;
+  }
+  .age-gate__body > :nth-child(3) {
+    animation-delay: 160ms;
+  }
+  .age-gate__body > :nth-child(4) {
+    animation-delay: 240ms;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
   }
 }

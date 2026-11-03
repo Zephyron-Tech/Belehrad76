@@ -44,13 +44,15 @@ export default async function OrderPage({ params, searchParams }: Props) {
   const qr = transfer ? await qrDataUrl(transfer.spd) : null;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
-      <p className="text-sm text-muted">Objednávka č. {order.number}</p>
+    <div className="frame max-w-5xl py-12 md:py-20">
+      <p className="text-muted">
+        Objednávka č. <span className="tabular text-cream">{order.number}</span>
+      </p>
 
       {isPaid && (
         <>
-          <h1 className="mt-1 font-serif text-4xl font-bold text-gold">Děkujeme, platba je přijata</h1>
-          <p className="mt-4 text-lg text-cream/85">
+          <h1 className="display mt-4 text-head">Děkujeme, platba je přijata</h1>
+          <p className="mt-6 max-w-[56ch] text-lead">
             Potvrzení o zaplacení jsme poslali na <strong className="text-cream">{order.email}</strong>. Výtěžek edice jde na podporu
             Nadace fotbalových internacionálů.
           </p>
@@ -65,17 +67,17 @@ export default async function OrderPage({ params, searchParams }: Props) {
 
       {isPending && order.paymentMethod === "GOPAY" && (
         <>
-          <h1 className="mt-1 font-serif text-4xl font-bold text-gold">Objednávka čeká na zaplacení</h1>
-          {platba === "navrat" && <p className="mt-4 text-cream/85">Platba zatím nebyla dokončena nebo byla zrušena.</p>}
+          <h1 className="display mt-4 text-head">Objednávka čeká na zaplacení</h1>
+          {platba === "navrat" && <p className="mt-6 max-w-[56ch] text-lead">Platba zatím nebyla dokončena nebo byla zrušena.</p>}
           {platba === "chyba" && (
             <p className="mt-4 text-warn">Platební bránu se nepodařilo otevřít. Objednávka je uložena, zkuste platbu spustit znovu.</p>
           )}
           {expired ? (
-            <p className="mt-4 text-cream/85">Čas na zaplacení vypršel. Objednávka bude zrušena.</p>
+            <p className="mt-6 max-w-[56ch] text-lead">Čas na zaplacení vypršel. Objednávka bude zrušena.</p>
           ) : (
             <div className="mt-6 max-w-sm">
               <PayButton token={order.publicToken} />
-              <p className="mt-2 text-sm text-muted">Zboží pro vás držíme do {formatDateTime(order.reservedUntil)}.</p>
+              <p className="mt-3 text-muted">Zboží pro vás držíme do {formatDateTime(order.reservedUntil)}.</p>
             </div>
           )}
         </>
@@ -83,13 +85,13 @@ export default async function OrderPage({ params, searchParams }: Props) {
 
       {isPending && transfer && (
         <>
-          <h1 className="mt-1 font-serif text-4xl font-bold text-gold">Objednávka přijata</h1>
-          <p className="mt-4 text-lg text-cream/85">
+          <h1 className="display mt-4 text-head">Objednávka přijata</h1>
+          <p className="mt-6 max-w-[56ch] text-lead">
             Děkujeme. Zaplaťte prosím převodem nebo naskenujte QR kód v bankovní aplikaci. Údaje jsme poslali i na{" "}
             <strong className="text-cream">{order.email}</strong>.
           </p>
-          <div className="mt-8 grid gap-6 border border-gold/50 bg-panel p-6 sm:grid-cols-[1fr_auto]">
-            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+          <div className="mt-10 grid gap-8 bg-panel p-6 sm:grid-cols-[1fr_auto] md:p-8">
+            <dl className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-3">
               <dt className="text-muted">Číslo účtu</dt>
               <dd className="font-semibold text-cream">{transfer.account}</dd>
               <dt className="text-muted">IBAN</dt>
@@ -97,16 +99,16 @@ export default async function OrderPage({ params, searchParams }: Props) {
               <dt className="text-muted">Variabilní symbol</dt>
               <dd className="font-semibold text-cream">{transfer.variableSymbol}</dd>
               <dt className="text-muted">Částka</dt>
-              <dd className="font-semibold text-gold-light">{formatCzk(transfer.amountCzk)}</dd>
+              <dd className="display tabular text-[2rem] leading-none text-gold-light">{formatCzk(transfer.amountCzk)}</dd>
               <dt className="text-muted">Zaplaťte do</dt>
               <dd className="text-cream">{formatDateTime(order.reservedUntil)}</dd>
             </dl>
             {qr && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={qr} alt="QR kód pro platbu" width={180} height={180} className="mx-auto bg-white p-1" />
+              <img src={qr} alt="QR kód pro platbu" width={200} height={200} className="mx-auto bg-white p-2" />
             )}
           </div>
-          <p className="mt-3 text-sm text-muted">
+          <p className="mt-4 text-muted">
             Po připsání platby vám pošleme potvrzení. Nezaplacená objednávka se po uplynutí lhůty automaticky zruší.
           </p>
         </>
@@ -114,10 +116,10 @@ export default async function OrderPage({ params, searchParams }: Props) {
 
       {isPending && order.paymentMethod === "BANK_TRANSFER" && expired && (
         <>
-          <h1 className="mt-1 font-serif text-4xl font-bold text-cream">Lhůta k zaplacení uplynula</h1>
-          <p className="mt-4 text-cream/85">
+          <h1 className="display mt-4 text-head">Lhůta k zaplacení uplynula</h1>
+          <p className="mt-6 max-w-[56ch] text-lead">
             Platbu jsme v určené lhůtě nepřijali, proto objednávku zrušíme. Pokud jste už zaplatili, ozvěte se nám prosím na{" "}
-            <a href={`mailto:${settings.str("contact.email")}`} className="text-gold-light underline">
+            <a href={`mailto:${settings.str("contact.email")}`} className="link text-gold-light">
               {settings.str("contact.email")}
             </a>{" "}
             – platbu dohledáme.
@@ -127,10 +129,10 @@ export default async function OrderPage({ params, searchParams }: Props) {
 
       {order.status === "CANCELLED" && (
         <>
-          <h1 className="mt-1 font-serif text-4xl font-bold text-cream">Objednávka byla zrušena</h1>
-          <p className="mt-4 text-cream/85">
+          <h1 className="display mt-4 text-head">Objednávka byla zrušena</h1>
+          <p className="mt-6 max-w-[56ch] text-lead">
             Pokud jste již zaplatili, ozvěte se nám prosím na{" "}
-            <a href={`mailto:${settings.str("contact.email")}`} className="text-gold-light underline">
+            <a href={`mailto:${settings.str("contact.email")}`} className="link text-gold-light">
               {settings.str("contact.email")}
             </a>
             .
@@ -138,31 +140,31 @@ export default async function OrderPage({ params, searchParams }: Props) {
         </>
       )}
 
-      <section className="mt-10 border border-line bg-panel p-6">
+      <section className="mt-14 bg-panel p-6 md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="font-serif text-xl font-bold text-gold">Shrnutí objednávky</h2>
-          <span className="border border-line px-2 py-1 text-xs text-cream">{statusLabel(order.status, order.deliveryMethod)}</span>
+          <h2 className="display text-[2rem]">Shrnutí objednávky</h2>
+          <span className="bg-panel-2 px-3 py-1.5 font-semibold">{statusLabel(order.status, order.deliveryMethod)}</span>
         </div>
-        <ul className="mt-4 divide-y divide-line text-sm">
+        <ul className="mt-6 space-y-1">
           {order.items.map((i) => (
             <li key={i.id} className="flex justify-between gap-3 py-2">
               <span>
                 {i.quantity}× {i.name}
-                {i.madeToOrder && <span className="block text-xs text-muted">vyrábí se na objednávku</span>}
+                {i.madeToOrder && <span className="block text-small text-muted">vyrábí se na objednávku</span>}
               </span>
-              <span>{formatCzk(i.unitPriceCzk * i.quantity)}</span>
+              <span className="tabular">{formatCzk(i.unitPriceCzk * i.quantity)}</span>
             </li>
           ))}
           <li className="flex justify-between gap-3 py-2 text-muted">
             <span>Doprava – {DELIVERY_LABEL[order.deliveryMethod]}</span>
             <span>{order.shippingCzk ? formatCzk(order.shippingCzk) : "zdarma"}</span>
           </li>
-          <li className="flex justify-between gap-3 py-2 text-base font-bold">
+          <li className="!mt-4 flex items-baseline justify-between gap-3 bg-panel-2 px-4 py-4 font-semibold">
             <span>Celkem</span>
-            <span className="text-gold-light">{formatCzk(order.totalCzk)}</span>
+            <span className="display tabular text-[2rem] text-gold-light">{formatCzk(order.totalCzk)}</span>
           </li>
         </ul>
-        <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+        <dl className="mt-8 grid gap-6 sm:grid-cols-2">
           <div>
             <dt className="text-muted">Platba</dt>
             <dd>{PAYMENT_LABEL[order.paymentMethod]}</dd>
@@ -173,7 +175,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
               {order.deliveryMethod === "PICKUP" ? (
                 <>
                   {settings.str("pickup.address")}
-                  <span className="block text-xs text-muted">{settings.text("pickup.note")}</span>
+                  <span className="block text-small text-muted">{settings.text("pickup.note")}</span>
                 </>
               ) : (
                 <>
@@ -195,7 +197,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
               <dt className="text-muted">Slavnostní večer</dt>
               <dd>
                 Zájem o losování o vstup
-                <span className="block text-sm text-muted">{EVENING_ENTRY_NOTE}</span>
+                <span className="block text-muted">{EVENING_ENTRY_NOTE}</span>
               </dd>
             </div>
           )}
@@ -203,11 +205,11 @@ export default async function OrderPage({ params, searchParams }: Props) {
       </section>
 
       {env.gopayMode === "mock" && isPending && order.paymentMethod === "GOPAY" && (
-        <p className="mt-6 text-xs text-warn">Vývojový režim: platby jsou simulované (GOPAY_MODE=mock).</p>
+        <p className="mt-6 text-small text-warn">Vývojový režim: platby jsou simulované (GOPAY_MODE=mock).</p>
       )}
 
       <p className="mt-8">
-        <Link href="/" className="text-gold-light underline underline-offset-4">
+        <Link href="/" className="link text-gold-light">
           Zpět na úvod
         </Link>
       </p>

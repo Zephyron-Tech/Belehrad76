@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
 import { useSyncedPricedCart } from "@/components/cart/usePricedCart";
@@ -9,19 +10,20 @@ export function CartView() {
   const { setQuantity, remove } = useCart();
   const { data, loading, error, ready, notices } = useSyncedPricedCart();
 
-  if (!ready || (loading && !data)) return <p className="mt-8 text-muted">Načítám košík…</p>;
-  if (error) return <p className="mt-8 text-danger">{error}</p>;
+  if (!ready || (loading && !data)) return <p className="mt-10 text-muted">Načítám košík…</p>;
+  if (error) return <p className="mt-10 font-medium text-danger">{error}</p>;
 
   if (!data || data.lines.length === 0) {
     return (
-      <div className="mt-8 border border-line bg-panel p-8 text-center">
-        <p className="text-cream">Košík je prázdný.</p>
+      <div className="mt-10 bg-panel p-8 md:p-12">
+        <p className="display text-[2rem]">Košík je prázdný</p>
         {notices.map((i) => (
-          <p key={i.slug} className="mt-2 text-sm text-warn">
+          <p key={i.slug} className="mt-3 text-warn">
             {i.message}
           </p>
         ))}
-        <Link href="/eshop" className="mt-6 inline-block bg-gold px-6 py-3 font-bold uppercase tracking-wider text-ink">
+        <p className="mt-3 max-w-[48ch] text-muted">Box se 13 lahvemi i lahve jednotlivých hráčů najdete v e-shopu.</p>
+        <Link href="/eshop" className="btn mt-8">
           Do e-shopu
         </Link>
       </div>
@@ -29,49 +31,54 @@ export function CartView() {
   }
 
   return (
-    <div className="mt-8">
-      {notices.length > 0 && (
-        <div className="mb-6 border border-warn/60 bg-warn/10 p-4 text-sm text-cream" role="status">
-          {notices.map((i) => (
-            <p key={i.slug}>{i.message}</p>
-          ))}
-        </div>
-      )}
+    <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_380px] lg:gap-16">
+      <div>
+        {notices.length > 0 && (
+          <div className="mb-8 bg-[color-mix(in_srgb,var(--warn)_14%,var(--ink))] p-5" role="status">
+            {notices.map((i) => (
+              <p key={i.slug}>{i.message}</p>
+            ))}
+          </div>
+        )}
 
-      <ul className="divide-y divide-line border-y border-line">
-        {data.lines.map((line) => (
-          <li key={line.slug} className="flex gap-4 py-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={line.imageUrl}
-              alt=""
-              className={`h-24 w-20 shrink-0 border border-line object-cover ${line.type === "BOTTLE" ? "label-paper" : ""}`}
-            />
-            <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <Link href={line.type === "BOX" ? "/eshop" : `/produkt/${line.slug}`} className="font-serif text-lg text-cream hover:text-gold-light">
+        <ul className="space-y-3">
+          {data.lines.map((line) => (
+            <li key={line.slug} className="cart-line bg-panel">
+              <span className={`cart-line__thumb ${line.type === "BOTTLE" ? "label-paper" : "bg-paper"}`}>
+                <Image
+                  src={line.type === "BOX" ? "/img/box-vyrez.png" : line.imageUrl}
+                  alt=""
+                  width={line.type === "BOX" ? 1079 : 352}
+                  height={line.type === "BOX" ? 640 : 600}
+                  sizes="96px"
+                  className={line.type === "BOX" ? "h-full w-full object-contain p-1" : "h-full w-full object-cover"}
+                />
+              </span>
+              <div className="min-w-0">
+                <Link
+                  href={line.type === "BOX" ? "/eshop" : `/produkt/${line.slug}`}
+                  className="link font-semibold decoration-transparent hover:decoration-current"
+                >
                   {line.name}
                 </Link>
-                <p className="text-sm text-muted">{formatCzk(line.unitPriceCzk)} / ks</p>
-                {line.madeToOrder && <p className="text-xs text-muted">Vyrábí se na objednávku</p>}
+                <p className="tabular text-muted">{formatCzk(line.unitPriceCzk)} / ks</p>
+                {line.madeToOrder && <p className="text-small text-muted">Vyrábí se na objednávku</p>}
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center border border-line" role="group" aria-label={`Počet – ${line.name}`}>
+              <div className="cart-line__controls">
+                <div className="stepper" role="group" aria-label={`Počet – ${line.name}`}>
                   <button
                     type="button"
-                    className="px-3 py-2 text-gold-light disabled:opacity-40"
                     onClick={() => setQuantity(line.slug, line.quantity - 1)}
                     disabled={line.quantity <= 1}
                     aria-label="Méně"
                   >
                     −
                   </button>
-                  <span className="w-10 text-center" aria-live="polite">
+                  <span className="tabular grid w-10 place-items-center font-semibold" aria-live="polite">
                     {line.quantity}
                   </span>
                   <button
                     type="button"
-                    className="px-3 py-2 text-gold-light disabled:opacity-40"
                     onClick={() => setQuantity(line.slug, line.quantity + 1)}
                     disabled={line.quantity >= line.maxQuantity}
                     aria-label="Více"
@@ -79,52 +86,59 @@ export function CartView() {
                     +
                   </button>
                 </div>
-                <p className="w-28 text-right font-semibold text-gold-light">{formatCzk(line.lineTotalCzk)}</p>
-                <button type="button" onClick={() => remove(line.slug)} className="text-sm text-muted underline hover:text-danger">
+                <p className="tabular w-28 text-right font-semibold">{formatCzk(line.lineTotalCzk)}</p>
+                <button
+                  type="button"
+                  onClick={() => remove(line.slug)}
+                  className="link min-h-11 text-muted hover:text-danger"
+                  aria-label={`Odebrat – ${line.name}`}
+                >
                   Odebrat
                 </button>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
 
-      <dl className="ml-auto mt-6 max-w-sm space-y-2 text-sm">
-        <div className="flex justify-between">
-          <dt className="text-muted">Zboží</dt>
-          <dd>{formatCzk(data.itemsTotalCzk)}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt className="text-muted">Doprava na adresu</dt>
-          <dd>{formatCzk(data.shipping.SHIPPING)}</dd>
-        </div>
-        {data.pickupEnabled && (
-          <div className="flex justify-between">
-            <dt className="text-muted">nebo osobní převzetí na FAČR</dt>
-            <dd>zdarma</dd>
-          </div>
-        )}
-        <div className="flex justify-between border-t border-line pt-2 text-base font-bold">
-          <dt>Celkem s dopravou na adresu</dt>
-          <dd className="text-gold-light">{formatCzk(data.itemsTotalCzk + data.shipping.SHIPPING)}</dd>
-        </div>
-      </dl>
-
-      {data.boxes > 0 && <p className="mt-6 border-l-2 border-gold pl-3 text-sm text-cream/85">{data.boxDelivery}</p>}
-      {data.hasMadeToOrder && <p className="mt-3 border-l-2 border-gold pl-3 text-sm text-cream/85">{data.leadTime}</p>}
-
-      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-        <Link href="/eshop" className="border border-line px-6 py-3 text-center text-cream hover:border-gold">
-          Pokračovat v nákupu
-        </Link>
-        {data.salesOpen ? (
-          <Link href="/pokladna" className="bg-gold px-8 py-3 text-center font-bold uppercase tracking-wider text-ink hover:bg-gold-light">
-            K objednávce
-          </Link>
-        ) : (
-          <p className="text-sm text-muted">Prodej zatím není spuštěn.</p>
-        )}
+        {data.boxes > 0 && <p className="mt-8 bg-panel-2 p-4">{data.boxDelivery}</p>}
+        {data.hasMadeToOrder && <p className="mt-3 bg-panel-2 p-4">{data.leadTime}</p>}
       </div>
+
+      <aside className="self-start bg-panel p-6 md:p-8 lg:sticky lg:top-24" aria-label="Souhrn košíku">
+        <dl className="space-y-3">
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted">Zboží</dt>
+            <dd className="tabular">{formatCzk(data.itemsTotalCzk)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted">Doprava na adresu</dt>
+            <dd className="tabular">{formatCzk(data.shipping.SHIPPING)}</dd>
+          </div>
+          {data.pickupEnabled && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">nebo osobní převzetí na FAČR</dt>
+              <dd>zdarma</dd>
+            </div>
+          )}
+          <div className="!mt-6 flex items-baseline justify-between gap-4 bg-panel-2 px-4 py-4">
+            <dt className="font-semibold">Celkem s dopravou na adresu</dt>
+            <dd className="display tabular text-[2rem] text-gold-light">{formatCzk(data.itemsTotalCzk + data.shipping.SHIPPING)}</dd>
+          </div>
+        </dl>
+
+        <div className="mt-6 flex flex-col gap-3">
+          {data.salesOpen ? (
+            <Link href="/pokladna" className="btn w-full">
+              K objednávce
+            </Link>
+          ) : (
+            <p className="text-muted">Prodej zatím není spuštěn.</p>
+          )}
+          <Link href="/eshop" className="link text-center text-muted">
+            Pokračovat v nákupu
+          </Link>
+        </div>
+      </aside>
     </div>
   );
 }

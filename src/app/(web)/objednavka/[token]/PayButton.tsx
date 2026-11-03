@@ -26,12 +26,12 @@ export function PayButton({ token }: { token: string }) {
         type="button"
         onClick={pay}
         disabled={busy}
-        className="w-full bg-gold px-6 py-3 font-bold uppercase tracking-wider text-ink hover:bg-gold-light disabled:opacity-60"
+        className="btn w-full disabled:cursor-wait"
       >
         {busy ? "Otevírám platební bránu…" : "Zaplatit online"}
       </button>
       {error && (
-        <p role="alert" className="mt-2 text-sm text-danger">
+        <p role="alert" className="mt-3 font-medium text-danger">
           {error}
         </p>
       )}
