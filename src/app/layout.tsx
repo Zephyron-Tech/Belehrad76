@@ -10,9 +10,17 @@ const archivo = Archivo({
   display: "swap",
 });
 
+/** Absolutní adresa pro odkazy na obrázky ke sdílení: APP_URL, na náhledech Vercelu jejich adresa */
+const siteUrl =
+  process.env.APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   title: { default: "Mistři Evropy – Bělehrad 1976", template: "%s · Mistři Evropy 1976" },
+  applicationName: "Mistři Evropy 1976",
+  twitter: { card: "summary_large_image" },
+  appleWebApp: { title: "Mistři Evropy 1976", statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {

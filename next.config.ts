@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   // Písma pro PDF potvrzení se čtou z disku – na Vercelu je nutné je přibalit k serverovým funkcím
   outputFileTracingIncludes: {
     "/**/*": ["./assets/fonts/**/*"],
+    // obrázky ke sdílení (opengraph-image) čtou výřezy a pečeť z disku
+    "/**/opengraph-image*": ["./public/og/**/*", "./public/img/box-vyrez.png", "./public/img/hraci/**/*"],
+    "/**/twitter-image*": ["./public/og/**/*", "./public/img/box-vyrez.png", "./public/img/hraci/**/*"],
   },
   async headers() {
     return [

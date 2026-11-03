@@ -10,7 +10,13 @@ import { AddToCart } from "@/components/cart/AddToCart";
 import { GoalKick } from "@/components/GoalKick";
 import { JsonLd, productJsonLd } from "@/components/JsonLd";
 
-export const metadata: Metadata = { title: "E-shop" };
+export const metadata: Metadata = {
+  title: "E-shop",
+  description: "Box Mistři Evropy se 13 lahvemi slivovice a lahve jednotlivých hráčů z Bělehradu 1976.",
+  alternates: { canonical: "/eshop" },
+  openGraph: { type: "website", locale: "cs_CZ", siteName: "Mistři Evropy – Bělehrad 1976", title: "E-shop · Mistři Evropy 1976", url: "/eshop" },
+  twitter: { card: "summary_large_image", title: "E-shop · Mistři Evropy 1976" },
+};
 
 const order = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
