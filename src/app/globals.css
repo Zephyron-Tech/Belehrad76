@@ -109,84 +109,154 @@ body {
   background: linear-gradient(180deg, #efe6d3 0%, #e5d9c1 100%);
 }
 
-/* --- Panáček s míčem nad boxem v e-shopu (GoalKick.tsx), délka 1.9s --- */
-.goal-kick .gk-runner,
-.goal-kick .gk-ball,
-.goal-kick .gk-goal,
-.goal-kick [class^="gk-leg"],
-.goal-kick [class^="gk-arm"] {
+/* --- Panáček s míčem nad boxem v e-shopu (GoalKick.tsx), délka 1.9s ---
+ * Klouby: rameno 14/29, loket 14/35, kyčel 14/40, koleno 14/47.5 (souřadnice v SVG).
+ * Kladný úhel = noha/ruka dozadu, záporný = dopředu (běží doprava). */
+.goal-kick g,
+.goal-kick line,
+.goal-kick circle,
+.goal-kick text {
   transform-box: view-box;
 }
-.goal-kick [class^="gk-leg"] {
-  transform-origin: 14px 40px;
-}
-.goal-kick [class^="gk-arm"] {
-  transform-origin: 14px 30px;
-}
-.goal-kick .gk-text {
-  opacity: 0;
-}
-.goal-kick.is-playing .gk-runner {
-  animation: gk-run 1.9s ease-out;
-}
-.goal-kick.is-playing .gk-leg-a {
-  animation: gk-stride 0.2s linear 3 alternate;
-}
+.goal-kick .gk-uarm { transform-origin: 14px 29px; }
+.goal-kick .gk-farm { transform-origin: 14px 35px; }
+.goal-kick .gk-thigh { transform-origin: 14px 40px; }
+.goal-kick .gk-shin { transform-origin: 14px 47.5px; }
+/* klidový postoj */
+.goal-kick .gk-arm-a { transform: rotate(28deg); }
+.goal-kick .gk-arm-b { transform: rotate(-28deg); }
+.goal-kick .gk-arm-a .gk-farm { transform: rotate(-12deg); }
+.goal-kick .gk-arm-b .gk-farm { transform: rotate(12deg); }
+.goal-kick .gk-leg-a { transform: rotate(14deg); }
+.goal-kick .gk-leg-b { transform: rotate(-14deg); }
+.goal-kick .gk-text { opacity: 0; }
+
+/* běh: krok 0.4 s, nohy i ruce v protifázi; pak výkop pravou (b) nohou */
+.goal-kick.is-playing .gk-runner { animation: gk-run 1.9s linear; }
+.goal-kick.is-playing .gk-leg-a { animation: gk-thigh 0.4s ease-in-out 1.5; }
+.goal-kick.is-playing .gk-leg-a .gk-shin { animation: gk-shin 0.4s linear 1.5; }
 .goal-kick.is-playing .gk-leg-b {
   animation:
-    gk-stride 0.2s linear 3 alternate-reverse,
-    gk-kick 0.35s ease-out 0.55s;
+    gk-thigh 0.4s ease-in-out -0.2s 2,
+    gk-kick-thigh 0.45s ease-in-out 0.6s;
+}
+.goal-kick.is-playing .gk-leg-b .gk-shin {
+  animation:
+    gk-shin 0.4s linear -0.2s 2,
+    gk-kick-shin 0.45s ease-in-out 0.6s;
 }
 .goal-kick.is-playing .gk-arm-a {
-  animation: gk-stride 0.2s linear 3 alternate-reverse;
+  animation:
+    gk-uarm 0.4s ease-in-out -0.2s 2,
+    gk-kick-arm 0.45s ease-in-out 0.6s;
 }
 .goal-kick.is-playing .gk-arm-b {
-  animation: gk-stride 0.2s linear 3 alternate;
+  animation:
+    gk-uarm 0.4s ease-in-out 1.5,
+    gk-kick-arm-b 0.45s ease-in-out 0.6s;
 }
-.goal-kick.is-playing .gk-ball {
-  animation: gk-ball 1.9s linear;
-}
-.goal-kick.is-playing .gk-goal {
-  animation: gk-net 1.9s ease-out;
-}
-.goal-kick.is-playing .gk-text {
-  animation: gk-text 1.9s ease-out;
-}
+.goal-kick.is-playing .gk-farm { animation: gk-farm 1.05s ease-out; }
+.goal-kick.is-playing .gk-ball { animation: gk-ball 1.9s linear; }
+.goal-kick.is-playing .gk-goal { animation: gk-net 1.9s ease-out; }
+.goal-kick.is-playing .gk-text { animation: gk-text 1.9s ease-out; }
 
 @keyframes gk-run {
-  0% { transform: translateX(0); }
-  32% { transform: translateX(32px); }
-  85% { transform: translateX(32px); }
-  100% { transform: translateX(0); }
+  0% { transform: translate(0, 0); }
+  5.26% { transform: translate(5px, -1px); }
+  10.53% { transform: translate(11px, 0); }
+  15.79% { transform: translate(17px, -1px); }
+  21.05% { transform: translate(23px, 0); }
+  26.32% { transform: translate(28.5px, -1px); }
+  31.58% { transform: translate(32px, 0); }
+  87.89% { transform: translate(32px, 0); opacity: 1; }
+  93.16% { transform: translate(32px, 0); opacity: 0; }
+  93.68% { transform: translate(0, 0); opacity: 0; }
+  100% { transform: translate(0, 0); opacity: 1; }
 }
-@keyframes gk-stride {
-  from { transform: rotate(-28deg); }
-  to { transform: rotate(28deg); }
+/* stehno: dozadu → dopředu → dozadu */
+@keyframes gk-thigh {
+  0%, 100% { transform: rotate(32deg); }
+  50% { transform: rotate(-38deg); }
 }
-@keyframes gk-kick {
+/* holeň: po odrazu se pokrčí (pata k zadku), před došlapem se natáhne */
+@keyframes gk-shin {
+  0%, 100% { transform: rotate(20deg); }
+  20% { transform: rotate(85deg); }
+  42% { transform: rotate(40deg); }
+  55% { transform: rotate(4deg); }
+  75% { transform: rotate(8deg); }
+}
+@keyframes gk-uarm {
+  0%, 100% { transform: rotate(-38deg); }
+  50% { transform: rotate(40deg); }
+}
+/* předloktí pokrčené v lokti při běhu */
+@keyframes gk-farm {
+  0% { transform: rotate(-10deg); }
+  10%, 70% { transform: rotate(-85deg); }
+  100% { transform: rotate(-10deg); }
+}
+/* výkop: nápřah dozadu, švih dopředu s natažením holeně, návrat */
+@keyframes gk-kick-thigh {
   0% { transform: rotate(30deg); }
-  40% { transform: rotate(-55deg); }
+  30% { transform: rotate(42deg); }
+  58% { transform: rotate(-68deg); }
+  78% { transform: rotate(-58deg); }
+  100% { transform: rotate(-14deg); }
+}
+@keyframes gk-kick-shin {
+  0% { transform: rotate(40deg); }
+  30% { transform: rotate(100deg); }
+  55% { transform: rotate(6deg); }
   100% { transform: rotate(0deg); }
 }
+@keyframes gk-kick-arm {
+  0% { transform: rotate(-30deg); }
+  58% { transform: rotate(55deg); }
+  100% { transform: rotate(28deg); }
+}
+@keyframes gk-kick-arm-b {
+  0% { transform: rotate(30deg); }
+  58% { transform: rotate(-70deg); }
+  100% { transform: rotate(-28deg); }
+}
+/* let míče: 14 úseků skutečné paraboly, těsně pod břevnem do sítě, pak pád a odskok */
 @keyframes gk-ball {
-  0%, 33% { transform: translate(0, 0); opacity: 1; animation-timing-function: ease-out; }
-  52% { transform: translate(150px, -30px); animation-timing-function: ease-in; }
-  68% { transform: translate(246px, -12px); }
-  76% { transform: translate(252px, 0); }
-  88% { transform: translate(252px, 0); opacity: 1; }
-  93% { transform: translate(252px, 0); opacity: 0; }
-  94% { transform: translate(0, 0); opacity: 0; }
+  0%, 44.21% { transform: translate(0, 0); opacity: 1; }
+  45.64% { transform: translate(18.0px, -7.2px); }
+  47.07% { transform: translate(36.0px, -13.5px); }
+  48.50% { transform: translate(54.0px, -18.9px); }
+  49.92% { transform: translate(72.0px, -23.3px); }
+  51.35% { transform: translate(90.0px, -26.9px); }
+  52.78% { transform: translate(108.0px, -29.5px); }
+  54.21% { transform: translate(126.0px, -31.2px); }
+  55.64% { transform: translate(144.0px, -31.9px); }
+  57.07% { transform: translate(162.0px, -31.8px); }
+  58.50% { transform: translate(180.0px, -30.7px); }
+  59.92% { transform: translate(198.0px, -28.7px); }
+  61.35% { transform: translate(216.0px, -25.8px); }
+  62.78% { transform: translate(234.0px, -22.0px); }
+  64.21% { transform: translate(252.0px, -17.2px); }
+  65.79% { transform: translate(251.0px, -17.2px); opacity: 1; }
+  67.89% { transform: translate(250.0px, -12.9px); opacity: 1; }
+  70.00% { transform: translate(249.5px, -6.9px); opacity: 1; }
+  72.11% { transform: translate(249.0px, 0.0px); opacity: 1; }
+  74.21% { transform: translate(248.5px, -4.5px); opacity: 1; }
+  76.32% { transform: translate(248.0px, 0.0px); opacity: 1; }
+  87.89% { transform: translate(248.0px, 0.0px); opacity: 1; }
+  93.16% { transform: translate(248px, 0); opacity: 0; }
+  93.68% { transform: translate(0, 0); opacity: 0; }
   100% { transform: translate(0, 0); opacity: 1; }
 }
 @keyframes gk-net {
-  0%, 67% { transform: translateX(0); }
-  71% { transform: translateX(3px); }
-  75% { transform: translateX(-1.5px); }
-  79%, 100% { transform: translateX(0); }
+  0%, 63.16% { transform: translateX(0); }
+  65.79% { transform: translateX(3.5px); }
+  69.47% { transform: translateX(-1.5px); }
+  72.63%, 100% { transform: translateX(0); }
 }
 @keyframes gk-text {
-  0%, 68% { opacity: 0; transform: translateY(4px); }
-  74%, 90% { opacity: 1; transform: translateY(0); }
+  0%, 65.26% { opacity: 0; transform: translateY(4px); }
+  70.53%, 87.89% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) {

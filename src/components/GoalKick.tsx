@@ -44,18 +44,30 @@ export function GoalKick({ slug }: { slug: string }) {
       {/* trávník */}
       <line x1="2" y1="56" x2="318" y2="56" strokeWidth={1} stroke="var(--line)" />
 
-      {/* panáček */}
+      {/* panáček: ruce i nohy ze dvou částí (paže + předloktí, stehno + holeň) */}
       <g className="gk-runner">
-        <circle cx="14" cy="21" r="4.5" />
-        <line x1="14" y1="26" x2="14" y2="40" />
-        <line className="gk-arm-a" x1="14" y1="30" x2="8" y2="37" />
-        <line className="gk-arm-b" x1="14" y1="30" x2="20" y2="37" />
-        <line className="gk-leg-a" x1="14" y1="40" x2="10" y2="55" />
-        <line className="gk-leg-b" x1="14" y1="40" x2="18" y2="55" />
+        <circle cx="14" cy="20" r="4.5" />
+        <line x1="14" y1="25" x2="14" y2="40" />
+        <g className="gk-uarm gk-arm-a">
+          <line x1="14" y1="29" x2="14" y2="35" />
+          <line className="gk-farm" x1="14" y1="35" x2="14" y2="41" />
+        </g>
+        <g className="gk-uarm gk-arm-b">
+          <line x1="14" y1="29" x2="14" y2="35" />
+          <line className="gk-farm" x1="14" y1="35" x2="14" y2="41" />
+        </g>
+        <g className="gk-thigh gk-leg-a">
+          <line x1="14" y1="40" x2="14" y2="47.5" />
+          <line className="gk-shin" x1="14" y1="47.5" x2="14" y2="55" />
+        </g>
+        <g className="gk-thigh gk-leg-b">
+          <line x1="14" y1="40" x2="14" y2="47.5" />
+          <line className="gk-shin" x1="14" y1="47.5" x2="14" y2="55" />
+        </g>
       </g>
 
       {/* míč */}
-      <circle className="gk-ball" cx="56" cy="52" r="3.5" fill="var(--cream)" stroke="none" />
+      <circle className="gk-ball" cx="58" cy="52" r="3.5" fill="var(--cream)" stroke="none" />
 
       {/* branka: tyč, břevno, zadní strana a síť */}
       <g className="gk-goal">
