@@ -1,11 +1,7 @@
 import type { Prisma } from "@prisma/client";
+import { OutOfStockError } from "../errors";
 
-export class OutOfStockError extends Error {
-  constructor(public readonly productName: string) {
-    super(`${productName}: nedostatek kusů skladem.`);
-    this.name = "OutOfStockError";
-  }
-}
+export { OutOfStockError };
 
 type Item = { productId: number; quantity: number; name: string };
 

@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db";
 import { createOrder, CheckoutError } from "@/lib/orders/create";
 import { cancelOrder, markCompleted, markPaid, markShipped, TransitionError } from "@/lib/orders/transitions";
-import { expireStaleOrders } from "@/lib/orders/expire";
+import { expireStaleOrders, retryPaidNotifications } from "@/lib/orders/expire";
+import { AppError, PaymentError, userMessage } from "@/lib/errors";
 import { startGopayPayment, syncGopayPayment } from "@/lib/orders/payments";
 import { eveningCsv } from "@/lib/exports";
 import { sentMailLog } from "@/lib/mail/transport";
@@ -259,3 +260,41 @@ describe("export zájemců o večer", () => {
     expect(csv).not.toContain("Zájmu");
   });
 });
+
+describe("dorovnání e-mailů po zaplacení", () => {
+  beforeEach(() => resetDb());
+
+  it("neodeslané potvrzení platby se pošle znovu, jen jednou", async () => {
+    const order = await createOrder(checkout(), null);
+    await markPaid(order.id, admin);
+    // simulace výpadku SMTP: potvrzení se „neodeslalo“
+    await prisma.order.update({ where: { id: order.id }, data: { paymentConfirmationSentAt: null } });
+    sentMailLog.length = 0;
+
+    expect(await retryPaidNotifications()).toBe(1);
+    expect(sentMailLog.filter((m) => m.to === "jan@example.com" && m.subject.includes("přijata"))).toHaveLength(1);
+    expect(sentMailLog[0].attachments.some((a) => a.endsWith(".pdf"))).toBe(true);
+
+    sentMailLog.length = 0;
+    expect(await retryPaidNotifications()).toBe(0);
+    expect(sentMailLog).toHaveLength(0);
+  });
+});
+
+describe("chyby pro uživatele", () => {
+  beforeEach(() => resetDb());
+
+  it("CheckoutError, TransitionError i PaymentError dědí z AppError", async () => {
+    await expect(createOrder({}, null)).rejects.toBeInstanceOf(AppError);
+    const order = await createOrder(checkout({ paymentMethod: "BANK_TRANSFER" }), null);
+    const err = await startGopayPayment(order.id).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(PaymentError);
+    expect(err).toBeInstanceOf(AppError);
+    expect(userMessage(err, "obecná")).toBe("Objednávka se neplatí přes platební bránu.");
+  });
+
+  it("technické chyby se uživateli neukazují", () => {
+    expect(userMessage(new Error("Invalid `prisma.order.findUnique()` invocation"), "Obecná hláška.")).toBe("Obecná hláška.");
+  });
+});
+

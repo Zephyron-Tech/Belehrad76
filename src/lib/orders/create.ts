@@ -3,7 +3,8 @@ import { z } from "zod";
 import { prisma } from "../db";
 import { priceCartFromDb } from "../catalog";
 import { audit } from "../audit";
-import { OutOfStockError, reserveStock } from "./stock";
+import { CheckoutError, OutOfStockError } from "../errors";
+import { reserveStock } from "./stock";
 import { sendOrderReceived } from "./notifications";
 
 /** Čísla objednávek = variabilní symbol: 2600001, 2600002, … */
@@ -81,15 +82,7 @@ export const checkoutSchema = z
 
 export type CheckoutInput = z.input<typeof checkoutSchema>;
 
-export class CheckoutError extends Error {
-  constructor(
-    message: string,
-    public readonly fieldErrors: Record<string, string> = {},
-  ) {
-    super(message);
-    this.name = "CheckoutError";
-  }
-}
+export { CheckoutError };
 
 export function zodFieldErrors(error: z.ZodError): Record<string, string> {
   const out: Record<string, string> = {};

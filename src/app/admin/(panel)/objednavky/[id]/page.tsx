@@ -15,6 +15,7 @@ const ACTION_LABEL: Record<string, string> = {
   internal_note: "Interní poznámka upravena",
   anonymize: "Osobní údaje anonymizovány",
   payment_refunded: "Platba vrácena (GoPay)",
+  duplicate_payment: "⚠ Druhá platba stejné objednávky (GoPay) – vrátit",
 };
 const SOURCE_LABEL: Record<string, string> = { system: "systém", gopay: "GoPay", admin: "administrace", customer: "zákazník" };
 

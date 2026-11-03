@@ -40,3 +40,16 @@ export function plural(n: number, one: string, few: string, many: string): strin
   if (n >= 2 && n <= 4) return few;
   return many;
 }
+
+const NBSP = " ";
+
+/**
+ * Česká typografie pro texty na webu: nezlomitelná mezera za jednopísmennými předložkami
+ * a spojkami (v, k, s, z, o, u, a, i) a mezi číslem a jednotkou („50 %“, „8 dní“), aby
+ * na konci řádku nezůstaly samotné. Jen pro zobrazované texty, ne pro data (e-mail, účet).
+ */
+export function typo(text: string): string {
+  return text
+    .replace(/(?<=^|[\s („"])([kKsSvVzZoOuUaAiI])[ \t]+(?=\S)/g, `$1${NBSP}`)
+    .replace(/(\d)[ \t]+(%|Kč|ks|dní|dnů|let|lahví|lahve|boxů|boxy|hráčů|minut)(?=$|[\s.,;:!?)–])/g, `$1${NBSP}$2`);
+}

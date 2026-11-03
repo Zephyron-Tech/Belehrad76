@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { startGopayPayment } from "@/lib/orders/payments";
 import { ipFromHeaders } from "@/lib/request";
 import { rateLimit } from "@/lib/rate-limit";
+import { userMessage } from "@/lib/errors";
 
 /** Nový pokus o platbu přes GoPay pro nezaplacenou objednávku. */
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
@@ -19,7 +20,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     return NextResponse.json({ redirectUrl });
   } catch (err) {
     console.error("[gopay] retry failed", err);
-    const message = err instanceof Error && !("status" in err) ? err.message : "Platební bránu se nepodařilo otevřít.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return NextResponse.json({ error: userMessage(err, "Platební bránu se nepodařilo otevřít. Zkuste to prosím za chvíli.") }, { status: 400 });
   }
 }

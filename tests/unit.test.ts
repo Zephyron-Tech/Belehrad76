@@ -4,6 +4,7 @@ import { buildSpd, czechAccountToIban, isValidIban } from "@/lib/bank";
 import { priceCart, type CatalogProduct } from "@/lib/cart";
 import { toCsv } from "@/lib/csv";
 import { Settings } from "@/lib/settings";
+import { typo } from "@/lib/format";
 
 const rates = { boxCzk: 490, bottleCzk: 100 };
 
@@ -137,3 +138,17 @@ describe("nastavení", () => {
     expect(s.bool("pickup.enabled")).toBe(true);
   });
 });
+
+describe("česká typografie", () => {
+  const NBSP = "\u00a0";
+  it("nezlomitelná mezera za jednopísmennými předložkami a spojkami", () => {
+    expect(typo("a v Praze k dispozici i s boxem")).toBe(`a${NBSP}v${NBSP}Praze k${NBSP}dispozici i${NBSP}s${NBSP}boxem`);
+  });
+  it("číslo a jednotka zůstanou u sebe", () => {
+    expect(typo("slivovice 50 %, lhůta 8 dní.")).toBe(`slivovice 50${NBSP}%, lhůta 8${NBSP}dní.`);
+  });
+  it("odkazy a slova s více písmeny nemění", () => {
+    expect(typo("[řád](/reklamacni-rad) Box")).toBe("[řád](/reklamacni-rad) Box");
+  });
+});
+

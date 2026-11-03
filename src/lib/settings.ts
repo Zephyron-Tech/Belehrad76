@@ -1,5 +1,6 @@
 import { prisma } from "./db";
 import { DEFAULT_SETTINGS } from "@/config/default-settings";
+import { typo } from "./format";
 
 /** Jak dlouho držet nastavení v paměti. Změna v DB se projeví nejpozději po této době. */
 const TTL_MS = 30_000;
@@ -11,6 +12,11 @@ export class Settings {
 
   str(key: string): string {
     return this.values[key] ?? DEFAULTS[key] ?? "";
+  }
+
+  /** Text k zobrazení na webu (s českou typografií – nezlomitelné mezery). */
+  text(key: string): string {
+    return typo(this.str(key));
   }
 
   num(key: string): number {

@@ -1,22 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { usePricedCart } from "@/components/cart/usePricedCart";
+import { useSyncedPricedCart } from "@/components/cart/usePricedCart";
 import { formatCzk } from "@/lib/format";
 
 export function CartView() {
-  const { lines, ready, setQuantity, remove, replace } = useCart();
-  const { data, loading, error } = usePricedCart(lines, ready);
-
-  // Srovnat košík se serverem (vyprodané / neaktivní položky, upravené počty)
-  useEffect(() => {
-    if (!data || data.issues.length === 0) return;
-    const next = data.lines.map((l) => ({ slug: l.slug, quantity: l.quantity }));
-    const same = next.length === lines.length && next.every((n) => lines.some((l) => l.slug === n.slug && l.quantity === n.quantity));
-    if (!same) replace(next);
-  }, [data, lines, replace]);
+  const { setQuantity, remove } = useCart();
+  const { data, loading, error, ready, notices } = useSyncedPricedCart();
 
   if (!ready || (loading && !data)) return <p className="mt-8 text-muted">Načítám košík…</p>;
   if (error) return <p className="mt-8 text-danger">{error}</p>;
@@ -25,7 +16,7 @@ export function CartView() {
     return (
       <div className="mt-8 border border-line bg-panel p-8 text-center">
         <p className="text-cream">Košík je prázdný.</p>
-        {data?.issues.map((i) => (
+        {notices.map((i) => (
           <p key={i.slug} className="mt-2 text-sm text-warn">
             {i.message}
           </p>
@@ -39,9 +30,9 @@ export function CartView() {
 
   return (
     <div className="mt-8">
-      {data.issues.length > 0 && (
+      {notices.length > 0 && (
         <div className="mb-6 border border-warn/60 bg-warn/10 p-4 text-sm text-cream" role="status">
-          {data.issues.map((i) => (
+          {notices.map((i) => (
             <p key={i.slug}>{i.message}</p>
           ))}
         </div>

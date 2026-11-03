@@ -21,9 +21,9 @@ export const DEFAULT_PAGES: { slug: string; title: string; body: string; publish
     published: false,
     body: `20\\. června 1976 se na stadionu Crvene zvezdy v Bělehradě psala historie. Českoslovenští fotbalisté ve finále mistrovství Evropy porazili po prodloužení a penaltovém rozstřelu tým Západního Německa. Rozhodující penaltu proměnil Antonín Panenka – a jeho jemný „dloubák“ zná dodnes celý fotbalový svět.
 
-K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy – Bělehrad 1976**. Speciální slivovice 50 % ve 152 sběratelských boxech. Každý box obsahuje 13 lahví – jednu za každého z hráčů, jejichž portrét, jméno a číslo nese etiketa.
+K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy – Bělehrad 1976**: speciální slivovice 50 % ve 152 sběratelských boxech. Každý box ukrývá 13 lahví – jednu za každého hráče. Etiketa nese jeho portrét, jméno a číslo dresu.
 
-**152 boxů × 13 lahví = 1 976 lahví.**`,
+**152 boxů × 13 lahví = 1 976 lahví.** Ani to číslo není náhoda.`,
   },
   {
     slug: "nadace",
@@ -37,7 +37,7 @@ K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy �
     published: false,
     body: `Edici slavnostně představíme **30. listopadu 2026** na galavečeru, který bude moderovat **Jakub Kohák**. Pozvání přijali čtyři čeští a čtyři slovenští hráči.
 
-Kdo si v předprodeji objedná box, bude zařazen do **losování o vstup na večer** (vstup pouze pro 1 osobu na 1 zakoupený box). Zájem o účast stačí potvrdit při objednávce. Podrobnosti losování zveřejníme.`,
+Kdo si v předprodeji objedná box, může se zapojit do **losování o vstup na večer** – stačí při objednávce zaškrtnout zájem o účast. Vstup pouze pro 1 osobu na 1 zakoupený box. Podrobnosti losování včas zveřejníme.`,
   },
   {
     slug: "drazba",
@@ -75,7 +75,9 @@ Po zaplacení obdrží kupující e-mailem potvrzení o přijetí platby.
 
 ## 4. Dodání
 
-Zboží doručujeme na adresu v České republice prostřednictvím dopravce, nebo je možné jej převzít osobně na adrese: {{pickup.address}}.
+Zboží doručujeme na adresu v České republice, nebo je možné jej převzít osobně na adrese: {{pickup.address}}.
+
+{{box.delivery}} {{bottle.lead_time}}
 
 Při převzetí zásilky je kupující nebo přebírající osoba povinna prokázat věk 18 let. Osobě mladší 18 let zboží nevydáme.
 

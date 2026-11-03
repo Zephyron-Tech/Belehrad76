@@ -36,7 +36,7 @@ ${body}
 </td></tr>
 <tr><td style="padding:20px 28px;background:#faf6ee;font-size:12px;color:#6b6252;line-height:1.5;">
 Výtěžek edice jde na podporu Nadace fotbalových internacionálů.<br>
-Prodejce: ${esc(settings.str("seller.name"))}, IČO ${esc(settings.str("seller.ico"))}, ${esc(settings.str("seller.address"))}<br>
+Prodávající: ${esc(settings.str("seller.name"))}, IČO ${esc(settings.str("seller.ico"))}, ${esc(settings.str("seller.address"))}<br>
 Kontakt: ${esc(settings.str("contact.email"))}${settings.str("contact.phone") ? `, ${esc(settings.str("contact.phone"))}` : ""}<br>
 Prodej alkoholu osobám mladším 18 let je zakázán.
 </td></tr>

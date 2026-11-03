@@ -21,8 +21,8 @@ export default async function EshopPage() {
     <div className="mx-auto max-w-6xl px-4 py-14">
       <h1 className="font-serif text-4xl font-bold text-gold">E-shop</h1>
       <p className="mt-3 max-w-2xl text-cream/80">
-        Limitovaná edice slivovice Mistři Evropy – Bělehrad 1976. Výtěžek edice jde na podporu Nadace fotbalových
-        internacionálů.
+        Sběratelská edice k 50. výročí zlatého Bělehradu – 13 lahví slivovice za 13 mistrů Evropy. Výtěžek edice jde
+        na podporu Nadace fotbalových internacionálů.
       </p>
       {!salesOpen && (
         <p className="mt-6 border border-warn/60 bg-warn/10 p-4 text-cream">Prodej bude brzy spuštěn. Děkujeme za trpělivost.</p>
@@ -41,9 +41,10 @@ export default async function EshopPage() {
             <p className="mt-3 text-cream/85">{box.shortDescription}</p>
             <p className="mt-5 font-serif text-4xl font-bold text-gold-light">{formatCzk(box.priceCzk)}</p>
             <p className="mt-1 text-sm text-muted">
-              Doprava {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku – i při více boxech a přidaných kusovkách. Nebo osobní převzetí na FAČR zdarma.
+              Doprava {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku, ať objednáte jeden box, nebo více –
+              i s lahvemi navíc. Osobní převzetí na FAČR je zdarma.
             </p>
-            <p className="mt-1 text-sm text-muted">{settings.str("box.delivery")}</p>
+            <p className="mt-1 text-sm text-muted">{settings.text("box.delivery")}</p>
             <div className="mt-4">
               <StockBadge stock={box.stock} />
             </div>
@@ -59,12 +60,12 @@ export default async function EshopPage() {
         </section>
       ))}
 
-      <section id="kusovky" className="mt-16 scroll-mt-20">
-        <h2 className="font-serif text-3xl font-bold text-gold">Kusovky – jednotlivé lahve</h2>
+      <section id="lahve" className="mt-16 scroll-mt-20">
+        <h2 className="font-serif text-3xl font-bold text-gold">Lahve jednotlivých hráčů</h2>
         <p className="mt-2 max-w-2xl text-cream/80">
-          Lahev slivovice 50 % s portrétem vybraného hráče. {settings.str("bottle.lead_time")} Doprava{" "}
-          {formatCzk(settings.num("shipping.bottle_czk"))} za kus (s boxem v objednávce jen {formatCzk(settings.num("shipping.box_czk"))} celkem), nebo
-          osobní převzetí na FAČR zdarma.
+          Vyberte si svého hráče – každá lahev slivovice 50 % nese jeho portrét, jméno a číslo dresu.{" "}
+          {settings.text("bottle.lead_time")} Doprava {formatCzk(settings.num("shipping.bottle_czk"))} za lahev, s boxem v objednávce
+          jen {formatCzk(settings.num("shipping.box_czk"))} za celou zásilku. Osobní převzetí na FAČR je zdarma.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {bottles.map((p) => (

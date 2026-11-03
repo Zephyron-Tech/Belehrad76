@@ -103,7 +103,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
 
   // Kusovka do košíku
   await gotoShop(page, "/produkt/antonin-panenka");
-  await expect(page.getByText(/vyrábíme až na objednávku, dodací lhůta je 8 dní/)).toBeVisible();
+  await expect(page.getByText(/připravujeme až na objednávku, dodací lhůta je 8\sdní/)).toBeVisible();
   await page.getByRole("button", { name: "Do košíku" }).click();
 
   // Košík: 9 880 + 760, doprava jednou 490 (box v košíku)
@@ -143,7 +143,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
 test("zákazník: kusovky, osobní převzetí a platba převodem s QR kódem", async ({ page }) => {
   await passGates(page);
   await gotoShop(page, "/eshop");
-  const card = page.locator("#kusovky > div > div").filter({ hasText: "Ivo Viktor" });
+  const card = page.locator("#lahve > div > div").filter({ hasText: "Ivo Viktor" });
   await card.getByRole("button", { name: "Do košíku" }).click();
   await card.getByRole("button", { name: "Do košíku" }).click();
 

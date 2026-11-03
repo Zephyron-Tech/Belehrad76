@@ -7,9 +7,10 @@ import { prisma } from "@/lib/db";
 import { getClientIp } from "@/lib/request";
 import { login, logout, requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
-import { ADMIN_TRANSITIONS, changeStatus, TransitionError } from "@/lib/orders/transitions";
+import { ADMIN_TRANSITIONS, changeStatus } from "@/lib/orders/transitions";
 import { anonymizeOrder } from "@/lib/gdpr";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { AppError, userMessage } from "@/lib/errors";
 
 export type ActionState = { error?: string; ok?: string } | undefined;
 
@@ -57,7 +58,7 @@ export async function changeStatusAction(_: ActionState, form: FormData): Promis
       { carrier: String(form.get("carrier") ?? ""), trackingNumber: String(form.get("trackingNumber") ?? "") },
     );
   } catch (err) {
-    if (err instanceof TransitionError) return { error: err.message };
+    if (err instanceof AppError) return { error: err.message };
     console.error("[admin] status change failed", err);
     return { error: "Změnu se nepodařilo uložit." };
   }
@@ -82,11 +83,13 @@ export async function anonymizeAction(_: ActionState, form: FormData): Promise<A
   await requireAdmin();
   const ip = await getClientIp();
   const orderId = Number(form.get("orderId"));
+  if (!Number.isInteger(orderId)) return { error: "Neplatný požadavek." };
   if (form.get("confirm") !== "on") return { error: "Potvrďte anonymizaci zaškrtnutím." };
   try {
     await anonymizeOrder(orderId, { source: "admin", actor: String(form.get("actor") ?? "").trim() || null, ip });
   } catch (err) {
-    return { error: (err as Error).message };
+    if (!(err instanceof AppError)) console.error("[admin] anonymize failed", err);
+    return { error: userMessage(err, "Anonymizaci se nepodařilo provést.") };
   }
   revalidatePath(`/admin/objednavky/${orderId}`);
   return { ok: "Osobní údaje byly anonymizovány." };

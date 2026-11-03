@@ -147,7 +147,8 @@ docker exec -it belehrad-eshop npm run admin:setup -- --email objednavky@belehra
 
 `docker-compose.yml` obsahuje také:
 - **db** – PostgreSQL 17, data v `./data/postgres`,
-- **cron** – každých 5 minut ruší nezaplacené objednávky po vypršení rezervace,
+- **cron** – každých 5 minut ruší nezaplacené objednávky po vypršení rezervace a znovu posílá e-maily po zaplacení,
+  které se dřív nepodařilo odeslat (výpadek SMTP),
 - **backup** – denní `pg_dump` do `./backups`, uchovává 14 dní. **Zálohy kopírujte i mimo server**
   a před spuštěním vyzkoušejte obnovu (`gunzip -c zaloha.sql.gz | docker exec -i belehrad-db psql -U eshop eshop`).
 

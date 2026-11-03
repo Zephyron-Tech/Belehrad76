@@ -44,7 +44,7 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
   },
   {
     key: "bottle.lead_time",
-    value: "Kusovky vyrábíme až na objednávku, dodací lhůta je 8 dní.",
+    value: "Jednotlivé lahve připravujeme až na objednávku, dodací lhůta je 8 dní.",
     description: "Text o dodací lhůtě kusovek",
   },
   {
@@ -69,7 +69,7 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
   {
     key: "home.hero_lead",
     value:
-      "Speciální slivovice 50 % na počest mistrů Evropy z Bělehradu. 152 sběratelských boxů po 13 lahvích – jedna za každého hráče. Celkem 1 976 lahví.",
+      "Speciální slivovice 50 % na počest mistrů Evropy z Bělehradu. Jen 152 sběratelských boxů, v každém 13 lahví – jedna za každého hráče. Celkem 1 976 lahví – jako rok, kdy Československo slavilo titul mistrů Evropy.",
     description: "Úvodní odstavec",
   },
   { key: "evening.date", value: "30. 11. 2026", description: "Datum slavnostního večera" },

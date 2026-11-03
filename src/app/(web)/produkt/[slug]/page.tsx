@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: Props) {
   const salesOpen = settings.bool("sales.open");
   const gallery = [product.imageUrl, ...product.galleryUrls.filter((u) => u !== product.imageUrl)];
   const max = settings.num("order.max_bottles");
-  const shippingText = `Doprava ${formatCzk(settings.num("shipping.bottle_czk"))} za kus (s boxem v objednávce jen ${formatCzk(settings.num("shipping.box_czk"))} celkem).`;
+  const shippingText = `Doprava ${formatCzk(settings.num("shipping.bottle_czk"))} za lahev, s boxem v objednávce jen ${formatCzk(settings.num("shipping.box_czk"))} za celou zásilku.`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
@@ -70,7 +70,7 @@ export default async function ProductPage({ params }: Props) {
             <StockBadge stock={product.stock} />
           </div>
           {product.madeToOrder && (
-            <p className="mt-4 border-l-2 border-gold pl-3 text-sm text-cream/85">{settings.str("bottle.lead_time")}</p>
+            <p className="mt-4 border-l-2 border-gold pl-3 text-sm text-cream/85">{settings.text("bottle.lead_time")}</p>
           )}
 
           <div className="mt-6">

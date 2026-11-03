@@ -33,14 +33,14 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/70 to-ink" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 md:grid-cols-[1fr_auto] md:py-28">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">{settings.str("home.hero_kicker")}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">{settings.text("home.hero_kicker")}</p>
             <h1 className="mt-4 font-serif text-5xl font-extrabold uppercase leading-[0.95] tracking-wide text-gold sm:text-7xl">
               {settings.str("home.hero_title")}
             </h1>
             <p className="mt-3 font-serif text-2xl tracking-[0.35em] text-cream sm:text-3xl">
               {settings.str("home.hero_subtitle").toUpperCase()}
             </p>
-            <p className="mt-6 max-w-xl text-lg text-cream/85">{settings.str("home.hero_lead")}</p>
+            <p className="mt-6 max-w-xl text-lg text-cream/85">{settings.text("home.hero_lead")}</p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               {box && (
                 <Link
@@ -50,7 +50,7 @@ export default async function HomePage() {
                   Objednat box
                 </Link>
               )}
-              <Link href="/eshop#kusovky" className="border border-gold/70 px-6 py-3 font-semibold text-gold-light hover:bg-gold/10">
+              <Link href="/eshop#lahve" className="border border-gold/70 px-6 py-3 font-semibold text-gold-light hover:bg-gold/10">
                 Jednotlivé lahve
               </Link>
             </div>
@@ -133,11 +133,12 @@ export default async function HomePage() {
           <div>
             <h2 className="font-serif text-3xl font-bold text-gold sm:text-4xl">13 mistrů, 13 lahví</h2>
             <p className="mt-2 max-w-2xl text-cream/80">
-              Každý z hráčů má vlastní lahev s portrétem, jménem a číslem. Lahve lze koupit i jednotlivě.
+              Každý z hráčů má vlastní lahev s portrétem, jménem a číslem dresu. Koupit je můžete v boxu, nebo jednotlivě –
+              třeba lahev svého oblíbence.
             </p>
           </div>
-          <Link href="/eshop#kusovky" className="text-sm text-gold-light underline underline-offset-4">
-            Všechny kusovky v e-shopu
+          <Link href="/eshop#lahve" className="text-sm text-gold-light underline underline-offset-4">
+            Všechny lahve v e-shopu
           </Link>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">

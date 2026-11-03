@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { usePricedCart } from "@/components/cart/usePricedCart";
+import { useSyncedPricedCart } from "@/components/cart/usePricedCart";
 import { formatCzk } from "@/lib/format";
 import { currentConsent, readCookie } from "@/lib/consent";
 import { EVENING_ENTRY_NOTE } from "@/lib/labels";
@@ -27,8 +27,8 @@ const inputCls =
   "mt-1 w-full border border-line bg-ink px-3 py-2.5 text-cream placeholder:text-muted/60 focus:border-gold focus:outline-none aria-[invalid=true]:border-danger";
 
 export function CheckoutForm(props: Props) {
-  const { lines, ready, clear } = useCart();
-  const { data, loading } = usePricedCart(lines, ready);
+  const { clear } = useCart();
+  const { data, loading, ready, notices, inSync, refresh } = useSyncedPricedCart();
 
   const [delivery, setDelivery] = useState<Delivery>("SHIPPING");
   const [payment, setPayment] = useState<Payment>("GOPAY");
@@ -76,8 +76,8 @@ export function CheckoutForm(props: Props) {
     setFormError(null);
     setFieldErrors({});
 
-    if (data.issues.length > 0) {
-      setFormError("Košík se mezitím změnil. Zkontrolujte ho prosím.");
+    if (!inSync) {
+      setFormError("Košík se mezitím změnil – zkontrolujte prosím souhrn objednávky a odešlete ji znovu.");
       return;
     }
     if (props.turnstileSiteKey && !turnstileToken) {
@@ -123,6 +123,7 @@ export function CheckoutForm(props: Props) {
         setFieldErrors(json.fieldErrors ?? {});
         setFormError(json.error ?? "Objednávku se nepodařilo odeslat.");
         setSubmitting(false);
+        refresh(); // ceny a sklad se mohly mezitím změnit
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
@@ -140,6 +141,13 @@ export function CheckoutForm(props: Props) {
         {formError && (
           <div role="alert" className="border border-danger/70 bg-danger/10 p-4 text-cream">
             {formError}
+          </div>
+        )}
+        {notices.length > 0 && (
+          <div role="status" className="border border-warn/60 bg-warn/10 p-4 text-sm text-cream">
+            {notices.map((i) => (
+              <p key={i.slug}>{i.message}</p>
+            ))}
           </div>
         )}
 
@@ -181,7 +189,7 @@ export function CheckoutForm(props: Props) {
                 <span className="block text-sm text-muted">
                   {hasBox
                     ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem. ${data.boxDelivery}`
-                    : `${formatCzk(props.bottleShippingCzk)} za každou kusovku.`}{" "}
+                    : `${formatCzk(props.bottleShippingCzk)} za každou lahev.`}{" "}
                   Při převzetí může dopravce ověřit věk 18+.
                 </span>
               </span>

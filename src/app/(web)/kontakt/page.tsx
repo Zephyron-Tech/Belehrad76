@@ -33,7 +33,7 @@ export default async function ContactPage() {
         <section className="border border-line bg-panel p-6">
           <h2 className="font-serif text-xl font-bold text-cream">Osobní převzetí</h2>
           <p className="mt-3 text-cream/90">{settings.str("pickup.address")}</p>
-          <p className="mt-2 text-sm text-muted">{settings.str("pickup.note")}</p>
+          <p className="mt-2 text-sm text-muted">{settings.text("pickup.note")}</p>
           {settings.str("facr.url") && (
             <a
               href={settings.str("facr.url")}

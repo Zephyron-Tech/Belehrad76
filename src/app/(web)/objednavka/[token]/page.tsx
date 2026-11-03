@@ -38,7 +38,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
   const expired = !!order.reservedUntil && order.reservedUntil < new Date();
 
   const transfer =
-    isPending && order.paymentMethod === "BANK_TRANSFER"
+    isPending && order.paymentMethod === "BANK_TRANSFER" && !expired
       ? transferInstructions(settings.str("bank.account"), order.totalCzk, order.number, settings.str("seller.name"))
       : null;
   const qr = transfer ? await qrDataUrl(transfer.spd) : null;
@@ -112,6 +112,19 @@ export default async function OrderPage({ params, searchParams }: Props) {
         </>
       )}
 
+      {isPending && order.paymentMethod === "BANK_TRANSFER" && expired && (
+        <>
+          <h1 className="mt-1 font-serif text-4xl font-bold text-cream">Lhůta k zaplacení uplynula</h1>
+          <p className="mt-4 text-cream/85">
+            Platbu jsme v určené lhůtě nepřijali, proto objednávku zrušíme. Pokud jste už zaplatili, ozvěte se nám prosím na{" "}
+            <a href={`mailto:${settings.str("contact.email")}`} className="text-gold-light underline">
+              {settings.str("contact.email")}
+            </a>{" "}
+            – platbu dohledáme.
+          </p>
+        </>
+      )}
+
       {order.status === "CANCELLED" && (
         <>
           <h1 className="mt-1 font-serif text-4xl font-bold text-cream">Objednávka byla zrušena</h1>
@@ -160,7 +173,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
               {order.deliveryMethod === "PICKUP" ? (
                 <>
                   {settings.str("pickup.address")}
-                  <span className="block text-xs text-muted">{settings.str("pickup.note")}</span>
+                  <span className="block text-xs text-muted">{settings.text("pickup.note")}</span>
                 </>
               ) : (
                 <>

@@ -1,15 +1,11 @@
 import type { OrderStatus, Prisma } from "@prisma/client";
 import { prisma } from "../db";
 import { audit, type ActionContext } from "../audit";
-import { OutOfStockError, releaseStock, reserveStock } from "./stock";
+import { OutOfStockError, TransitionError } from "../errors";
+import { releaseStock, reserveStock } from "./stock";
 import { sendPaidNotifications, sendShippedNotification } from "./notifications";
 
-export class TransitionError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TransitionError";
-  }
-}
+export { TransitionError };
 
 /** Povolené ruční přechody v administraci */
 export const ADMIN_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {

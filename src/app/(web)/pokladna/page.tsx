@@ -12,7 +12,7 @@ export default async function CheckoutPage() {
       <h1 className="font-serif text-4xl font-bold text-gold">Objednávka</h1>
       <CheckoutForm
         pickupAddress={settings.str("pickup.address")}
-        pickupNote={settings.str("pickup.note")}
+        pickupNote={settings.text("pickup.note")}
         eveningDate={settings.str("evening.date")}
         transferDays={settings.num("reservation.transfer_days")}
         gopayMinutes={settings.num("reservation.gopay_minutes")}

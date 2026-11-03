@@ -1,5 +1,6 @@
 import { prisma } from "./db";
 import { audit, type ActionContext } from "./audit";
+import { AppError } from "./errors";
 
 const ANON = "anonymizováno";
 
@@ -10,10 +11,10 @@ const ANON = "anonymizováno";
  */
 export async function anonymizeOrder(orderId: number, ctx: ActionContext) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });
-  if (!order) throw new Error("Objednávka neexistuje.");
+  if (!order) throw new AppError("Objednávka neexistuje.");
   if (order.anonymizedAt) return false;
   if (order.status !== "COMPLETED" && order.status !== "CANCELLED") {
-    throw new Error("Anonymizovat lze jen dokončenou nebo zrušenou objednávku.");
+    throw new AppError("Anonymizovat lze jen dokončenou nebo zrušenou objednávku.");
   }
 
   await prisma.$transaction(async (tx) => {

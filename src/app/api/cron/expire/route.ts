@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
-import { expireStaleOrders } from "@/lib/orders/expire";
+import { expireStaleOrders, retryPaidNotifications } from "@/lib/orders/expire";
 
 /**
- * Zrušení nezaplacených objednávek po vypršení rezervace.
+ * Zrušení nezaplacených objednávek po vypršení rezervace a dorovnání neodeslaných e-mailů po zaplacení.
  * Volat pravidelně (např. každých 5 minut) s hlavičkou: Authorization: Bearer <CRON_SECRET>
  */
 async function handle(req: Request) {
@@ -17,7 +17,8 @@ async function handle(req: Request) {
   if (!ok) return new NextResponse("Unauthorized", { status: 401 });
 
   const cancelled = await expireStaleOrders();
-  return NextResponse.json({ cancelled });
+  const notified = await retryPaidNotifications();
+  return NextResponse.json({ cancelled, notified });
 }
 
 export const GET = handle;
