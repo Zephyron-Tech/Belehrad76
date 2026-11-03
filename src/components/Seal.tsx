@@ -1,34 +1,53 @@
-/** Červená pečeť „1976“ jako na boxu a etiketách. */
-export function Seal({ size = 120, className = "" }: { size?: number; className?: string }) {
-  const id = `seal-path-${size}`;
+/**
+ * Červená pečeť „1976“ jako na boxu a etiketách.
+ * `filled`: plný červený kotouč s tmavě červeným písmem (velký tvar v úvodu a v soupisce).
+ * Bez `size` se velikost řídí třídou (width/height v CSS).
+ */
+export function Seal({
+  size,
+  className = "",
+  filled = false,
+  decorative = false,
+  id = "seal",
+}: {
+  size?: number;
+  className?: string;
+  filled?: boolean;
+  decorative?: boolean;
+  /** Unikátní na stránce – kvůli kruhové cestě textu */
+  id?: string;
+}) {
+  const pathId = `${id}-path`;
+  const ink = filled ? "var(--seal-deep)" : "var(--seal)";
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 200 200"
       className={className}
-      role="img"
-      aria-label="Pečeť 1976 – Mistři Evropy, Bělehrad"
+      {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": "Pečeť 1976 – Mistři Evropy, Bělehrad" })}
     >
       <defs>
-        <path id={id} d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" />
+        <path id={pathId} d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" />
       </defs>
-      <circle cx="100" cy="100" r="96" fill="none" stroke="var(--seal)" strokeWidth="4" />
-      <circle cx="100" cy="100" r="88" fill="none" stroke="var(--seal)" strokeWidth="1.5" strokeDasharray="2 4" />
-      <circle cx="100" cy="100" r="58" fill="none" stroke="var(--seal)" strokeWidth="2.5" />
-      <text fill="var(--seal)" fontSize="15" fontWeight="700" letterSpacing="3" fontFamily="var(--font-sans)">
-        <textPath href={`#${id}`} startOffset="0">
+      {filled && <circle cx="100" cy="100" r="99" fill="var(--seal)" />}
+      <circle cx="100" cy="100" r="94" fill="none" stroke={ink} strokeWidth="3" />
+      <circle cx="100" cy="100" r="88" fill="none" stroke={ink} strokeWidth="1.5" strokeDasharray="2 4" />
+      <circle cx="100" cy="100" r="58" fill="none" stroke={ink} strokeWidth="2.5" />
+      <text fill={ink} fontSize="15" fontWeight="700" letterSpacing="3" fontFamily="var(--font-archivo)">
+        <textPath href={`#${pathId}`} startOffset="0">
           MISTŘI EVROPY · BĚLEHRAD · 50 LET · MISTŘI EVROPY · BĚLEHRAD ·
         </textPath>
       </text>
       <text
         x="100"
-        y="114"
+        y="116"
         textAnchor="middle"
-        fill="var(--seal)"
-        fontSize="40"
+        fill={ink}
+        fontSize="44"
         fontWeight="800"
-        fontFamily="var(--font-serif)"
+        fontFamily="var(--font-archivo)"
+        style={{ fontStretch: "75%" }}
       >
         1976
       </text>

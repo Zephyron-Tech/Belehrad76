@@ -27,7 +27,7 @@ K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy �
   },
   {
     slug: "nadace",
-    title: "Výtěžek pro Nadaci fotbalových internacionálů",
+    title: "Výtěžek pro internacionály",
     published: false,
     body: `Výtěžek edice jde na podporu **Nadace fotbalových internacionálů**, která pomáhá bývalým reprezentantům a jejich rodinám v těžkých životních situacích. Každou lahví tak přispíváte těm, kteří reprezentovali československý fotbal.`,
   },

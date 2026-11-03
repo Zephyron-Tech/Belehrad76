@@ -1,22 +1,53 @@
 @import "tailwindcss";
 
 /*
- * Vzhled podle vizualizace boxu: černá, zlatá (nadpisy, příjmení), krémová a červená pečeť „1976“.
- * Web je záměrně tmavý (značka edice), proto nemá světlou variantu.
+ * Vzhled podle boxu a etiket: noc v Bělehradě (černá), krémová etiketa, červená pečeť „1976“, zlatý nápis.
+ * Úvod je řada celoplošných barevných polí („kapitol“) se stejnou mřížkou a stejnou levou hranou nadpisů.
+ * Plochy se oddělují tónem nebo barvou pole, ne linkami a stíny. Web je záměrně tmavý, světlou variantu nemá.
  */
 :root {
   --ink: #0f0d0b;
   --panel: #19150f;
-  --panel-2: #221c15;
+  --panel-2: #241e16;
+  /* jen pro formulářová pole a tabulky */
   --line: #3a3026;
   --gold: #c9a35c;
   --gold-light: #e6c98f;
-  --cream: #f3ead9;
-  --muted: #a89c86;
+  /* krémová z etiket, o něco méně žlutá než dřív */
+  --cream: #efe8dc;
+  --muted: #b0a48c;
+  --paper: #e8e0cf;
+  --paper-muted: #4a4135;
   --seal: #b3262d;
+  --seal-deep: #8f1d24;
   --ok: #6fae75;
   --warn: #e0b04f;
   --danger: #e0645f;
+
+  /* pět velikostí písma */
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2.25rem, 1.2rem + 4.2vw, 5rem);
+  --step-display: clamp(3.25rem, 0.8rem + 10vw, 9.5rem);
+
+  /* okraje stránky a rytmus kapitol */
+  --gutter: clamp(1rem, 0.4rem + 3vw, 3.5rem);
+  --chapter-pad: clamp(6rem, 3rem + 9vw, 12rem);
+  --header-h: 4rem;
+
+  /* pohyb */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-exit: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+  --t-reveal: 800ms;
+  --t-open: 1200ms;
+
   color-scheme: dark;
 }
 
@@ -29,23 +60,45 @@
   --color-gold-light: var(--gold-light);
   --color-cream: var(--cream);
   --color-muted: var(--muted);
+  --color-paper: var(--paper);
+  --color-paper-muted: var(--paper-muted);
   --color-seal: var(--seal);
+  --color-seal-deep: var(--seal-deep);
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
-  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-archivo), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* admin používá font-serif pro nadpisy – stejná rodina */
+  --font-serif: var(--font-archivo), system-ui, sans-serif;
+  --text-small: var(--step-small);
+  --text-body: var(--step-body);
+  --text-lead: var(--step-lead);
+  --text-head: var(--step-head);
+  --text-display: var(--step-display);
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   background: var(--ink);
   color: var(--cream);
   font-family: var(--font-sans);
+  font-size: var(--step-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 ::selection {
@@ -55,58 +108,617 @@ body {
 
 :focus-visible {
   outline: 2px solid var(--gold-light);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* Text z Markdownu (příběh, právní stránky) */
-.prose-edice {
-  line-height: 1.7;
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Číslice v cenách a počtech pod sebou */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Písmo nadpisů: Archivo zúžené, těžké, verzálky (jako jména na etiketách) --- */
+.display {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-weight: 800;
+  font-stretch: 62%;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  /* pod 0.94 ořezává háček nad Ř a Ě o řádek výš */
+  line-height: 0.94;
+}
+
+/* --- Rám stránky: jeden pár okrajů, jedna mřížka --- */
+.frame {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* --- Kapitoly úvodu: celoplošná pole jedné barvy, bez mezer mezi sebou --- */
+.chapter {
+  position: relative;
+  min-height: 90svh;
+  padding-block: var(--chapter-pad);
+  overflow: clip;
+}
+/* krátká kapitola: výška podle obsahu, ne přes celou obrazovku */
+.chapter-fit {
+  min-height: 0;
+}
+.field-night {
+  background: var(--ink);
   color: var(--cream);
+  --soft: var(--muted);
+  --accent: var(--gold);
+}
+.field-panel {
+  background: var(--panel);
+  color: var(--cream);
+  --soft: var(--muted);
+  --accent: var(--gold);
+}
+.field-paper {
+  background: var(--paper);
+  color: var(--ink);
+  --soft: var(--paper-muted);
+  --accent: var(--seal);
+}
+.field-seal {
+  background: var(--seal);
+  color: var(--cream);
+  --soft: #f3dcc4;
+  --accent: var(--cream);
+}
+.field-gold {
+  background: var(--gold);
+  color: var(--ink);
+  --soft: #3d3222;
+  --accent: var(--ink);
+}
+
+/* --- Tlačítko: jeden tvar (hranatý, plná výplň) na celém webu --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--step-body);
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition:
+    background-color var(--t-hover) ease,
+    color var(--t-hover) ease,
+    transform var(--t-press) var(--ease-out);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  background: var(--panel-2);
+  color: var(--muted);
+}
+/* na zlatém poli tmavé tlačítko */
+.btn-ink {
+  background: var(--ink);
+  color: var(--cream);
+}
+/* tichá varianta: plná tónová plocha, žádný rámeček */
+.btn-quiet {
+  background: var(--panel-2);
+  color: var(--cream);
+}
+.field-paper .btn-quiet {
+  background: #d9cfba;
+  color: var(--ink);
+}
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    background: var(--gold-light);
+  }
+  .btn-ink:hover:not(:disabled) {
+    background: #2a231a;
+    color: var(--cream);
+  }
+  .btn-quiet:hover:not(:disabled) {
+    background: #2f271d;
+  }
+  .field-paper .btn-quiet:hover:not(:disabled) {
+    background: #cfc3aa;
+  }
+}
+
+/* --- Textový odkaz: podtržení, které na najetí zesílí --- */
+.link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition:
+    text-decoration-thickness var(--t-hover) ease,
+    color var(--t-hover) ease;
+}
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* --- Hlavička: odkaz s podtržením, které vyroste zleva --- */
+.nav-link {
+  position: relative;
+  padding-block: 0.4rem;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.1rem;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+@media (hover: hover) {
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Ikona menu: dvě čárky, které se při otevření zkříží */
+.menu-icon {
+  position: relative;
+  width: 18px;
+  height: 12px;
+}
+.menu-icon > span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.menu-icon > span:first-child {
+  top: 2px;
+}
+.menu-icon > span:last-child {
+  bottom: 2px;
+}
+[aria-expanded="true"] .menu-icon > span:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+[aria-expanded="true"] .menu-icon > span:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+/* Panel menu: otevře se shora pod hlavičkou, odkazy dorazí postupně */
+.mobile-menu {
+  position: absolute;
+  inset-inline: 0;
+  top: var(--header-h);
+  background: var(--ink);
+  max-height: calc(100svh - var(--header-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path var(--t-ui) var(--ease-out),
+    visibility 0s linear var(--t-ui);
+}
+.mobile-menu[data-open="true"] {
+  clip-path: inset(0 0 -1px 0);
+  visibility: visible;
+  transition:
+    clip-path 320ms var(--ease-out),
+    visibility 0s;
+}
+.mobile-menu li {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--ease-out);
+}
+.mobile-menu[data-open="true"] li {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(60ms + var(--i, 0) * 40ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .mobile-menu li {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Počet v košíku: krátké „ťuknutí“ po přidání */
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.cart-count[data-bump="true"] {
+  animation: bump 420ms var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-count[data-bump="true"] {
+    animation: none;
+  }
+}
+
+/* Lišta cookies plave nad stránkou – jediné místo se stínem kromě menu a dialogů */
+.cookie-bar {
+  box-shadow: 0 -12px 40px rgb(0 0 0 / 0.45);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cookie-bar {
+    animation: cookie-in 420ms var(--ease-out) 600ms both;
+  }
+}
+@keyframes cookie-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+/* --- Formulářová pole (jediné místo s linkou: ohraničení pole) --- */
+.input {
+  width: 100%;
+  min-height: 3.25rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--cream);
+  /* 16 px a víc: iOS při focusu nezoomuje */
+  font-size: max(16px, var(--step-body));
+  padding: 0.75rem 0.9rem;
+  transition:
+    border-color var(--t-hover) ease,
+    background-color var(--t-hover) ease;
+}
+.input::placeholder {
+  color: #7d735f;
+}
+.input:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  background: var(--panel-2);
+}
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+/* --- Vstup částí sekce: nadpis, text, obrázek postupně. Skryté jen se skriptem (html.js). --- */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 900ms var(--ease-expo);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+  /* obrázek se otevře od spodní hrany a usadí z mírného zvětšení */
+  .js [data-shutter] {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path var(--t-open) var(--ease-in-out);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+  .js [data-shutter] img {
+    transform: scale(1.12);
+    transition: transform 1500ms var(--ease-soft);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+  .js [data-shutter].is-in {
+    clip-path: inset(0);
+  }
+  .js [data-shutter].is-in img {
+    transform: none;
+  }
+}
+
+/* --- Úvod: nadpis, kotouč pečeti a box --- */
+.hero-title {
+  font-size: min(15.4vw, 8.5rem);
+}
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: min(calc(0.5rem + 7vw), 8.5rem);
+  }
+}
+.hero-disc {
+  position: absolute;
+  width: 130vw;
+  height: 130vw;
+  left: -15vw;
+  top: 52%;
+}
+.hero-box {
+  position: absolute;
+  width: 92vw;
+  left: 4vw;
+  top: calc(52% + 12vw);
+}
+@media (min-width: 768px) {
+  .hero-disc {
+    width: 120vh;
+    height: 120vh;
+    left: calc(78% - 60vh);
+    top: calc(55% - 60vh);
+  }
+  .hero-box {
+    width: min(46vw, 840px);
+    left: auto;
+    right: calc(var(--gutter) * 0.5);
+    top: 50%;
+    transform: translateY(-38%);
+  }
+}
+/* Pořadí příchodu v úvodu: kotouč, řádky nadpisu, věta, tlačítko, box. Celé do 1,4 s. */
+.hero-line {
+  display: block;
+  overflow: clip;
+  padding-top: 0.08em;
+  margin-top: -0.08em;
+}
+.hero-line > span {
+  display: block;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero-disc {
+    transform: scale(0.9) rotate(-14deg);
+    opacity: 0;
+    animation: hero-disc 1300ms var(--ease-expo) 80ms forwards;
+  }
+  .js .hero-line > span {
+    transform: translateY(125%);
+    animation: hero-rise 900ms var(--ease-expo) forwards;
+    animation-delay: calc(140ms + var(--i, 0) * 90ms);
+  }
+  .js .hero-load {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: hero-fade 600ms var(--ease-out) forwards;
+    animation-delay: var(--d, 400ms);
+  }
+  .js .hero-box-frame {
+    clip-path: inset(100% 0 0 0);
+    animation: hero-open 1100ms var(--ease-in-out) 320ms forwards;
+  }
+  .js .hero-box-frame img {
+    transform: scale(1.1);
+    animation: hero-settle 1500ms var(--ease-soft) 260ms forwards;
+  }
+}
+@keyframes hero-disc {
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes hero-rise {
+  to {
+    transform: none;
+  }
+}
+@keyframes hero-fade {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hero-open {
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes hero-settle {
+  to {
+    transform: none;
+  }
+}
+
+/* --- Pomalý drift velké fotografie s rolováním (jen kde to prohlížeč umí) --- */
+.drift-frame {
+  overflow: clip;
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .drift-frame img {
+      scale: 1.12;
+      animation: drift linear both;
+      animation-timeline: view();
+    }
+  }
+}
+@keyframes drift {
+  from {
+    translate: 0 -5%;
+  }
+  to {
+    translate: 0 5%;
+  }
+}
+
+/* --- Soupiska --- */
+/* telefon: dva sloupce jmen pod kotoučem, počítač: jeden sloupec vedle něj */
+.lineup-names {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 0.75rem;
+}
+.lineup-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+  min-height: 2.75rem;
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 800;
+  font-stretch: 62%;
+  text-transform: uppercase;
+  font-size: 1.375rem;
+  line-height: 1.15;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    color var(--t-hover) ease,
+    transform var(--t-ui) var(--ease-out);
+}
+.lineup-num {
+  display: inline-block;
+  min-width: 1.4em;
+  color: var(--gold);
+  opacity: 0.85;
+}
+.lineup-name[aria-pressed="true"] {
+  color: var(--cream);
+}
+.lineup-name[aria-pressed="true"] .lineup-num {
+  opacity: 1;
+}
+@media (min-width: 768px) {
+  .lineup-names {
+    display: block;
+  }
+  .lineup-name {
+    font-size: clamp(1.75rem, 2.9vw, 2.75rem);
+    min-height: 0;
+    white-space: nowrap;
+  }
+  .lineup-name[aria-pressed="true"] {
+    transform: translateX(0.35em);
+  }
+}
+@media (hover: hover) {
+  .lineup-name:hover {
+    color: var(--cream);
+  }
+}
+.lineup-stage {
+  position: relative;
+  width: min(64vh, 100%);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+.lineup-disc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.lineup-label {
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  height: 92%;
+  width: auto;
+  aspect-ratio: 352 / 600;
+  object-fit: cover;
+  translate: -50% 0;
+  opacity: 0;
+  transform: translateY(18px) rotate(2deg) scale(0.97);
+  transition:
+    opacity 300ms ease,
+    transform 520ms var(--ease-out);
+}
+.lineup-label[data-active="true"] {
+  opacity: 1;
+  transform: rotate(-2.5deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lineup-label {
+    transform: none;
+    transition: opacity 200ms ease;
+  }
+  .lineup-label[data-active="true"] {
+    transform: none;
+  }
+}
+
+/* --- Text z Markdownu (příběh, právní stránky) --- */
+.prose-edice {
+  line-height: 1.6;
+  max-width: 68ch;
 }
 .prose-edice > * + * {
   margin-top: 1em;
 }
 .prose-edice h2 {
-  font-family: var(--font-serif);
-  color: var(--gold-light);
-  font-size: 1.5rem;
+  font-weight: 700;
+  font-size: var(--step-lead);
+  line-height: 1.2;
   margin-top: 2em;
 }
 .prose-edice h3 {
-  font-family: var(--font-serif);
-  color: var(--gold-light);
-  font-size: 1.2rem;
-  margin-top: 1.5em;
+  font-weight: 700;
+  font-size: var(--step-body);
+  margin-top: 1.6em;
 }
 .prose-edice strong {
-  color: var(--gold-light);
   font-weight: 600;
+  color: var(--accent, var(--gold-light));
 }
 .prose-edice a {
-  color: var(--gold-light);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 0.22em;
+  color: var(--accent, var(--gold-light));
 }
 .prose-edice ul {
   list-style: disc;
-  padding-left: 1.4em;
+  padding-left: 1.3em;
 }
 .prose-edice ol {
   list-style: decimal;
-  padding-left: 1.4em;
+  padding-left: 1.3em;
 }
 .prose-edice li + li {
   margin-top: 0.35em;
 }
 .prose-edice blockquote {
-  border-left: 3px solid var(--warn);
-  background: color-mix(in srgb, var(--warn) 10%, transparent);
-  padding: 0.75em 1em;
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  padding: 0.9em 1.1em;
 }
 
-/* Jemná textura „starého papíru“ pro karty hráčů */
+/* Podklad pod výřezy etiket (místo dřívějšího přechodu) */
 .label-paper {
-  background: linear-gradient(180deg, #efe6d3 0%, #e5d9c1 100%);
+  background: var(--paper);
 }
 
 /* --- Panáček s míčem nad boxem v e-shopu (GoalKick.tsx), délka 1.9s ---

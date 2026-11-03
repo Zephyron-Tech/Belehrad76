@@ -1,13 +1,15 @@
 import { plural } from "@/lib/format";
 
-export function StockBadge({ stock }: { stock: number | null }) {
+/** Zbývající boxy jako věta. Barva a velikost se dědí z rodiče (pole kapitoly). */
+export function StockBadge({ stock, className = "" }: { stock: number | null; className?: string }) {
   if (stock === null) return null;
   if (stock <= 0) {
-    return <p className="text-xl font-semibold text-seal sm:text-2xl">Vyprodáno</p>;
+    return <p className={`font-semibold ${className}`}>Vyprodáno</p>;
   }
   return (
-    <p className="text-xl font-semibold text-gold sm:text-2xl">
-      Už {plural(stock, "zbývá jen", "zbývají jen", "zbývá jen")} {stock} {plural(stock, "box", "boxy", "boxů")}
+    <p className={`font-semibold ${className}`}>
+      Už {plural(stock, "zbývá jen", "zbývají jen", "zbývá jen")} <span className="tabular">{stock}</span>{" "}
+      {plural(stock, "box", "boxy", "boxů")}
     </p>
   );
 }
