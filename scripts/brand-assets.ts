@@ -4,7 +4,7 @@
  *
  *   npx tsx scripts/brand-assets.ts
  *
- * Výstupy (commitují se): src/app/icon.png, src/app/apple-icon.png, src/app/favicon.ico,
+ * Výstupy (commitují se): src/app/icon.png a src/app/favicon.ico (záložka, „76“), src/app/apple-icon.png,
  * public/icons/icon-192.png, public/icons/icon-512.png, public/icons/icon-maskable-512.png, public/og/pecet.png
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -24,6 +24,17 @@ const ICON_SVG = `
   <circle cx="256" cy="256" r="218" fill="none" stroke="var(--seal-deep)" stroke-width="14"/>
   <text x="256" y="318" text-anchor="middle" fill="var(--cream)" font-family="Archivo" font-weight="800"
         font-size="176" style="font-stretch:62%">1976</text>
+</svg>`;
+
+/**
+ * Favicon pro záložku (16–48 px): kotouč přes celé plátno, bez prstence, jen „76“ co největší –
+ * „1976“ je ve 16 px nečitelné. Velké ikony (iOS, Android) dál nesou celé „1976“.
+ */
+const FAVICON_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <circle cx="256" cy="256" r="256" fill="var(--seal)"/>
+  <text x="256" y="372" text-anchor="middle" fill="var(--cream)" font-family="Archivo" font-weight="900"
+        font-size="330" letter-spacing="-6" style="font-stretch:75%">76</text>
 </svg>`;
 
 async function render(html: string, size: number, transparent = true) {
@@ -70,7 +81,9 @@ async function main() {
   await mkdir("public/og", { recursive: true });
 
   const icon = await render(ICON_SVG, 512);
-  await writeFile("src/app/icon.png", await sharp(icon).resize(512).png().toBuffer());
+  const favicon = await render(FAVICON_SVG, 512);
+  // ikona v záložce prohlížeče: čitelná varianta „76“ (prohlížeč ji zmenšuje na 16–32 px)
+  await writeFile("src/app/icon.png", await sharp(favicon).resize(512).png().toBuffer());
   await writeFile("public/icons/icon-512.png", await sharp(icon).resize(512).png().toBuffer());
   await writeFile("public/icons/icon-192.png", await sharp(icon).resize(192).png().toBuffer());
   // iOS ikona a „maskable“ pro Android: plné pozadí, kotouč s okrajem (bezpečná zóna)
@@ -84,7 +97,11 @@ async function main() {
   await writeFile("public/icons/icon-maskable-512.png", await iconFor(512, 400));
   await writeFile(
     "src/app/favicon.ico",
-    ico(await Promise.all([16, 32, 48].map(async (size) => ({ size, png: await sharp(icon).resize(size).png().toBuffer() })))),
+    ico(
+      await Promise.all(
+        [16, 32, 48].map(async (size) => ({ size, png: await sharp(favicon).resize({ width: size, kernel: "lanczos3" }).sharpen().png().toBuffer() })),
+      ),
+    ),
   );
 
   const seal = renderToStaticMarkup(createElement(Seal, { filled: true, decorative: true, id: "og" }));
