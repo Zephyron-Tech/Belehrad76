@@ -97,14 +97,15 @@ export function LineupPicker({ players, initialSlug }: { players: LineupPlayer[]
             />
           ))}
         </div>
-        <div className="mt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 md:mt-10" aria-live="polite">
+        {/* jméno vlevo, tlačítko vždy vpravo dole – i u nejdelšího jména zůstává na stejném místě */}
+        <div className="mt-8 grid items-end gap-x-8 gap-y-4 md:mt-10 md:grid-cols-[minmax(0,1fr)_auto]" aria-live="polite">
           <p className="min-w-0">
-            <span className="display block text-head text-gold">
+            <span className="display block text-[clamp(2.25rem,1rem+2.6vw,3.75rem)] text-gold md:whitespace-nowrap">
               {current.number}&nbsp;{current.name}
             </span>
             <span className="mt-1 block text-muted">Lahev slivovice 50 % s jeho portrétem · {formatCzk(current.priceCzk)}</span>
           </p>
-          <Link href={`/produkt/${current.slug}`} className="btn">
+          <Link href={`/produkt/${current.slug}`} className="btn justify-self-start md:justify-self-end">
             Koupit lahev
           </Link>
         </div>
