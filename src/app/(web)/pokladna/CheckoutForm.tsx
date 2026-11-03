@@ -292,9 +292,9 @@ export function CheckoutForm(props: Props) {
 
         {/* Losování o vstup jen při nákupu boxu (1 vstup na 1 box) */}
         {hasBox && (
-          <fieldset className="bg-panel p-6 md:p-8">
-            <legend className="display float-left mb-4 w-full text-[2rem]">Slavnostní večer {props.eveningDate}</legend>
-            <label className="flex cursor-pointer items-start gap-3">
+          <fieldset>
+            <legend className={legendCls}>Slavnostní večer {props.eveningDate}</legend>
+            <label className="mt-6 flex cursor-pointer items-start gap-3 bg-panel p-6 md:p-8">
               <input type="checkbox" checked={evening} onChange={(e) => setEvening(e.target.checked)} className={checkCls} />
               <span>
                 Chci se zúčastnit losování o vstup na slavnostní večer {props.eveningDate}

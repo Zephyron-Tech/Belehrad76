@@ -38,7 +38,7 @@ export function MobileMenu({ items }: { items: { href: string; label: string }[]
       <button
         ref={button}
         type="button"
-        className="menu-toggle btn btn-quiet min-h-11 px-3 text-[1rem] sm:px-4"
+        className="menu-toggle btn btn-quiet min-h-11 gap-2 px-2.5 text-[1rem] sm:px-4"
         aria-expanded={open}
         aria-controls="mobilni-menu"
         onClick={() => setOpen((o) => !o)}

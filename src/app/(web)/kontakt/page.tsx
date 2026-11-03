@@ -11,10 +11,15 @@ export default async function ContactPage() {
 
   return (
     <div className="frame py-14 md:py-24">
-      <h1 className="display text-head">Kontakt</h1>
+      <h1 className="display text-head" data-reveal>
+        Kontakt
+      </h1>
+      <p className="mt-4 max-w-[52ch] text-lead" data-reveal style={{ "--i": 1 } as React.CSSProperties}>
+        Dotazy k objednávce, doručení nebo osobnímu převzetí na FAČR.
+      </p>
 
       <div className="mt-12 grid gap-y-14 md:mt-16 md:grid-cols-12 md:gap-x-10">
-        <section className="md:col-span-7" aria-labelledby="dotazy">
+        <section className="md:col-span-7" aria-labelledby="dotazy" data-reveal style={{ "--i": 2 } as React.CSSProperties}>
           <h2 id="dotazy" className="text-lead font-semibold">
             Dotazy k objednávkám
           </h2>
@@ -33,7 +38,7 @@ export default async function ContactPage() {
           <SocialLinks settings={settings} className="mt-8" />
         </section>
 
-        <div className="space-y-12 md:col-span-5">
+        <div className="space-y-12 md:col-span-5" data-reveal style={{ "--i": 3 } as React.CSSProperties}>
           <section aria-labelledby="prevzeti" className="bg-panel p-6 md:p-8">
             <h2 id="prevzeti" className="display text-[2rem]">
               Osobní převzetí

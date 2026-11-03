@@ -60,7 +60,7 @@ export function AgeGate({ verified }: { verified: boolean }) {
 
   return (
     <div
-      className="age-gate fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-ink"
+      className="age-gate fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden overscroll-contain bg-ink"
       role="dialog"
       aria-modal="true"
       aria-labelledby="age-title"
@@ -70,8 +70,7 @@ export function AgeGate({ verified }: { verified: boolean }) {
       <Seal filled decorative id="age-seal" className="age-gate__seal pointer-events-none absolute" />
       <div className="frame relative flex min-h-full flex-col justify-center py-16">
         <div className="age-gate__body max-w-2xl">
-          <p className="display text-[1.5rem] text-gold">Mistři Evropy 1976 · e-shop</p>
-          <h2 id="age-title" className="display mt-4 text-head">
+          <h2 id="age-title" className="display text-head">
             Je vám více než 18 let?
           </h2>
           {denied ? (

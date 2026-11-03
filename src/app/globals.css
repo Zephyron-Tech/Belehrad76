@@ -654,14 +654,15 @@ p {
   height: 100%;
 }
 .lineup-label {
+  /* kotouč je čtverec: šířka etikety = výška × 352/600, vodorovně na střed přes auto okraje */
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
   bottom: 8%;
   height: 86%;
-  width: auto;
-  aspect-ratio: 352 / 600;
+  width: 50.45%;
   object-fit: cover;
-  translate: -50% 0;
   opacity: 0;
   transform: translateY(18px) rotate(2deg) scale(0.97);
   /* rozmazání maskuje chvíli, kdy jsou vidět dvě etikety přes sebe */
@@ -680,6 +681,7 @@ p {
   .lineup-label {
     bottom: 7%;
     height: 92%;
+    width: 53.97%;
   }
 }
 @media (prefers-reduced-motion: reduce) {

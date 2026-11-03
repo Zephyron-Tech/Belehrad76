@@ -14,8 +14,8 @@ export function SiteHeader({ salesOpen }: { salesOpen: boolean }) {
   return (
     <header className="sticky top-0 z-50 bg-ink">
       <div className="frame flex h-[var(--header-h)] items-center justify-between gap-3 sm:gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
-        <Link href="/" className="display shrink-0 text-lead text-gold" aria-label="Mistři Evropy – Bělehrad 1976, úvod">
-          Mistři Evropy <span className="text-cream">1976</span>
+        <Link href="/" className="display shrink-0 text-[1.125rem] text-gold sm:text-[1.5rem]" aria-label="Mistři Evropy – Bělehrad 1976, úvod">
+          Mistři Evropy <span className="hidden text-cream min-[360px]:inline">1976</span>
         </Link>
         <nav aria-label="Hlavní navigace" className="hidden lg:block">
           <ul className="flex gap-7">
@@ -28,7 +28,7 @@ export function SiteHeader({ salesOpen }: { salesOpen: boolean }) {
             ))}
           </ul>
         </nav>
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2">
           {salesOpen && <CartButton />}
           <MobileMenu items={NAV} />
         </div>
