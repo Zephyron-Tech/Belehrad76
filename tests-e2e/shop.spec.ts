@@ -29,11 +29,16 @@ async function boxStock() {
 }
 
 async function passGates(page: Page) {
+  // Úvodní stránka je bez věkové brány, brána je až při vstupu do e-shopu
   await page.goto("/");
+  await page.getByRole("button", { name: "Jen nezbytné" }).click();
+  await expect(page.getByRole("dialog", { name: /18 let/ })).toBeHidden();
+  await page.goto("/eshop");
   await expect(page.getByRole("dialog", { name: /18 let/ })).toBeVisible();
+  await expect(page.getByText(/stránky s prodejem alkoholu/)).toBeVisible();
   await page.getByRole("button", { name: "Ano, je mi 18+" }).click();
   await expect(page.getByRole("dialog", { name: /18 let/ })).toBeHidden();
-  await page.getByRole("button", { name: "Jen nezbytné" }).click();
+  await page.goto("/");
 }
 
 async function fillCustomer(page: Page, email: string) {
@@ -72,10 +77,10 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await expect(page.getByText(/vyrábíme až na objednávku/)).toBeVisible();
   await page.getByRole("button", { name: "Do košíku" }).click();
 
-  // Košík: 9 880 + 760, doprava 490 + 100
+  // Košík: 9 880 + 760, doprava jednou 490 (box v košíku)
   await page.goto("/kosik");
   await expect(page.getByText("10 640 Kč").first()).toBeVisible();
-  await expect(page.getByText("590 Kč")).toBeVisible();
+  await expect(page.getByText("490 Kč", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "K objednávce" }).click();
 
   // Pokladna
@@ -87,12 +92,12 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await page.getByLabel(/Chci se zúčastnit losování/).check();
   await page.getByLabel("Jméno doprovodu (nepovinné)").fill("Eva Testovací");
   await acceptConsents(page);
-  await expect(page.locator("aside")).toContainText("11 230 Kč");
+  await expect(page.locator("aside")).toContainText("11 130 Kč");
   await page.getByRole("button", { name: "Objednat a zaplatit" }).click();
 
   // Simulovaná brána
   await expect(page).toHaveURL(/\/platba-test\//);
-  await expect(page.getByText("11 230 Kč")).toBeVisible();
+  await expect(page.getByText("11 130 Kč")).toBeVisible();
   await page.getByRole("button", { name: "Simulovat úspěšnou platbu" }).click();
 
   await expect(page.getByRole("heading", { name: "Děkujeme, platba je přijata" })).toBeVisible();
@@ -102,7 +107,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   const order = await prisma.order.findFirstOrThrow({ where: { email: "e2e-gopay@example.com" }, orderBy: { id: "desc" } });
   expect(order.status).toBe("PAID");
   expect(order.paymentConfirmationSentAt).not.toBeNull();
-  expect(order.totalCzk).toBe(11230);
+  expect(order.totalCzk).toBe(11130);
 });
 
 test("zákazník: kusovky, osobní převzetí a platba převodem s QR kódem", async ({ page }) => {

@@ -1,7 +1,7 @@
 export type DeliveryMethodValue = "SHIPPING" | "PICKUP";
 
 export type ShippingRates = {
-  /** Doprava za každý box (Kč) */
+  /** Doprava za objednávku s boxem – jednou, bez ohledu na počet boxů a kusovek (Kč) */
   boxCzk: number;
   /** Doprava za každou kusovku (Kč) */
   bottleCzk: number;
@@ -9,7 +9,8 @@ export type ShippingRates = {
 
 /**
  * Cena dopravy podle obsahu košíku (potvrzeno zadavatelem):
- *  - každý box 490 Kč, každá kusovka 100 Kč, smíšený košík se sčítá,
+ *  - košík s boxem: jednou 490 Kč, i při více boxech a přidaných kusovkách,
+ *  - jen kusovky: 100 Kč za kus,
  *  - osobní převzetí na FAČR zdarma.
  */
 export function calcShipping(
@@ -18,5 +19,6 @@ export function calcShipping(
   rates: ShippingRates,
 ): number {
   if (method === "PICKUP") return 0;
-  return quantities.boxes * rates.boxCzk + quantities.bottles * rates.bottleCzk;
+  if (quantities.boxes > 0) return rates.boxCzk;
+  return quantities.bottles * rates.bottleCzk;
 }

@@ -1,7 +1,7 @@
 import type { Order, OrderItem } from "@prisma/client";
 import type { Settings } from "../settings";
 import { formatCzk, formatDateTime, formatZip } from "../format";
-import { DELIVERY_LABEL, PAYMENT_LABEL } from "../labels";
+import { DELIVERY_LABEL, EVENING_ENTRY_NOTE, PAYMENT_LABEL } from "../labels";
 import { formatIban, type TransferInstructions } from "../bank";
 
 export type OrderWithItems = Order & { items: OrderItem[] };
@@ -124,11 +124,11 @@ ${itemsTable(order)}
 ${payment}
 ${deliveryHtml(order, settings)}
 ${madeToOrderNote(order, settings)}
-${order.eveningInterest ? "<p>Po zaplacení vás zařadíme do losování o vstup na slavnostní večer.</p>" : ""}
+${order.eveningInterest ? `<p>Po zaplacení vás zařadíme do losování o vstup na slavnostní večer. <strong>${EVENING_ENTRY_NOTE}</strong></p>` : ""}
 <p style="font-size:13px;color:#6b6252;">Stav objednávky: <a href="${esc(opts.orderUrl)}">${esc(opts.orderUrl)}</a></p>`,
   );
 
-  const text = `Dobrý den, ${order.firstName},\n\nděkujeme za objednávku ${order.number}. Objednávka čeká na zaplacení.\n\n${itemsText(order)}\n\n${paymentText}\nStav objednávky: ${opts.orderUrl}\n`;
+  const text = `Dobrý den, ${order.firstName},\n\nděkujeme za objednávku ${order.number}. Objednávka čeká na zaplacení.\n\n${itemsText(order)}\n\n${paymentText}${order.eveningInterest ? `\nPo zaplacení vás zařadíme do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
 }
 
@@ -145,13 +145,13 @@ ${deliveryHtml(order, settings)}
 ${madeToOrderNote(order, settings)}
 ${
   order.eveningInterest
-    ? `<p>Jste zařazeni do losování o vstup na slavnostní večer ${esc(settings.str("evening.date"))}${order.companionName ? ` (doprovod: ${esc(order.companionName)})` : ""}. O výsledku vás budeme informovat.</p>`
+    ? `<p>Jste zařazeni do losování o vstup na slavnostní večer ${esc(settings.str("evening.date"))}${order.companionName ? ` (doprovod: ${esc(order.companionName)})` : ""}. <strong>${EVENING_ENTRY_NOTE}</strong> O výsledku vás budeme informovat.</p>`
     : ""
 }
 <p>O odeslání vás budeme informovat dalším e-mailem.</p>
 <p>Děkujeme, že podporujete Nadaci fotbalových internacionálů.</p>`,
   );
-  const text = `Dobrý den, ${order.firstName},\n\npotvrzujeme přijetí platby ${formatCzk(order.totalCzk)} za objednávku ${order.number}. Potvrzení najdete v příloze.\n\n${itemsText(order)}\n\nStav objednávky: ${opts.orderUrl}\n`;
+  const text = `Dobrý den, ${order.firstName},\n\npotvrzujeme přijetí platby ${formatCzk(order.totalCzk)} za objednávku ${order.number}. Potvrzení najdete v příloze.\n\n${itemsText(order)}\n\n${order.eveningInterest ? `Jste zařazeni do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n\n` : ""}Stav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
 }
 

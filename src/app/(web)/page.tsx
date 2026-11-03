@@ -7,7 +7,6 @@ import { Seal } from "@/components/Seal";
 import { Markdown } from "@/components/Markdown";
 import { PlayerCard } from "@/components/PlayerCard";
 import { StockBadge } from "@/components/StockBadge";
-import { AddToCart } from "@/components/cart/AddToCart";
 import { SocialLinks } from "@/components/SocialLinks";
 
 export default async function HomePage() {
@@ -111,16 +110,21 @@ export default async function HomePage() {
               <div className="mt-3">
                 <StockBadge stock={box.stock} />
               </div>
-              <div className="mt-6 max-w-md">
+              <div className="mt-6 flex flex-wrap items-center gap-4">
                 {salesOpen ? (
-                  <AddToCart slug={box.slug} max={Math.min(box.stock ?? 0, settings.num("order.max_boxes"))} />
+                  <Link
+                    href="/eshop"
+                    className="bg-gold px-6 py-3 font-bold uppercase tracking-wider text-ink transition hover:bg-gold-light"
+                  >
+                    Do e-shopu
+                  </Link>
                 ) : (
                   <p className="border border-line p-3 text-sm text-muted">Prodej bude brzy spuštěn.</p>
                 )}
+                <Link href={`/produkt/${box.slug}`} className="text-sm text-gold-light underline underline-offset-4">
+                  Detail boxu a obsah
+                </Link>
               </div>
-              <Link href={`/produkt/${box.slug}`} className="mt-4 inline-block text-sm text-gold-light underline underline-offset-4">
-                Detail boxu a obsah
-              </Link>
             </div>
           </div>
         </section>

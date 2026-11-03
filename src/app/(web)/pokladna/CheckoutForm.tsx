@@ -179,9 +179,10 @@ export function CheckoutForm(props: Props) {
                   Doručení na adresu v ČR <span className="text-gold-light">{formatCzk(data.shipping.SHIPPING)}</span>
                 </span>
                 <span className="block text-sm text-muted">
-                  {hasBox ? `${formatCzk(props.boxShippingCzk)} za každý box` : ""}
-                  {hasBox && data.bottles > 0 ? " + " : ""}
-                  {data.bottles > 0 ? `${formatCzk(props.bottleShippingCzk)} za každou kusovku` : ""}. Při převzetí může dopravce
+                  {hasBox
+                    ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem`
+                    : `${formatCzk(props.bottleShippingCzk)} za každou kusovku`}
+                  . Při převzetí může dopravce
                   ověřit věk 18+.
                 </span>
               </span>

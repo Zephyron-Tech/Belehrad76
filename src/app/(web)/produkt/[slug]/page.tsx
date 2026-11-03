@@ -33,7 +33,10 @@ export default async function ProductPage({ params }: Props) {
   const gallery = [product.imageUrl, ...product.galleryUrls.filter((u) => u !== product.imageUrl)];
   const players = isBox ? (await getActiveProducts()).filter((p) => p.type === "BOTTLE") : [];
   const max = isBox ? Math.min(product.stock ?? 0, settings.num("order.max_boxes")) : settings.num("order.max_bottles");
-  const shippingPerItem = isBox ? settings.num("shipping.box_czk") : settings.num("shipping.bottle_czk");
+  const boxShipping = formatCzk(settings.num("shipping.box_czk"));
+  const shippingText = isBox
+    ? `Doprava ${boxShipping} za celou objednávku – i při více boxech a přidaných kusovkách.`
+    : `Doprava ${formatCzk(settings.num("shipping.bottle_czk"))} za kus (s boxem v objednávce jen ${boxShipping} celkem).`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
@@ -64,7 +67,7 @@ export default async function ProductPage({ params }: Props) {
           <p className="mt-3 text-lg text-cream/85">{product.shortDescription}</p>
           <p className="mt-6 font-serif text-4xl font-bold text-gold-light">{formatCzk(product.priceCzk)}</p>
           <p className="mt-1 text-sm text-muted">
-            Cena včetně DPH. Doprava {formatCzk(shippingPerItem)} za kus, nebo osobní převzetí na FAČR zdarma.
+            Cena včetně DPH. {shippingText} Nebo osobní převzetí na FAČR zdarma.
           </p>
           <div className="mt-4">
             <StockBadge stock={product.stock} />

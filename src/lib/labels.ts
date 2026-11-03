@@ -23,3 +23,6 @@ export const DELIVERY_LABEL: Record<DeliveryMethod, string> = {
   SHIPPING: "Doručení na adresu",
   PICKUP: "Osobní převzetí na FAČR",
 };
+
+/** Upozornění k losování o vstup na slavnostní večer (potvrzení objednávky) */
+export const EVENING_ENTRY_NOTE = "Vstup pouze pro 1 osobu na 1 zakoupený box.";

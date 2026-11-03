@@ -3,7 +3,7 @@
 Web a e-shop limitované edice slivovice k 50. výročí vítězství na ME 1976. Zadání: [`SPECIFIKACE.md`](SPECIFIKACE.md).
 
 - **Prodej:** 1 box (13 lahví, sklad 144 = 152 − 8 do dražby) + 13 kusovek (neomezeně, vyrábí se na objednávku)
-- **Doprava:** box 490 Kč/ks, kusovka 100 Kč/ks, smíšený košík se sčítá, osobní převzetí na FAČR zdarma
+- **Doprava:** objednávka s boxem 490 Kč jednou (i více boxů a kusovky), jen kusovky 100 Kč/ks, osobní převzetí na FAČR zdarma
 - **Platby:** GoPay (karta, rychlý převod, Apple/Google Pay) + ruční převod s QR kódem na účet 303642799/0300
 - **Po zaplacení:** e-mail s PDF potvrzením o zaplacení (ne faktura), upozornění provozovateli
 - **Administrace:** jen objednávky, za přihlášením s 2FA, jeden společný účet, audit log, exporty CSV
@@ -63,9 +63,9 @@ Nejdůležitější klíče v `Setting` (úplný seznam s popisy: [`src/config/d
 | Klíč | Výchozí | Význam |
 |------|---------|--------|
 | `sales.open` | `true` | Vypnutí prodeje (košík a objednávky) |
-| `shipping.box_czk` / `shipping.bottle_czk` | 490 / 100 | Doprava za kus |
+| `shipping.box_czk` / `shipping.bottle_czk` | 490 / 100 | Doprava: objednávka s boxem jednou 490 Kč, jen kusovky 100 Kč/ks |
 | `pickup.enabled`, `pickup.address`, `pickup.note` | | Osobní převzetí na FAČR |
-| `bottle.lead_time` | | Text o dodací lhůtě kusovek – **doplnit počet dní** |
+| `bottle.lead_time` | | Text o dodací lhůtě kusovek (Zásilkovna + 5 dní) |
 | `reservation.gopay_minutes` / `reservation.transfer_days` | 30 / 7 | Jak dlouho se drží box před zaplacením |
 | `order.max_boxes` / `order.max_bottles` | 10 / 50 | Limit na objednávku |
 | `bank.account` | 303642799/0300 | Účet pro platbu převodem a QR |

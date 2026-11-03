@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db";
 import { getSettings } from "@/lib/settings";
 import { formatCzk, formatDateTime, formatZip } from "@/lib/format";
 import { formatIban, qrDataUrl, transferInstructions } from "@/lib/bank";
-import { DELIVERY_LABEL, PAYMENT_LABEL, statusLabel } from "@/lib/labels";
+import { DELIVERY_LABEL, EVENING_ENTRY_NOTE, PAYMENT_LABEL, statusLabel } from "@/lib/labels";
 import { syncOrderPayments } from "@/lib/orders/payments";
 import { purchaseEventId } from "@/lib/meta-capi";
 import { env } from "@/lib/env";
@@ -182,6 +182,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
               <dt className="text-muted">Slavnostní večer</dt>
               <dd>
                 Zájem o losování o vstup{order.companionName ? ` (doprovod: ${order.companionName})` : ""}
+                <span className="block text-sm text-muted">{EVENING_ENTRY_NOTE}</span>
               </dd>
             </div>
           )}

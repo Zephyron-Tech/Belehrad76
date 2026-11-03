@@ -8,15 +8,16 @@ import { Settings } from "@/lib/settings";
 const rates = { boxCzk: 490, bottleCzk: 100 };
 
 describe("doprava", () => {
-  it("box 490 Kč za kus", () => {
+  it("box 490 Kč jednou, i při více boxech", () => {
     expect(calcShipping({ boxes: 1, bottles: 0 }, "SHIPPING", rates)).toBe(490);
-    expect(calcShipping({ boxes: 2, bottles: 0 }, "SHIPPING", rates)).toBe(980);
+    expect(calcShipping({ boxes: 2, bottles: 0 }, "SHIPPING", rates)).toBe(490);
   });
   it("kusovka 100 Kč za kus", () => {
     expect(calcShipping({ boxes: 0, bottles: 3 }, "SHIPPING", rates)).toBe(300);
   });
-  it("smíšený košík se sčítá", () => {
-    expect(calcShipping({ boxes: 1, bottles: 2 }, "SHIPPING", rates)).toBe(690);
+  it("smíšený košík: jen jednou 490 Kč, kusovky se nepřičítají", () => {
+    expect(calcShipping({ boxes: 1, bottles: 2 }, "SHIPPING", rates)).toBe(490);
+    expect(calcShipping({ boxes: 3, bottles: 5 }, "SHIPPING", rates)).toBe(490);
   });
   it("osobní převzetí zdarma", () => {
     expect(calcShipping({ boxes: 3, bottles: 5 }, "PICKUP", rates)).toBe(0);
@@ -63,7 +64,7 @@ describe("košík", () => {
     );
     expect(cart.issues).toEqual([]);
     expect(cart.itemsTotalCzk).toBe(9880 + 1520);
-    expect(cart.shipping).toEqual({ SHIPPING: 690, PICKUP: 0 });
+    expect(cart.shipping).toEqual({ SHIPPING: 490, PICKUP: 0 });
     expect(cart.hasMadeToOrder).toBe(true);
   });
 

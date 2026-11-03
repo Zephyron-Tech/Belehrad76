@@ -26,8 +26,8 @@ describe("objednávky a sklad", () => {
     expect(order.status).toBe("PENDING");
     expect(order.number).toMatch(/^26\d{5}$/);
     expect(order.itemsTotalCzk).toBe(9880 + 2 * 760);
-    expect(order.shippingCzk).toBe(490 + 2 * 100);
-    expect(order.totalCzk).toBe(9880 + 1520 + 690);
+    expect(order.shippingCzk).toBe(490);
+    expect(order.totalCzk).toBe(9880 + 1520 + 490);
     expect(order.stockReserved).toBe(true);
     expect(await boxStock()).toBe(143);
 

@@ -29,8 +29,8 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
 
   // Prodej a doprava
   { key: "sales.open", value: "true", description: "true = prodej spuštěn, false = košík a objednávky vypnuty" },
-  { key: "shipping.box_czk", value: "490", description: "Doprava za každý box v Kč" },
-  { key: "shipping.bottle_czk", value: "100", description: "Doprava za každou kusovku v Kč" },
+  { key: "shipping.box_czk", value: "490", description: "Doprava za objednávku s boxem v Kč (jednou, i při více boxech a kusovkách)" },
+  { key: "shipping.bottle_czk", value: "100", description: "Doprava za každou kusovku v Kč (jen u objednávky bez boxu)" },
   { key: "pickup.enabled", value: "true", description: "Osobní převzetí na FAČR (true/false)" },
   {
     key: "pickup.address",
@@ -44,8 +44,8 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
   },
   {
     key: "bottle.lead_time",
-    value: "Kusovky vyrábíme až na objednávku, proto počítejte s delší dodací lhůtou.",
-    description: "Text o dodací lhůtě kusovek (DOPLNIT počet dní)",
+    value: "Kusovky vyrábíme až na objednávku: dodací lhůta je běžné doručení Zásilkovnou + 5 dní.",
+    description: "Text o dodací lhůtě kusovek",
   },
   { key: "order.max_boxes", value: "10", description: "Max. počet boxů v jedné objednávce" },
   { key: "order.max_bottles", value: "50", description: "Max. počet kusovek v jedné objednávce" },

@@ -43,7 +43,7 @@ export default async function EshopPage() {
             <p className="mt-3 text-cream/85">{box.shortDescription}</p>
             <p className="mt-5 font-serif text-4xl font-bold text-gold-light">{formatCzk(box.priceCzk)}</p>
             <p className="mt-1 text-sm text-muted">
-              Doprava {formatCzk(settings.num("shipping.box_czk"))} za box, nebo osobní převzetí na FAČR zdarma.
+              Doprava {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku – i při více boxech a přidaných kusovkách. Nebo osobní převzetí na FAČR zdarma.
             </p>
             <div className="mt-4">
               <StockBadge stock={box.stock} />
@@ -59,7 +59,8 @@ export default async function EshopPage() {
         <h2 className="font-serif text-3xl font-bold text-gold">Kusovky – jednotlivé lahve</h2>
         <p className="mt-2 max-w-2xl text-cream/80">
           Lahev slivovice 50 % s portrétem vybraného hráče. {settings.str("bottle.lead_time")} Doprava{" "}
-          {formatCzk(settings.num("shipping.bottle_czk"))} za kus, nebo osobní převzetí na FAČR zdarma.
+          {formatCzk(settings.num("shipping.bottle_czk"))} za kus (s boxem v objednávce jen {formatCzk(settings.num("shipping.box_czk"))} celkem), nebo
+          osobní převzetí na FAČR zdarma.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {bottles.map((p) => (

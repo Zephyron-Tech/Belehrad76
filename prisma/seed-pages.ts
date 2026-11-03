@@ -23,7 +23,7 @@ export const DEFAULT_PAGES: { slug: string; title: string; body: string; publish
 
 K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy – Bělehrad 1976**. Speciální slivovice 50 % ve 152 sběratelských boxech. Každý box obsahuje 13 lahví – jednu za každého z hráčů, jejichž portrét, jméno a číslo nese etiketa.
 
-**152 boxů × 13 lahví = 1 976 lahví.** Ani o jednu víc.`,
+**152 boxů × 13 lahví = 1 976 lahví.**`,
   },
   {
     slug: "nadace",
