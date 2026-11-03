@@ -47,7 +47,8 @@ export function AddToCart({
   };
 
   return (
-    <div className={compact ? "flex items-center gap-3" : "flex flex-col gap-3 sm:flex-row sm:items-stretch"}>
+    // Počet a tlačítko vždy v jednom řádku (i na telefonu): pole počtu má svou šířku, tlačítko vyplní zbytek
+    <div className={compact ? "flex items-center gap-3" : "flex flex-wrap items-stretch gap-3"}>
       {!compact && (
         <div className="stepper" role="group" aria-label="Počet kusů">
           <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1} aria-label="Méně">
@@ -77,7 +78,7 @@ export function AddToCart({
         type="button"
         onClick={onAdd}
         disabled={available <= 0}
-        className={`btn add-btn ${compact ? "min-h-11 px-4 text-[1rem]" : "flex-1"}`}
+        className={`btn add-btn ${compact ? "min-h-11 px-4 text-[1rem]" : "min-w-32 flex-1"}`}
         data-added={added}
       >
         {available <= 0 ? (
@@ -94,7 +95,7 @@ export function AddToCart({
         )}
       </button>
       {added && !compact && (
-        <Link href="/kosik" className="link self-center whitespace-nowrap font-semibold">
+        <Link href="/kosik" className="link basis-full self-center whitespace-nowrap font-semibold sm:basis-auto">
           Zobrazit košík
         </Link>
       )}
