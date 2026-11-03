@@ -114,6 +114,14 @@ Checklist, co zařídit u GoPay: [`SPECIFIKACE.md` bod 5](SPECIFIKACE.md).
 
 ---
 
+## Vývojová verze na Vercelu
+
+Push do `main` → Vercel nasadí automaticky (`vercel.json`). Build spouští `scripts/vercel-build.sh`:
+nejdřív `prisma migrate deploy` (přes `DATABASE_URL_UNPOOLED` z Neon integrace, jinak `DATABASE_URL`),
+pak `npm run build`. Když databáze při buildu není dostupná, migrace se přeskočí s varováním
+(pustit ručně `npx prisma migrate deploy` s přímým connection stringem bez `-pooler`).
+Selže-li migrace, build skončí chybou a zůstane předchozí verze. Seed se na Vercelu nespouští.
+
 ## Nasazení (Docker, stejně jako beerCupon)
 
 Cíl: Zephyron Hetzner VPS, složka `/home/rychlik/footbaleshop`, za existujícím Traefikem
