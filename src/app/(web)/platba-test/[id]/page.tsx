@@ -13,18 +13,18 @@ export default async function MockGatewayPage({ params }: { params: Promise<{ id
   if (!payment) notFound();
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
-      <div className="border-2 border-dashed border-warn p-6">
-        <p className="text-xs font-bold uppercase tracking-widest text-warn">Testovací brána – žádné skutečné peníze</p>
-        <h1 className="mt-3 font-serif text-2xl font-bold text-cream">Platba objednávky {payment.order.number}</h1>
-        <p className="mt-2 text-3xl font-bold text-gold-light">{formatCzk(payment.amountCzk)}</p>
-        <p className="mt-1 text-sm text-muted">Stav platby: {payment.state}</p>
+    <div className="frame max-w-xl py-16">
+      <div className="bg-panel p-6 md:p-8">
+        <p className="font-semibold text-warn">Testovací brána – žádné skutečné peníze</p>
+        <h1 className="display mt-3 text-[2rem]">Platba objednávky {payment.order.number}</h1>
+        <p className="display tabular mt-4 text-head text-gold-light">{formatCzk(payment.amountCzk)}</p>
+        <p className="mt-1 text-muted">Stav platby: {payment.state}</p>
         <form action="/api/gopay/mock" method="post" className="mt-6 flex flex-col gap-3">
           <input type="hidden" name="id" value={id} />
-          <button name="result" value="PAID" className="bg-ok px-4 py-3 font-bold text-ink">
+          <button name="result" value="PAID" className="btn">
             Simulovat úspěšnou platbu
           </button>
-          <button name="result" value="CANCELED" className="border border-line px-4 py-3 text-cream">
+          <button name="result" value="CANCELED" className="btn btn-quiet">
             Simulovat zrušení platby
           </button>
         </form>

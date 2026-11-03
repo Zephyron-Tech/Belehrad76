@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import { getSettings } from "@/lib/settings";
 import { env } from "@/lib/env";
 import { CheckoutForm } from "./CheckoutForm";
+import { CheckoutSteps } from "@/components/CheckoutSteps";
 
 export const metadata: Metadata = { title: "Objednávka", robots: { index: false } };
 
 export default async function CheckoutPage() {
   const settings = await getSettings();
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      <h1 className="font-serif text-4xl font-bold text-gold">Objednávka</h1>
+    <div className="frame py-12 md:py-20">
+      <CheckoutSteps current="Údaje a doprava" />
+      <h1 className="display mt-6 text-head">Objednávka</h1>
       <CheckoutForm
         pickupAddress={settings.str("pickup.address")}
         pickupNote={settings.text("pickup.note")}

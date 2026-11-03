@@ -58,91 +58,76 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
       )}
 
       {showBanner && (
-        <div
-          className="fixed inset-x-0 bottom-0 z-[90] border-t border-gold/40 bg-panel/98 p-4 shadow-2xl backdrop-blur sm:p-6"
-          role="region"
-          aria-label="Souhlas s cookies"
-        >
-          <div className="mx-auto max-w-5xl">
-            <p className="text-sm text-cream">
-              Používáme nezbytné cookies pro fungování webu a košíku. S vaším souhlasem také analytické cookies (Google
-              Analytics) a marketingové cookies (Meta Pixel) pro měření návštěvnosti a reklamy.{" "}
-              <Link href="/cookies" className="text-gold-light underline underline-offset-4">
+        <div className="cookie-bar fixed inset-x-0 bottom-0 z-[90] bg-panel-2 pb-[env(safe-area-inset-bottom)]" role="region" aria-label="Souhlas s cookies">
+          <div className="frame flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between md:gap-10 md:py-5">
+            <p className="max-w-[72ch] text-small leading-normal text-cream md:text-[1rem]">
+              Nezbytné cookies drží košík a ověření věku. Analytické (Google Analytics) a marketingové (Meta Pixel) zapneme jen
+              s vaším souhlasem.{" "}
+              <Link href="/cookies" className="link text-gold-light">
                 Více o cookies
               </Link>
             </p>
 
-            {showSettings && (
-              <fieldset className="mt-4 grid gap-3 sm:grid-cols-3">
-                <legend className="sr-only">Nastavení cookies</legend>
-                <label className="flex items-start gap-2 border border-line p-3 text-sm text-muted">
-                  <input type="checkbox" checked disabled className="mt-1 accent-[var(--gold)]" />
-                  <span>
-                    <strong className="text-cream">Nezbytné</strong> – věk 18+, košík, volba cookies
-                  </span>
-                </label>
-                <label className="flex items-start gap-2 border border-line p-3 text-sm text-muted">
-                  <input
-                    type="checkbox"
-                    checked={draft.analytics}
-                    onChange={(e) => setDraft({ ...draft, analytics: e.target.checked })}
-                    className="mt-1 accent-[var(--gold)]"
-                  />
-                  <span>
-                    <strong className="text-cream">Analytické</strong> – Google Analytics
-                  </span>
-                </label>
-                <label className="flex items-start gap-2 border border-line p-3 text-sm text-muted">
-                  <input
-                    type="checkbox"
-                    checked={draft.marketing}
-                    onChange={(e) => setDraft({ ...draft, marketing: e.target.checked })}
-                    className="mt-1 accent-[var(--gold)]"
-                  />
-                  <span>
-                    <strong className="text-cream">Marketingové</strong> – Meta Pixel (Facebook, Instagram)
-                  </span>
-                </label>
-              </fieldset>
-            )}
-
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
-              {showSettings ? (
-                <button
-                  type="button"
-                  onClick={() => save(draft)}
-                  className="border border-gold px-4 py-2 text-sm font-semibold text-gold-light hover:bg-gold hover:text-ink"
-                >
-                  Uložit výběr
-                </button>
-              ) : (
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              {!showSettings && (
                 <button
                   type="button"
                   onClick={() => {
                     setDraft(consent ?? { analytics: false, marketing: false });
                     setShowSettings(true);
                   }}
-                  className="border border-line px-4 py-2 text-sm text-cream hover:border-gold"
+                  className="link order-last min-h-11 basis-full px-1 text-left text-[1rem] text-cream md:order-first md:mr-2 md:basis-auto"
                 >
                   Nastavení
                 </button>
               )}
-              <button
-                type="button"
-                onClick={() => save({ analytics: false, marketing: false })}
-                className="border border-line px-4 py-2 text-sm text-cream hover:border-gold"
-              >
+              <button type="button" onClick={() => save({ analytics: false, marketing: false })} className="btn btn-quiet min-h-11 flex-1 whitespace-nowrap !bg-ink px-4 text-[1rem] md:flex-none">
                 Jen nezbytné
               </button>
-              <button
-                type="button"
-                onClick={() => save({ analytics: true, marketing: true })}
-                className="bg-gold px-4 py-2 text-sm font-bold text-ink hover:bg-gold-light"
-              >
+              <button type="button" onClick={() => save({ analytics: true, marketing: true })} className="btn min-h-11 flex-1 whitespace-nowrap px-4 text-[1rem] md:flex-none">
                 Přijmout vše
               </button>
             </div>
           </div>
+
+          {showSettings && (
+            <div className="frame pb-5">
+              <fieldset className="grid gap-2 sm:grid-cols-3">
+                <legend className="sr-only">Nastavení cookies</legend>
+                <label className="flex items-start gap-3 bg-panel p-3 text-small text-muted">
+                  <input type="checkbox" checked disabled className="mt-1 size-4 accent-[var(--gold)]" />
+                  <span>
+                    <strong className="text-cream">Nezbytné</strong> – věk 18+, košík, volba cookies
+                  </span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-3 bg-panel p-3 text-small text-muted">
+                  <input
+                    type="checkbox"
+                    checked={draft.analytics}
+                    onChange={(e) => setDraft({ ...draft, analytics: e.target.checked })}
+                    className="mt-1 size-4 accent-[var(--gold)]"
+                  />
+                  <span>
+                    <strong className="text-cream">Analytické</strong> – Google Analytics
+                  </span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-3 bg-panel p-3 text-small text-muted">
+                  <input
+                    type="checkbox"
+                    checked={draft.marketing}
+                    onChange={(e) => setDraft({ ...draft, marketing: e.target.checked })}
+                    className="mt-1 size-4 accent-[var(--gold)]"
+                  />
+                  <span>
+                    <strong className="text-cream">Marketingové</strong> – Meta Pixel (Facebook, Instagram)
+                  </span>
+                </label>
+              </fieldset>
+              <button type="button" onClick={() => save(draft)} className="btn mt-3 min-h-11 px-5 text-[1rem]">
+                Uložit výběr
+              </button>
+            </div>
+          )}
         </div>
       )}
     </>

@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { AgeGate } from "@/components/AgeGate";
 import { AGE_COOKIE } from "@/lib/consent";
 import { CookieConsent } from "@/components/CookieConsent";
+import { RevealObserver } from "@/components/RevealObserver";
 
 // Sklad, ceny a texty se čtou z databáze při každém požadavku
 export const dynamic = "force-dynamic";
@@ -34,13 +35,14 @@ export default async function WebLayout({ children }: { children: React.ReactNod
 
   return (
     <CartProvider>
-      <a href="#obsah" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[200] focus:bg-gold focus:p-2 focus:text-ink">
+      <a href="#obsah" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[200] focus:bg-gold focus:px-4 focus:py-3 focus:text-ink">
         Přeskočit na obsah
       </a>
       <SiteHeader salesOpen={settings.bool("sales.open")} />
       <main id="obsah">{children}</main>
       <SiteFooter settings={settings} />
       <AgeGate verified={ageVerified} />
+      <RevealObserver />
       <CookieConsent ga4Id={env.ga4Id || undefined} metaPixelId={env.metaPixelId || undefined} />
     </CartProvider>
   );

@@ -63,14 +63,12 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
   { key: "bank.account", value: "303642799/0300", description: "Číslo účtu pro platbu převodem (formát číslo/kód banky)" },
 
   // Texty úvodní stránky
-  { key: "home.hero_kicker", value: "Limitovaná edice · 50 let od vítězství", description: "Nadtitulek na úvodu" },
-  { key: "home.hero_title", value: "Mistři Evropy", description: "Hlavní nadpis" },
-  { key: "home.hero_subtitle", value: "Bělehrad 1976", description: "Podnadpis" },
+  { key: "home.hero_title", value: "Mistři Evropy", description: "Hlavní nadpis, první řádek" },
+  { key: "home.hero_subtitle", value: "Bělehrad 1976", description: "Hlavní nadpis, druhý řádek" },
   {
-    key: "home.hero_lead",
-    value:
-      "Speciální slivovice 50 % na počest mistrů Evropy z Bělehradu. Jen 152 sběratelských boxů, v každém 13 lahví – jedna za každého hráče. Celkem 1 976 lahví – jako rok, kdy Československo slavilo titul mistrů Evropy.",
-    description: "Úvodní odstavec",
+    key: "home.hero_sentence",
+    value: "Sběratelská slivovice: 13 lahví za 13 mistrů z Bělehradu, jen 152 boxů.",
+    description: "Jedna věta pod hlavním nadpisem (co edice je)",
   },
   { key: "evening.date", value: "30. 11. 2026", description: "Datum slavnostního večera" },
   { key: "seo.description", value: "Limitovaná edice slivovice Mistři Evropy – Bělehrad 1976. 152 sběratelských boxů, 13 hráčů, 1 976 lahví. Výtěžek edice jde na podporu Nadace fotbalových internacionálů.", description: "Popis webu pro vyhledávače a sdílení" },

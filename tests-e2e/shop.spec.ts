@@ -86,7 +86,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await passGates(page);
 
   // Úvod: příběh, Nadace bez částky, večer
-  await expect(page.getByRole("heading", { name: "Mistři Evropy", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Mistři Evropy/ })).toBeVisible();
   await expect(page.getByText(/Výtěžek edice jde na podporu/).first()).toBeVisible();
   await expect(page.locator("body")).not.toContainText("100 Kč z");
 
@@ -99,7 +99,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await expect(boxSection.getByText("Box doručujeme kurýrem, dodací lhůta je 8 dní.")).toBeVisible();
   await expect(page.getByText("Antonín Panenka").first()).toBeVisible();
   await boxSection.getByRole("button", { name: "Do košíku" }).click();
-  await expect(boxSection.getByRole("button", { name: "Přidáno ✓" })).toBeVisible();
+  await expect(boxSection.getByRole("button", { name: "Přidáno" })).toBeVisible();
 
   // Kusovka do košíku
   await gotoShop(page, "/produkt/antonin-panenka");

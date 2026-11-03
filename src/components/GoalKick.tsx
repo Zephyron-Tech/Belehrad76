@@ -34,7 +34,7 @@ export function GoalKick({ slug }: { slug: string }) {
       key={run}
       viewBox="0 0 320 60"
       aria-hidden="true"
-      className={`goal-kick block h-auto w-full text-gold ${run ? "is-playing" : ""}`}
+      className={`goal-kick block h-auto w-full text-[var(--gk-ink,var(--gold))] ${run ? "is-playing" : ""}`}
       fill="none"
       stroke="currentColor"
       strokeWidth={2}
@@ -42,7 +42,7 @@ export function GoalKick({ slug }: { slug: string }) {
       strokeLinejoin="round"
     >
       {/* trávník */}
-      <line x1="2" y1="56" x2="318" y2="56" strokeWidth={1} stroke="var(--line)" />
+      <line x1="2" y1="56" x2="318" y2="56" strokeWidth={1} stroke="var(--gk-turf, var(--line))" />
 
       {/* panáček: ruce i nohy ze dvou částí (paže + předloktí, stehno + holeň) */}
       <g className="gk-runner">
@@ -67,12 +67,12 @@ export function GoalKick({ slug }: { slug: string }) {
       </g>
 
       {/* míč */}
-      <circle className="gk-ball" cx="58" cy="52" r="3.5" fill="var(--cream)" stroke="none" />
+      <circle className="gk-ball" cx="58" cy="52" r="3.5" fill="var(--gk-ball, var(--cream))" stroke="none" />
 
       {/* branka: tyč, břevno, zadní strana a síť */}
       <g className="gk-goal">
         <polyline points="292,56 292,24 314,24 318,56" />
-        <g strokeWidth={0.75} stroke="var(--gold-light)" opacity={0.6}>
+        <g strokeWidth={0.75} opacity={0.6}>
           <line x1="297" y1="24" x2="300" y2="56" />
           <line x1="303" y1="24" x2="306" y2="56" />
           <line x1="309" y1="24" x2="312" y2="56" />
@@ -81,7 +81,7 @@ export function GoalKick({ slug }: { slug: string }) {
         </g>
       </g>
 
-      <text className="gk-text" x="303" y="16" textAnchor="middle" fill="var(--gold-light)" stroke="none" fontSize="11" fontWeight="700">
+      <text className="gk-text" x="303" y="16" textAnchor="middle" fill="currentColor" stroke="none" fontSize="12" fontWeight="800">
         GÓL!
       </text>
     </svg>

@@ -1,28 +1,38 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@prisma/client";
 import { formatCzk } from "@/lib/format";
 
-/** Karta kusovky: zatím fotka etikety hráče (portrét, jméno, číslo). */
-export function PlayerCard({ product }: { product: Product }) {
+/**
+ * Řádek kusovky v e-shopu: výřez etikety místo odrážky, jméno s číslem dresu, cena.
+ * `children` je ovládání košíku (vykreslí ho e-shop, jen když běží prodej).
+ */
+export function PlayerCard({ product, children }: { product: Product; children?: React.ReactNode }) {
+  const name = product.playerName ?? product.name;
   return (
-    <Link
-      href={`/produkt/${product.slug}`}
-      className="group block border border-line bg-panel transition hover:-translate-y-0.5 hover:border-gold/70"
-    >
-      <div className="label-paper aspect-[88/150] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={product.imageUrl}
-          alt={`Etiketa lahve – ${product.playerName ?? product.name}`}
-          loading="lazy"
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-        />
+    <div className="player-row group">
+      <Link href={`/produkt/${product.slug}`} className="player-row__link">
+        <span className="player-row__thumb label-paper">
+          <Image
+            src={product.imageUrl}
+            alt={`Etiketa lahve – ${name}`}
+            width={352}
+            height={600}
+            sizes="96px"
+            className="h-full w-full object-cover"
+          />
+        </span>
+        <span className="min-w-0">
+          <span className="display block text-[1.375rem] leading-[1.05] sm:text-[1.75rem]">
+            <span className="tabular text-gold">{product.playerNumber}</span> {name}
+          </span>
+          <span className="mt-2 hidden text-muted sm:block">Slivovice 50 % s jeho portrétem na etiketě</span>
+        </span>
+      </Link>
+      <div className="player-row__buy">
+        <p className="tabular font-semibold">{formatCzk(product.priceCzk)}</p>
+        {children}
       </div>
-      <div className="p-3">
-        <p className="text-xs text-muted">č. {product.playerNumber}</p>
-        <p className="font-serif text-base leading-tight text-cream group-hover:text-gold-light">{product.playerName}</p>
-        <p className="mt-1 text-sm font-semibold text-gold-light">{formatCzk(product.priceCzk)}</p>
-      </div>
-    </Link>
+    </div>
   );
 }

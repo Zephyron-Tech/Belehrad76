@@ -30,7 +30,7 @@ export function AddToCart({
 
   if (disabled || max <= 0) {
     return (
-      <button type="button" disabled className="w-full cursor-not-allowed border border-line px-4 py-3 text-sm text-muted">
+      <button type="button" disabled className={`btn ${compact ? "min-h-11 px-4 text-[1rem]" : "w-full"}`}>
         {disabledLabel}
       </button>
     );
@@ -47,30 +47,25 @@ export function AddToCart({
   };
 
   return (
-    <div className={compact ? "flex gap-2" : "flex flex-col gap-3 sm:flex-row"}>
+    // Počet a tlačítko vždy v jednom řádku (i na telefonu): pole počtu má svou šířku, tlačítko vyplní zbytek
+    <div className={compact ? "flex items-center gap-3" : "flex flex-wrap items-stretch gap-3"}>
       {!compact && (
-        <div className="flex items-center border border-line" role="group" aria-label="Počet kusů">
-          <button
-            type="button"
-            className="px-3 py-3 text-lg text-gold-light disabled:opacity-40"
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            disabled={qty <= 1}
-            aria-label="Méně"
-          >
+        <div className="stepper" role="group" aria-label="Počet kusů">
+          <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1} aria-label="Méně">
             −
           </button>
           <input
             type="number"
+            inputMode="numeric"
             min={1}
             max={Math.max(1, available)}
             value={qty}
             onChange={(e) => setQty(Math.max(1, Math.min(Math.max(1, available), Number(e.target.value) || 1)))}
-            className="w-14 bg-transparent text-center text-cream [appearance:textfield]"
+            className="tabular"
             aria-label="Počet kusů"
           />
           <button
             type="button"
-            className="px-3 py-3 text-lg text-gold-light disabled:opacity-40"
             onClick={() => setQty((q) => Math.min(Math.max(1, available), q + 1))}
             disabled={qty >= available}
             aria-label="Více"
@@ -83,12 +78,24 @@ export function AddToCart({
         type="button"
         onClick={onAdd}
         disabled={available <= 0}
-        className="flex-1 bg-gold px-5 py-3 text-sm font-bold uppercase tracking-wider text-ink transition hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-50"
+        className={`btn add-btn ${compact ? "min-h-11 px-4 text-[1rem]" : "min-w-32 flex-1"}`}
+        data-added={added}
       >
-        {available <= 0 ? "Maximum v košíku" : added ? "Přidáno ✓" : "Do košíku"}
+        {available <= 0 ? (
+          "Maximum v košíku"
+        ) : added ? (
+          <>
+            Přidáno
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+              <path d="m5 12 5 5 9-10" />
+            </svg>
+          </>
+        ) : (
+          "Do košíku"
+        )}
       </button>
       {added && !compact && (
-        <Link href="/kosik" className="self-center text-sm text-gold-light underline underline-offset-4">
+        <Link href="/kosik" className="link basis-full self-center whitespace-nowrap font-semibold sm:basis-auto">
           Zobrazit košík
         </Link>
       )}

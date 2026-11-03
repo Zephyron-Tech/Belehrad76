@@ -25,10 +25,10 @@ export default async function TextPage({ params }: Props) {
   const settings = await getSettings();
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-14">
-      <h1 className="font-serif text-4xl font-bold text-gold">{page.title}</h1>
-      <p className="mt-2 text-sm text-muted">Aktualizováno {formatDate(page.updatedAt)}</p>
-      <Markdown source={page.body} settings={settings} className="mt-8" />
+    <article className="frame py-14 md:py-24">
+      <h1 className="display max-w-[18ch] text-head">{page.title}</h1>
+      <p className="mt-4 text-muted">Aktualizováno {formatDate(page.updatedAt)}</p>
+      <Markdown source={page.body} settings={settings} className="mt-12" />
     </article>
   );
 }
