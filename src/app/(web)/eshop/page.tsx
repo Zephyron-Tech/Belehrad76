@@ -43,6 +43,7 @@ export default async function EshopPage() {
             <p className="mt-1 text-sm text-muted">
               Doprava {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku – i při více boxech a přidaných kusovkách. Nebo osobní převzetí na FAČR zdarma.
             </p>
+            <p className="mt-1 text-sm text-muted">{settings.str("box.delivery")}</p>
             <div className="mt-4">
               <StockBadge stock={box.stock} />
             </div>

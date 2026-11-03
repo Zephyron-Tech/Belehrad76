@@ -65,7 +65,8 @@ Nejdůležitější klíče v `Setting` (úplný seznam s popisy: [`src/config/d
 | `sales.open` | `true` | Vypnutí prodeje (košík a objednávky) |
 | `shipping.box_czk` / `shipping.bottle_czk` | 490 / 100 | Doprava: objednávka s boxem jednou 490 Kč, jen kusovky 100 Kč/ks |
 | `pickup.enabled`, `pickup.address`, `pickup.note` | | Osobní převzetí na FAČR |
-| `bottle.lead_time` | | Text o dodací lhůtě kusovek (Zásilkovna + 5 dní) |
+| `bottle.lead_time` | | Text o dodací lhůtě kusovek (8 dní) |
+| `box.delivery` | | Text o doručení boxu (kurýr, 8 dní) |
 | `reservation.gopay_minutes` / `reservation.transfer_days` | 30 / 7 | Jak dlouho se drží box před zaplacením |
 | `order.max_boxes` / `order.max_bottles` | 10 / 50 | Limit na objednávku |
 | `bank.account` | 303642799/0300 | Účet pro platbu převodem a QR |

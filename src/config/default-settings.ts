@@ -44,8 +44,13 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
   },
   {
     key: "bottle.lead_time",
-    value: "Kusovky vyrábíme až na objednávku: dodací lhůta je běžné doručení Zásilkovnou + 5 dní.",
+    value: "Kusovky vyrábíme až na objednávku, dodací lhůta je 8 dní.",
     description: "Text o dodací lhůtě kusovek",
+  },
+  {
+    key: "box.delivery",
+    value: "Box doručujeme kurýrem, dodací lhůta je 8 dní.",
+    description: "Text o doručení boxu (kurýr, dodací lhůta)",
   },
   { key: "order.max_boxes", value: "10", description: "Max. počet boxů v jedné objednávce" },
   { key: "order.max_bottles", value: "50", description: "Max. počet kusovek v jedné objednávce" },

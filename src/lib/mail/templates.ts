@@ -83,8 +83,12 @@ function button(href: string, label: string): string {
   return `<p style="margin:20px 0;"><a href="${esc(href)}" style="display:inline-block;background:${GOLD};color:#ffffff;text-decoration:none;padding:12px 22px;font-weight:bold;">${esc(label)}</a></p>`;
 }
 
+/** Doručení a dodací lhůta: box kurýrem (jen při doručení na adresu), kusovky na objednávku */
 function madeToOrderNote(order: OrderWithItems, settings: Settings): string {
-  return order.items.some((i) => i.madeToOrder) ? `<p style="font-size:14px;color:#6b6252;">${esc(settings.str("bottle.lead_time"))}</p>` : "";
+  const notes: string[] = [];
+  if (order.deliveryMethod === "SHIPPING" && order.items.some((i) => i.type === "BOX")) notes.push(settings.str("box.delivery"));
+  if (order.items.some((i) => i.madeToOrder)) notes.push(settings.str("bottle.lead_time"));
+  return notes.map((n) => `<p style="font-size:14px;color:#6b6252;">${esc(n)}</p>`).join("\n");
 }
 
 /** E-mail ihned po vytvoření objednávky */

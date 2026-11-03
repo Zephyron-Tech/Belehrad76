@@ -180,10 +180,9 @@ export function CheckoutForm(props: Props) {
                 </span>
                 <span className="block text-sm text-muted">
                   {hasBox
-                    ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem`
-                    : `${formatCzk(props.bottleShippingCzk)} za každou kusovku`}
-                  . Při převzetí může dopravce
-                  ověřit věk 18+.
+                    ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem. ${data.boxDelivery}`
+                    : `${formatCzk(props.bottleShippingCzk)} za každou kusovku.`}{" "}
+                  Při převzetí může dopravce ověřit věk 18+.
                 </span>
               </span>
             </label>

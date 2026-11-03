@@ -17,5 +17,6 @@ export async function POST(req: Request) {
     salesOpen: settings.bool("sales.open"),
     pickupEnabled: settings.bool("pickup.enabled"),
     leadTime: settings.str("bottle.lead_time"),
+    boxDelivery: settings.str("box.delivery"),
   });
 }

@@ -96,13 +96,14 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await expect(page).toHaveURL(/\/eshop$/);
   const boxSection = page.locator("section").filter({ has: page.getByRole("heading", { name: "Box Mistři Evropy" }) });
   await expect(boxSection.getByRole("link")).toHaveCount(0);
+  await expect(boxSection.getByText("Box doručujeme kurýrem, dodací lhůta je 8 dní.")).toBeVisible();
   await expect(page.getByText("Antonín Panenka").first()).toBeVisible();
   await boxSection.getByRole("button", { name: "Do košíku" }).click();
   await expect(boxSection.getByRole("button", { name: "Přidáno ✓" })).toBeVisible();
 
   // Kusovka do košíku
   await gotoShop(page, "/produkt/antonin-panenka");
-  await expect(page.getByText(/vyrábíme až na objednávku/)).toBeVisible();
+  await expect(page.getByText(/vyrábíme až na objednávku, dodací lhůta je 8 dní/)).toBeVisible();
   await page.getByRole("button", { name: "Do košíku" }).click();
 
   // Košík: 9 880 + 760, doprava jednou 490 (box v košíku)
