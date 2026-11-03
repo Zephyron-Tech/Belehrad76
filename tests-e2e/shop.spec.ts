@@ -42,18 +42,28 @@ async function passGates(page: Page) {
   await page.getByRole("link", { name: "Ivo Viktor" }).first().click();
   await expect(page).toHaveURL(/\/produkt\//);
   await expect(page.getByRole("dialog", { name: /18 let/ })).toBeHidden();
-  // Nové načtení stránky: brána je tu znovu
+  // Potvrzení je v cookie s platností 5 minut: po obnovení stránky brána není
+  const ageCookie = (await page.context().cookies()).find((c) => c.name === "age_verified");
+  expect(ageCookie?.value).toBe("1");
+  expect(ageCookie!.expires - Date.now() / 1000).toBeGreaterThan(280);
+  expect(ageCookie!.expires - Date.now() / 1000).toBeLessThanOrEqual(301);
   await page.reload();
+  await expect(page.getByRole("dialog", { name: /18 let/ })).toBeHidden();
+  // Po vypršení (smazaná cookie) se brána ukáže znovu i při prokliku bez obnovení
+  await page.context().clearCookies({ name: "age_verified" });
+  await page.getByRole("link", { name: "E-shop" }).first().click();
+  await expect(page).toHaveURL(/\/eshop$/);
   await expect(page.getByRole("dialog", { name: /18 let/ })).toBeVisible();
+  await page.getByRole("button", { name: "Ano, je mi 18+" }).click();
   await page.goto("/");
 }
 
-/** Plné načtení stránky e-shopu: věková brána se pokaždé zobrazí znovu, potvrdíme ji. */
+/** Stránka e-shopu; potvrzení věku platí 5 minut, brána se zobrazí jen po jeho vypršení. */
 async function gotoShop(page: Page, path: string) {
   await page.goto(path);
-  await expect(page.getByRole("dialog", { name: /18 let/ })).toBeVisible();
-  await page.getByRole("button", { name: "Ano, je mi 18+" }).click();
-  await expect(page.getByRole("dialog", { name: /18 let/ })).toBeHidden();
+  const gate = page.getByRole("dialog", { name: /18 let/ });
+  if (await gate.isVisible()) await page.getByRole("button", { name: "Ano, je mi 18+" }).click();
+  await expect(gate).toBeHidden();
 }
 
 async function fillCustomer(page: Page, email: string) {

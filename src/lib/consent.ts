@@ -1,5 +1,8 @@
 /** Souhlas s cookies – sdíleno klientem (banner, pokladna). */
 export const CONSENT_COOKIE = "cookie_consent";
+/** Potvrzení věku 18+ pro vstup do e-shopu – platí jen krátce */
+export const AGE_COOKIE = "age_verified";
+export const AGE_COOKIE_MAX_AGE_S = 5 * 60;
 
 export type Consent = { analytics: boolean; marketing: boolean };
 
@@ -21,8 +24,12 @@ export function readCookie(name: string): string | undefined {
 }
 
 export function writeCookie(name: string, value: string, days: number) {
+  writeCookieSeconds(name, value, days * 86400);
+}
+
+export function writeCookieSeconds(name: string, value: string, maxAgeSeconds: number) {
   const secure = window.location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${days * 86400}; Path=/; SameSite=Lax${secure}`;
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${Math.round(maxAgeSeconds)}; Path=/; SameSite=Lax${secure}`;
 }
 
 export function currentConsent(): Consent | null {

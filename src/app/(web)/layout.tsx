@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { getSettings } from "@/lib/settings";
 import { env } from "@/lib/env";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AgeGate } from "@/components/AgeGate";
+import { AGE_COOKIE } from "@/lib/consent";
 import { CookieConsent } from "@/components/CookieConsent";
 
 // Sklad, ceny a texty se čtou z databáze při každém požadavku
@@ -27,7 +29,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function WebLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSettings();
+  const [settings, jar] = await Promise.all([getSettings(), cookies()]);
+  const ageVerified = jar.get(AGE_COOKIE)?.value === "1";
 
   return (
     <CartProvider>
@@ -37,7 +40,7 @@ export default async function WebLayout({ children }: { children: React.ReactNod
       <SiteHeader salesOpen={settings.bool("sales.open")} />
       <main id="obsah">{children}</main>
       <SiteFooter settings={settings} />
-      <AgeGate />
+      <AgeGate verified={ageVerified} />
       <CookieConsent ga4Id={env.ga4Id || undefined} metaPixelId={env.metaPixelId || undefined} />
     </CartProvider>
   );

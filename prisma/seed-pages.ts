@@ -136,6 +136,7 @@ Máte právo na přístup k údajům, jejich opravu, výmaz, omezení zpracován
 
 ## Nezbytné
 
+- potvrzení věku 18+ (platí 5 minut),
 - obsah košíku (ukládá se ve vašem prohlížeči),
 - uložení vaší volby k cookies,
 - přihlášení do administrace (jen pro provozovatele).
