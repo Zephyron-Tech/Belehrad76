@@ -96,7 +96,7 @@ export function CheckoutForm(props: Props) {
       billing: company ? { companyName: s("companyName"), ico: s("ico"), dic: s("dic") } : undefined,
       note: s("note") || undefined,
       paymentMethod: payment,
-      eveningInterest: evening,
+      eveningInterest: hasBox && evening,
       consents: {
         terms: f.get("terms") === "on",
         age: f.get("age") === "on",
@@ -274,16 +274,21 @@ export function CheckoutForm(props: Props) {
           )}
         </fieldset>
 
-        <fieldset className="border border-gold/40 bg-panel p-5">
-          <legend className="px-2 font-serif text-xl font-bold text-gold">Slavnostní večer {props.eveningDate}</legend>
-          <label className="flex items-start gap-3">
-            <input type="checkbox" checked={evening} onChange={(e) => setEvening(e.target.checked)} className="mt-1 accent-[var(--gold)]" />
-            <span>
-              Chci se zúčastnit losování o vstup na slavnostní večer {props.eveningDate}
-              <span className="block text-sm text-muted">Do losování zařadíme zaplacené objednávky z předprodeje. {EVENING_ENTRY_NOTE}</span>
-            </span>
-          </label>
-        </fieldset>
+        {/* Losování o vstup jen při nákupu boxu (1 vstup na 1 box) */}
+        {hasBox && (
+          <fieldset className="border border-gold/40 bg-panel p-5">
+            <legend className="px-2 font-serif text-xl font-bold text-gold">Slavnostní večer {props.eveningDate}</legend>
+            <label className="flex items-start gap-3">
+              <input type="checkbox" checked={evening} onChange={(e) => setEvening(e.target.checked)} className="mt-1 accent-[var(--gold)]" />
+              <span>
+                Chci se zúčastnit losování o vstup na slavnostní večer {props.eveningDate}
+                <span className="block text-sm text-muted">
+                  Do losování zařadíme zaplacené objednávky boxů z předprodeje. {EVENING_ENTRY_NOTE}
+                </span>
+              </span>
+            </label>
+          </fieldset>
+        )}
 
         <label className="block text-sm">
           Poznámka k objednávce

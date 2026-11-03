@@ -37,7 +37,7 @@ K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy �
     published: false,
     body: `Edici slavnostně představíme **30. listopadu 2026** na galavečeru, který bude moderovat **Jakub Kohák**. Pozvání přijali čtyři čeští a čtyři slovenští hráči.
 
-Kdo si objedná v předprodeji, bude zařazen do **losování o vstup na večer** (vstup pouze pro 1 osobu na 1 zakoupený box). Zájem o účast stačí potvrdit při objednávce. Podrobnosti losování zveřejníme.`,
+Kdo si v předprodeji objedná box, bude zařazen do **losování o vstup na večer** (vstup pouze pro 1 osobu na 1 zakoupený box). Zájem o účast stačí potvrdit při objednávce. Podrobnosti losování zveřejníme.`,
   },
   {
     slug: "drazba",

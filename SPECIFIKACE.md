@@ -9,7 +9,7 @@ Limitovaná edice slivovice k 50. výročí vítězství na ME v Bělehradě 197
 **Změny oproti původnímu zadání (potvrzeno):**
 - Edice je jen slivovice, calvados odpadá. Žádný výběr varianty.
 - Čísla boxů se nevedou, box je prostě „box“.
-- Večer 30. 11. 2026 funguje takto: kdo koupí v předprodeji, je zařazen do losování o vstup. Vstup pouze pro 1 osobu na 1 zakoupený box, bez doprovodu (změna 3. 11. 2026).
+- Večer 30. 11. 2026 funguje takto: kdo koupí v předprodeji box, je zařazen do losování o vstup. Vstup pouze pro 1 osobu na 1 zakoupený box, bez doprovodu (změna 3. 11. 2026).
 - Fakturace: po zaplacení se zákazníkovi pošle jen potvrzení platby a PDF s informací o zaplacení. Faktury se do e-shopu nenapojují.
 
 ## 2. Produkty (14 položek)
@@ -73,7 +73,7 @@ Vzor vzhledu je ve složce `C:\Users\rychl\eshop\foto\`:
 - Rezervace skladu na čas platby (např. 30 min), po vypršení se sklad uvolní.
 - Checkout bez účtu: jméno, e-mail, telefon, doručovací adresa nebo výdejní místo, fakturační údaje (volitelně IČO/DIČ), poznámka.
 - Povinné souhlasy: obchodní podmínky, 18+, ochrana osobních údajů. Souhlas s marketingem je volitelný.
-- Zaškrtávací pole „Chci se zúčastnit losování o vstup na večer 30. 11.“ (viz 4.5). Vstup pouze pro 1 osobu na 1 zakoupený box, jméno doprovodu se nesbírá.
+- Zaškrtávací pole „Chci se zúčastnit losování o vstup na večer 30. 11.“ (viz 4.5). Zobrazí se jen u košíku s boxem. Vstup pouze pro 1 osobu na 1 zakoupený box, jméno doprovodu se nesbírá.
 - **Doprava (potvrzeno):**
   - Košík obsahuje box: doprava 490 Kč, nebo osobní převzetí na adrese FAČR zdarma.
   - Košík obsahuje jen kusovky: doprava 100 Kč za kus, nebo osobní převzetí na FAČR zdarma (potvrzeno).

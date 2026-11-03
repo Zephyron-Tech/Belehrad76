@@ -151,7 +151,8 @@ export async function createOrder(raw: unknown, ip: string | null) {
           ico: input.billing?.ico,
           dic: input.billing?.dic?.toUpperCase(),
           note: input.note,
-          eveningInterest: input.eveningInterest,
+          // Losování o vstup jen u objednávky s boxem (1 vstup na 1 box)
+          eveningInterest: input.eveningInterest && cart.lines.some((l) => l.type === "BOX"),
           marketingConsent: input.consents.marketing,
           consentsAt: new Date(),
           trackingConsent: input.tracking?.consent ?? false,

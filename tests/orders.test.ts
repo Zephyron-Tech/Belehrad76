@@ -50,6 +50,13 @@ describe("objednávky a sklad", () => {
     expect(await boxStock()).toBe(144);
   });
 
+  it("losování o vstup na večer jen u objednávky s boxem", async () => {
+    const bottles = await createOrder(checkout({ lines: [{ slug: "viktor", quantity: 2 }], eveningInterest: true }), null);
+    expect(bottles.eveningInterest).toBe(false);
+    const withBox = await createOrder(checkout({ eveningInterest: true }), null);
+    expect(withBox.eveningInterest).toBe(true);
+  });
+
   it("poslední box nelze prodat dvakrát ani při souběžných objednávkách", async () => {
     await resetDb(1);
     const results = await Promise.allSettled(

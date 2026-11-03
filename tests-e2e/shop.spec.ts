@@ -123,6 +123,8 @@ test("zákazník: kusovky, osobní převzetí a platba převodem s QR kódem", a
   await page.getByLabel(/Osobní převzetí na FAČR/).check();
   await expect(page.getByLabel("Ulice a číslo popisné *")).toBeHidden();
   await page.getByLabel(/Bankovním převodem \/ QR kódem/).check();
+  // Jen kusovky: bez losování o vstup na večer
+  await expect(page.getByLabel(/Chci se zúčastnit losování/)).toHaveCount(0);
   await acceptConsents(page);
   await expect(page.locator("aside")).toContainText("1 520 Kč");
   await page.getByRole("button", { name: "Objednat s povinností platby" }).click();
