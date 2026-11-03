@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { getSettings } from "@/lib/settings";
 import { env } from "@/lib/env";
-import { AGE_COOKIE } from "@/lib/consent";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -29,8 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function WebLayout({ children }: { children: React.ReactNode }) {
-  const [settings, jar] = await Promise.all([getSettings(), cookies()]);
-  const ageVerified = jar.get(AGE_COOKIE)?.value === "1";
+  const settings = await getSettings();
 
   return (
     <CartProvider>
@@ -40,7 +37,7 @@ export default async function WebLayout({ children }: { children: React.ReactNod
       <SiteHeader salesOpen={settings.bool("sales.open")} />
       <main id="obsah">{children}</main>
       <SiteFooter settings={settings} />
-      <AgeGate verified={ageVerified} />
+      <AgeGate />
       <CookieConsent ga4Id={env.ga4Id || undefined} metaPixelId={env.metaPixelId || undefined} />
     </CartProvider>
   );

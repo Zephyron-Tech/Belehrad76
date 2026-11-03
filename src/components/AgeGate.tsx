@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AGE_COOKIE, writeCookie } from "@/lib/consent";
 import { Seal } from "./Seal";
 
 /** Stránky s prodejem alkoholu. Úvod a informační stránky jsou bez brány. */
@@ -13,10 +12,15 @@ export function isShopPath(pathname: string) {
   return SHOP_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
-/** Věková brána 18+ při vstupu do e-shopu (ne na úvodní stránce). */
-export function AgeGate({ verified }: { verified: boolean }) {
+/**
+ * Věková brána 18+ při vstupu do e-shopu (ne na úvodní stránce).
+ * Potvrzení se drží jen v paměti stránky (žádná cookie): po každém novém načtení
+ * webu se varování při vstupu do e-shopu zobrazí znovu. Při proklikávání v rámci
+ * webu po potvrzení už ne.
+ */
+export function AgeGate() {
   const pathname = usePathname();
-  const [confirmed, setConfirmed] = useState(verified);
+  const [confirmed, setConfirmed] = useState(false);
   const [deniedOn, setDeniedOn] = useState<string | null>(null);
   if (confirmed || !isShopPath(pathname)) return null;
   const denied = deniedOn === pathname;
@@ -56,10 +60,7 @@ export function AgeGate({ verified }: { verified: boolean }) {
               <button
                 type="button"
                 autoFocus
-                onClick={() => {
-                  writeCookie(AGE_COOKIE, "1", 365);
-                  setConfirmed(true);
-                }}
+                onClick={() => setConfirmed(true)}
                 className="flex-1 bg-gold px-5 py-3 font-bold uppercase tracking-wider text-ink hover:bg-gold-light"
               >
                 Ano, je mi 18+

@@ -1,6 +1,5 @@
 /** Souhlas s cookies – sdíleno klientem (banner, pokladna). */
 export const CONSENT_COOKIE = "cookie_consent";
-export const AGE_COOKIE = "age_verified";
 
 export type Consent = { analytics: boolean; marketing: boolean };
 
