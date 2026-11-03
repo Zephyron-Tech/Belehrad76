@@ -8,6 +8,8 @@ import { Seal } from "@/components/Seal";
 import { Markdown } from "@/components/Markdown";
 import { StockBadge } from "@/components/StockBadge";
 import { LineupPicker } from "@/components/LineupPicker";
+import { JsonLd, organizationJsonLd } from "@/components/JsonLd";
+import { LoopVideo } from "@/components/LoopVideo";
 
 /** Pořadí příchodu prvku v sekci (pro stagger v CSS) */
 const order = (i: number) => ({ "--i": i }) as React.CSSProperties;
@@ -29,6 +31,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={organizationJsonLd(settings.str("seller.name"), settings.str("contact.email"))} />
       {/* Noc v Bělehradě: nadpis vlevo, obří pečeť oříznutá vpravo, na ní box */}
       <section className="chapter field-night relative min-h-[calc(100svh-var(--header-h))] !pb-[56svh] !pt-10 md:!py-0">
         <Seal filled decorative id="hero-seal" className="hero-disc" />
@@ -85,7 +88,7 @@ export default async function HomePage() {
               </div>
             </div>
             <figure className="md:col-span-5 md:col-start-8 md:pt-4">
-              <div className="overflow-clip" data-shutter style={order(2)}>
+              <div className="overflow-clip" data-reveal style={order(2)}>
                 <Image
                   src="/img/archiv/beograd-1976-terazije.jpg"
                   alt="Černobílá fotografie: auta v Terazijském tunelu v Bělehradě, 1976"
@@ -218,17 +221,19 @@ export default async function HomePage() {
       {box && (
         <section className="chapter field-gold" aria-labelledby="box-nadpis">
           <div className="frame grid items-center gap-y-12 md:grid-cols-12 md:gap-x-8">
-            <div className="overflow-clip md:col-span-5" data-shutter style={order(0)}>
-              <Image
-                src="/img/archiv/svestka.jpg"
-                alt="Rozkrojená švestka na černém pozadí"
-                width={1400}
-                height={1050}
-                sizes="(min-width: 768px) 40vw, 100vw"
-                className="aspect-[4/5] h-auto w-full object-cover"
+            <figure className="order-2 md:order-1 md:col-span-5 lg:col-span-4" data-reveal style={order(0)}>
+              <LoopVideo
+                sources={[
+                  { src: "/video/slivovice.webm", type: "video/webm" },
+                  { src: "/video/slivovice.mp4", type: "video/mp4" },
+                ]}
+                poster="/video/slivovice-poster.jpg"
+                label="Čerstvá slivovice teče z destilačního kotle do nádoby"
+                className="aspect-[4/5] overflow-clip bg-ink"
               />
-            </div>
-            <div className="md:col-span-6 md:col-start-7">
+              <figcaption className="mt-3 text-small text-[var(--soft)]">Čerstvá slivovice teče z kotle.</figcaption>
+            </figure>
+            <div className="order-1 md:order-2 md:col-span-6 md:col-start-7">
               <h2 id="box-nadpis" className="display text-head" data-reveal style={order(1)}>
                 {box.name}
               </h2>

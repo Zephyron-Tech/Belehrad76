@@ -1,7 +1,7 @@
 /**
  * Převzaté fotografie z Wikimedia Commons (licence CC BY-SA, vyžadují uvedení autora).
  * Fotky jsou oříznuté a převedené do černobílé – upravená verze je pod stejnou licencí.
- * Nejsou to fotografie edice; ukazují Bělehrad a suroviny, ne produkt.
+ * Nejsou to fotografie edice; ukazují Bělehrad a výrobu slivovice obecně, ne produkt. Video je zkrácené a oříznuté.
  */
 export const PHOTO_CREDITS = [
   {
@@ -21,11 +21,11 @@ export const PHOTO_CREDITS = [
     page: "https://commons.wikimedia.org/wiki/File:Terazijski_tunel,_Beograd,_1976.jpg",
   },
   {
-    src: "/img/archiv/svestka.jpg",
-    title: "Švestka",
-    author: "Rodrigo Argenton",
-    licence: "CC BY-SA 4.0",
-    licenceUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-    page: "https://commons.wikimedia.org/wiki/File:Plum_in_a_black_background_01.jpg",
+    src: "/video/slivovice.mp4",
+    title: "Čerstvá slivovice, pálenice Hvozdná (video)",
+    author: "Sevela.p",
+    licence: "CC BY-SA 3.0",
+    licenceUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Fresh_slivovitz,_p%C3%A1lenice_Hvozdn%C3%A1.ogv",
   },
 ] as const;

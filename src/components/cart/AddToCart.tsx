@@ -80,7 +80,18 @@ export function AddToCart({
         className={`btn add-btn ${compact ? "min-h-11 px-4 text-[1rem]" : "flex-1"}`}
         data-added={added}
       >
-        {available <= 0 ? "Maximum v košíku" : added ? "Přidáno ✓" : "Do košíku"}
+        {available <= 0 ? (
+          "Maximum v košíku"
+        ) : added ? (
+          <>
+            Přidáno
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+              <path d="m5 12 5 5 9-10" />
+            </svg>
+          </>
+        ) : (
+          "Do košíku"
+        )}
       </button>
       {added && !compact && (
         <Link href="/kosik" className="link self-center whitespace-nowrap font-semibold">

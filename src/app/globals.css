@@ -344,7 +344,7 @@ p {
   clip-path: inset(0 0 -1px 0);
   visibility: visible;
   transition:
-    clip-path 320ms var(--ease-out),
+    clip-path 260ms var(--ease-out),
     visibility 0s;
 }
 .mobile-menu li {
@@ -390,7 +390,7 @@ p {
 
 /* Lišta cookies plave nad stránkou – jediné místo se stínem kromě menu a dialogů */
 .cookie-bar {
-  box-shadow: 0 -12px 40px rgb(0 0 0 / 0.45);
+  box-shadow: 0 -12px 40px rgb(0 0 0 / 0.45); /* taste-skill-ignore: lišta plave nad stránkou */
 }
 @media (prefers-reduced-motion: no-preference) {
   .cookie-bar {
@@ -408,7 +408,7 @@ p {
   width: 100%;
   min-height: 3.25rem;
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line); /* taste-skill-ignore: ohraničení formulářového pole */
   color: var(--cream);
   /* 16 px a víc: iOS při focusu nezoomuje */
   font-size: max(16px, var(--step-body));
@@ -590,8 +590,8 @@ p {
 /* telefon: dva sloupce jmen pod kotoučem, počítač: jeden sloupec vedle něj */
 .lineup-names {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
 }
 .lineup-name {
   display: flex;
@@ -602,7 +602,7 @@ p {
   font-weight: 800;
   font-stretch: 62%;
   text-transform: uppercase;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   line-height: 1.15;
   color: var(--muted);
   cursor: pointer;
@@ -656,21 +656,31 @@ p {
 .lineup-label {
   position: absolute;
   left: 50%;
-  bottom: 7%;
-  height: 92%;
+  bottom: 8%;
+  height: 86%;
   width: auto;
   aspect-ratio: 352 / 600;
   object-fit: cover;
   translate: -50% 0;
   opacity: 0;
   transform: translateY(18px) rotate(2deg) scale(0.97);
+  /* rozmazání maskuje chvíli, kdy jsou vidět dvě etikety přes sebe */
+  filter: blur(3px);
   transition:
-    opacity 300ms ease,
-    transform 520ms var(--ease-out);
+    opacity 280ms ease,
+    filter 280ms ease,
+    transform 480ms var(--ease-out);
 }
 .lineup-label[data-active="true"] {
   opacity: 1;
+  filter: none;
   transform: rotate(-2.5deg);
+}
+@media (min-width: 768px) {
+  .lineup-label {
+    bottom: 7%;
+    height: 92%;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .lineup-label {
@@ -699,7 +709,7 @@ p {
     transform var(--t-press) var(--ease-out);
 }
 .stepper button:active:not(:disabled) {
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 .stepper button:disabled {
   opacity: 0.35;

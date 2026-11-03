@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
       // Obrázky: prohlížeč je drží 1 den a další týden je smí použít, zatímco si na pozadí ověří novou verzi.
       // (Krátká doba, protože finální fotky se budou nahrávat pod stejnými názvy.)
       {
-        source: "/img/:path*",
+        source: "/:dir(img|video)/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
       },
     ];

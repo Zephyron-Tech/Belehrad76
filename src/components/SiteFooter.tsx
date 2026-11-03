@@ -76,7 +76,7 @@ export function SiteFooter({ settings }: { settings: Settings }) {
             <strong className="text-cream">18+</strong> Prodej alkoholu osobám mladším 18 let je zakázán. Pijte zodpovědně.
           </p>
           <p className="md:col-span-6 md:col-start-7">
-            Fotografie Bělehradu a švestky: Wikimedia Commons –{" "}
+            Fotografie Bělehradu a video z pálenice: Wikimedia Commons –{" "}
             {PHOTO_CREDITS.map((c, i) => (
               <span key={c.src}>
                 <a href={c.page} target="_blank" rel="noopener noreferrer" className="link decoration-transparent hover:decoration-current">

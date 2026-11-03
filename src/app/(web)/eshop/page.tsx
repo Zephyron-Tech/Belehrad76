@@ -8,6 +8,7 @@ import { PlayerCard } from "@/components/PlayerCard";
 import { StockBadge } from "@/components/StockBadge";
 import { AddToCart } from "@/components/cart/AddToCart";
 import { GoalKick } from "@/components/GoalKick";
+import { JsonLd, productJsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = { title: "E-shop" };
 
@@ -25,6 +26,9 @@ export default async function EshopPage() {
 
   return (
     <>
+      {products.map((p) => (
+        <JsonLd key={p.id} data={productJsonLd(p, settings.str("seller.name"))} />
+      ))}
       <header className="field-night pb-12 pt-14 md:pb-16 md:pt-20">
         <div className="frame grid gap-6 md:grid-cols-12 md:items-end">
           <h1 className="display text-head md:col-span-6" data-reveal style={order(0)}>

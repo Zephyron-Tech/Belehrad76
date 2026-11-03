@@ -76,15 +76,15 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
                     setDraft(consent ?? { analytics: false, marketing: false });
                     setShowSettings(true);
                   }}
-                  className="link mr-2 min-h-11 px-1 text-[1rem] text-cream"
+                  className="link order-last min-h-11 basis-full px-1 text-left text-[1rem] text-cream md:order-first md:mr-2 md:basis-auto"
                 >
                   Nastavení
                 </button>
               )}
-              <button type="button" onClick={() => save({ analytics: false, marketing: false })} className="btn btn-quiet min-h-11 flex-1 !bg-ink px-4 text-[1rem] md:flex-none">
+              <button type="button" onClick={() => save({ analytics: false, marketing: false })} className="btn btn-quiet min-h-11 flex-1 whitespace-nowrap !bg-ink px-4 text-[1rem] md:flex-none">
                 Jen nezbytné
               </button>
-              <button type="button" onClick={() => save({ analytics: true, marketing: true })} className="btn min-h-11 flex-1 px-4 text-[1rem] md:flex-none">
+              <button type="button" onClick={() => save({ analytics: true, marketing: true })} className="btn min-h-11 flex-1 whitespace-nowrap px-4 text-[1rem] md:flex-none">
                 Přijmout vše
               </button>
             </div>

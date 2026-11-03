@@ -10,6 +10,7 @@ import { Markdown } from "@/components/Markdown";
 import { StockBadge } from "@/components/StockBadge";
 import { Seal } from "@/components/Seal";
 import { AddToCart } from "@/components/cart/AddToCart";
+import { JsonLd, productJsonLd } from "@/components/JsonLd";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -47,6 +48,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={productJsonLd(product, settings.str("seller.name"))} />
       <div className="field-night pb-20 pt-8 md:pb-28 md:pt-12">
         <div className="frame">
           <nav aria-label="Drobečková navigace">
