@@ -108,3 +108,89 @@ body {
 .label-paper {
   background: linear-gradient(180deg, #efe6d3 0%, #e5d9c1 100%);
 }
+
+/* --- Panáček s míčem nad boxem v e-shopu (GoalKick.tsx), délka 1.9s --- */
+.goal-kick .gk-runner,
+.goal-kick .gk-ball,
+.goal-kick .gk-goal,
+.goal-kick [class^="gk-leg"],
+.goal-kick [class^="gk-arm"] {
+  transform-box: view-box;
+}
+.goal-kick [class^="gk-leg"] {
+  transform-origin: 14px 40px;
+}
+.goal-kick [class^="gk-arm"] {
+  transform-origin: 14px 30px;
+}
+.goal-kick .gk-text {
+  opacity: 0;
+}
+.goal-kick.is-playing .gk-runner {
+  animation: gk-run 1.9s ease-out;
+}
+.goal-kick.is-playing .gk-leg-a {
+  animation: gk-stride 0.2s linear 3 alternate;
+}
+.goal-kick.is-playing .gk-leg-b {
+  animation:
+    gk-stride 0.2s linear 3 alternate-reverse,
+    gk-kick 0.35s ease-out 0.55s;
+}
+.goal-kick.is-playing .gk-arm-a {
+  animation: gk-stride 0.2s linear 3 alternate-reverse;
+}
+.goal-kick.is-playing .gk-arm-b {
+  animation: gk-stride 0.2s linear 3 alternate;
+}
+.goal-kick.is-playing .gk-ball {
+  animation: gk-ball 1.9s linear;
+}
+.goal-kick.is-playing .gk-goal {
+  animation: gk-net 1.9s ease-out;
+}
+.goal-kick.is-playing .gk-text {
+  animation: gk-text 1.9s ease-out;
+}
+
+@keyframes gk-run {
+  0% { transform: translateX(0); }
+  32% { transform: translateX(32px); }
+  85% { transform: translateX(32px); }
+  100% { transform: translateX(0); }
+}
+@keyframes gk-stride {
+  from { transform: rotate(-28deg); }
+  to { transform: rotate(28deg); }
+}
+@keyframes gk-kick {
+  0% { transform: rotate(30deg); }
+  40% { transform: rotate(-55deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes gk-ball {
+  0%, 33% { transform: translate(0, 0); opacity: 1; animation-timing-function: ease-out; }
+  52% { transform: translate(150px, -30px); animation-timing-function: ease-in; }
+  68% { transform: translate(246px, -12px); }
+  76% { transform: translate(252px, 0); }
+  88% { transform: translate(252px, 0); opacity: 1; }
+  93% { transform: translate(252px, 0); opacity: 0; }
+  94% { transform: translate(0, 0); opacity: 0; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+@keyframes gk-net {
+  0%, 67% { transform: translateX(0); }
+  71% { transform: translateX(3px); }
+  75% { transform: translateX(-1.5px); }
+  79%, 100% { transform: translateX(0); }
+}
+@keyframes gk-text {
+  0%, 68% { opacity: 0; transform: translateY(4px); }
+  74%, 90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .goal-kick.is-playing * {
+    animation: none !important;
+  }
+}

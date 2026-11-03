@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 
+/** Událost po přidání do košíku (např. pro animaci nad boxem) */
+export const CART_ADDED_EVENT = "cart:added";
+export type CartAddedDetail = { slug: string; quantity: number };
+
 export function AddToCart({
   slug,
   max,
@@ -36,6 +40,7 @@ export function AddToCart({
     const n = Math.min(qty, available);
     if (n <= 0) return;
     add(slug, n);
+    window.dispatchEvent(new CustomEvent<CartAddedDetail>(CART_ADDED_EVENT, { detail: { slug, quantity: n } }));
     setAdded(true);
     setQty(1);
     window.setTimeout(() => setAdded(false), 2500);

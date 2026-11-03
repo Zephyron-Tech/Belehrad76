@@ -7,6 +7,7 @@ import { maybeExpireStaleOrders } from "@/lib/orders/expire";
 import { PlayerCard } from "@/components/PlayerCard";
 import { StockBadge } from "@/components/StockBadge";
 import { AddToCart } from "@/components/cart/AddToCart";
+import { GoalKick } from "@/components/GoalKick";
 
 export const metadata: Metadata = { title: "E-shop" };
 
@@ -35,11 +36,15 @@ export default async function EshopPage() {
             <img src={box.imageUrl} alt={`${box.name} – vizualizace`} className="w-full border border-line" />
           </Link>
           <div className="flex flex-col">
-            <h2 className="font-serif text-3xl font-bold text-cream">
-              <Link href={`/produkt/${box.slug}`} className="hover:text-gold-light">
-                {box.name}
-              </Link>
-            </h2>
+            {/* Nad nadpisem panáček s míčem a branka – po přidání boxu do košíku vstřelí gól */}
+            <div className="self-start">
+              <GoalKick slug={box.slug} />
+              <h2 className="font-serif text-3xl font-bold text-cream">
+                <Link href={`/produkt/${box.slug}`} className="hover:text-gold-light">
+                  {box.name}
+                </Link>
+              </h2>
+            </div>
             <p className="mt-3 text-cream/85">{box.shortDescription}</p>
             <p className="mt-5 font-serif text-4xl font-bold text-gold-light">{formatCzk(box.priceCzk)}</p>
             <p className="mt-1 text-sm text-muted">
