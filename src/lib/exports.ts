@@ -85,7 +85,7 @@ export async function eveningCsv() {
     orderBy: { paidAt: "asc" },
   });
   const rows: (string | number | null)[][] = [
-    ["Číslo objednávky", "Zaplaceno", "Jméno", "Příjmení", "E-mail", "Telefon", "Doprovod", "Boxy ks", "Kusovky ks"],
+    ["Číslo objednávky", "Zaplaceno", "Jméno", "Příjmení", "E-mail", "Telefon", "Boxy ks (= počet vstupů)", "Kusovky ks"],
   ];
   for (const o of orders) {
     rows.push([
@@ -95,7 +95,6 @@ export async function eveningCsv() {
       o.lastName,
       o.email,
       o.phone,
-      o.companionName,
       o.items.filter((i) => i.type === "BOX").reduce((s, i) => s + i.quantity, 0),
       o.items.filter((i) => i.type === "BOTTLE").reduce((s, i) => s + i.quantity, 0),
     ]);

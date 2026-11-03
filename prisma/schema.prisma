@@ -121,7 +121,6 @@ model Order {
 
   // Slavnostní večer 30. 11. 2026
   eveningInterest Boolean @default(false)
-  companionName   String?
 
   // Souhlasy
   marketingConsent Boolean  @default(false)

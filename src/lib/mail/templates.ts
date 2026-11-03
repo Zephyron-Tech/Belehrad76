@@ -145,7 +145,7 @@ ${deliveryHtml(order, settings)}
 ${madeToOrderNote(order, settings)}
 ${
   order.eveningInterest
-    ? `<p>Jste zařazeni do losování o vstup na slavnostní večer ${esc(settings.str("evening.date"))}${order.companionName ? ` (doprovod: ${esc(order.companionName)})` : ""}. <strong>${EVENING_ENTRY_NOTE}</strong> O výsledku vás budeme informovat.</p>`
+    ? `<p>Jste zařazeni do losování o vstup na slavnostní večer ${esc(settings.str("evening.date"))}. <strong>${EVENING_ENTRY_NOTE}</strong> O výsledku vás budeme informovat.</p>`
     : ""
 }
 <p>O odeslání vás budeme informovat dalším e-mailem.</p>
@@ -172,11 +172,11 @@ ${billing ? `<p>Fakturační údaje: ${esc(billing)}</p>` : ""}
 ${itemsTable(order)}
 <p>Platba: ${esc(PAYMENT_LABEL[order.paymentMethod])}</p>
 ${deliveryHtml(order, settings)}
-<p>Zájem o slavnostní večer: <strong>${order.eveningInterest ? "ANO" : "ne"}</strong>${order.eveningInterest && order.companionName ? ` – doprovod: ${esc(order.companionName)}` : ""}</p>
+<p>Zájem o slavnostní večer: <strong>${order.eveningInterest ? "ANO" : "ne"}</strong></p>
 ${order.note ? `<p>Poznámka zákazníka: ${esc(order.note)}</p>` : ""}
 ${button(opts.adminUrl, "Otevřít v administraci")}`,
   );
-  const text = `${title}\n\n${order.firstName} ${order.lastName}, ${order.email}, ${order.phone}\n${billing}\n\n${itemsText(order)}\n\nPlatba: ${PAYMENT_LABEL[order.paymentMethod]}\nDoprava: ${DELIVERY_LABEL[order.deliveryMethod]}\nVečer: ${order.eveningInterest ? `ANO${order.companionName ? `, doprovod ${order.companionName}` : ""}` : "ne"}\n${order.note ? `Poznámka: ${order.note}\n` : ""}\n${opts.adminUrl}\n`;
+  const text = `${title}\n\n${order.firstName} ${order.lastName}, ${order.email}, ${order.phone}\n${billing}\n\n${itemsText(order)}\n\nPlatba: ${PAYMENT_LABEL[order.paymentMethod]}\nDoprava: ${DELIVERY_LABEL[order.deliveryMethod]}\nVečer: ${order.eveningInterest ? "ANO" : "ne"}\n${order.note ? `Poznámka: ${order.note}\n` : ""}\n${opts.adminUrl}\n`;
   return { subject: title, html, text };
 }
 

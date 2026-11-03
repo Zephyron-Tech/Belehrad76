@@ -79,7 +79,7 @@ describe("objednávky a sklad", () => {
   });
 
   it("platba převodem: ruční označení jako zaplacená je idempotentní a e-maily jdou jednou", async () => {
-    const order = await createOrder(checkout({ eveningInterest: true, companionName: "Eva Nováková" }), null);
+    const order = await createOrder(checkout({ eveningInterest: true }), null);
     sentMailLog.length = 0;
 
     const first = await markPaid(order.id, admin);
@@ -231,7 +231,7 @@ describe("export zájemců o večer", () => {
   beforeEach(() => resetDb());
 
   it("obsahuje jen zaplacené objednávky se zájmem o večer", async () => {
-    const paidInterested = await createOrder(checkout({ eveningInterest: true, companionName: "Eva Nováková" }), null);
+    const paidInterested = await createOrder(checkout({ eveningInterest: true }), null);
     await createOrder(
       checkout({ eveningInterest: true, customer: { firstName: "Ne", lastName: "Zaplatil", email: "x@example.com", phone: "777123456" } }),
       null,
@@ -245,7 +245,8 @@ describe("export zájemců o večer", () => {
 
     const { csv, count } = await eveningCsv();
     expect(count).toBe(1);
-    expect(csv).toContain("Eva Nováková");
+    expect(csv).toContain(paidInterested.email);
+    expect(csv).not.toContain("Doprovod");
     expect(csv).toContain(paidInterested.number);
     expect(csv).not.toContain("Zaplatil");
     expect(csv).not.toContain("Zájmu");

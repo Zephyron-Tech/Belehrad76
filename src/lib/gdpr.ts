@@ -32,7 +32,6 @@ export async function anonymizeOrder(orderId: number, ctx: ActionContext) {
         dic: null,
         note: null,
         internalNote: null,
-        companionName: null,
         fbp: null,
         fbc: null,
         anonymizedAt: new Date(),

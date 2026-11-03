@@ -37,7 +37,7 @@ K 50. výročí tohoto vítězství vzniká limitovaná edice **Mistři Evropy �
     published: false,
     body: `Edici slavnostně představíme **30. listopadu 2026** na galavečeru, který bude moderovat **Jakub Kohák**. Pozvání přijali čtyři čeští a čtyři slovenští hráči.
 
-Kdo si objedná v předprodeji, bude zařazen do **losování o vstup na večer včetně doprovodu**. Zájem o účast stačí potvrdit při objednávce. Podrobnosti losování zveřejníme.`,
+Kdo si objedná v předprodeji, bude zařazen do **losování o vstup na večer** (vstup pouze pro 1 osobu na 1 zakoupený box). Zájem o účast stačí potvrdit při objednávce. Podrobnosti losování zveřejníme.`,
   },
   {
     slug: "drazba",
@@ -107,7 +107,7 @@ ${SELLER}
 
 - **Vyřízení objednávky** (plnění smlouvy): jméno, e-mail, telefon, doručovací adresa, případně fakturační údaje, obsah objednávky a údaje o platbě.
 - **Zákonné povinnosti** (účetnictví a daně): údaje z objednávky po dobu stanovenou zákonem.
-- **Slavnostní večer**: pokud o to při objednávce požádáte, evidujeme váš zájem o zařazení do losování o vstup a jméno doprovodu.
+- **Slavnostní večer**: pokud o to při objednávce požádáte, evidujeme váš zájem o zařazení do losování o vstup.
 - **Marketing**: jen s vaším souhlasem, který můžete kdykoli odvolat.
 - **Měření návštěvnosti a reklama**: jen se souhlasem s cookies (viz [cookies](/cookies)).
 

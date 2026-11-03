@@ -9,7 +9,7 @@ Limitovaná edice slivovice k 50. výročí vítězství na ME v Bělehradě 197
 **Změny oproti původnímu zadání (potvrzeno):**
 - Edice je jen slivovice, calvados odpadá. Žádný výběr varianty.
 - Čísla boxů se nevedou, box je prostě „box“.
-- Večer 30. 11. 2026 funguje takto: kdo koupí v předprodeji, je zařazen do losování o vstup. K tomu patří doprovod.
+- Večer 30. 11. 2026 funguje takto: kdo koupí v předprodeji, je zařazen do losování o vstup. Vstup pouze pro 1 osobu na 1 zakoupený box, bez doprovodu (změna 3. 11. 2026).
 - Fakturace: po zaplacení se zákazníkovi pošle jen potvrzení platby a PDF s informací o zaplacení. Faktury se do e-shopu nenapojují.
 
 ## 2. Produkty (14 položek)
@@ -62,7 +62,7 @@ Vzor vzhledu je ve složce `C:\Users\rychl\eshop\foto\`:
 1. **Úvod**: příběh edice, 152 × 13 = 1 976 lahví, 50 let od vítězství v Bělehradě, slivovice 50 %, CTA na objednávku.
 2. **Produkt/e-shop**: fotky boxu a lahví, obsah boxu (13 hráčů), cena, tlačítko objednat. Zobrazení dostupnosti („zbývá X boxů“).
 3. **Nadace**: blok s informací, že výtěžek jde Nadaci fotbalových internacionálů, bez uvedení částky, s odkazem.
-4. **Večer 30. 11. 2026**: informace o slavnostním večeru moderovaném Jakubem Kohákem, za účasti čtyř českých a čtyř slovenských hráčů. Kupující z předprodeje budou zařazeni do losování o vstup (včetně doprovodu). Podrobnosti losování řeší někdo jiný, web zatím nese jen obecný text, který zadavatel doplní.
+4. **Večer 30. 11. 2026**: informace o slavnostním večeru moderovaném Jakubem Kohákem, za účasti čtyř českých a čtyř slovenských hráčů. Kupující z předprodeje budou zařazeni do losování o vstup (1 osoba na 1 zakoupený box). Podrobnosti losování řeší někdo jiný, web zatím nese jen obecný text, který zadavatel doplní.
 5. **Dražba**: informace, že 8 boxů se bude dražit na galavečeru. Stačí informační text.
 6. **Kontakt a sociální sítě**: odkazy na FB a IG, kontaktní údaje, odkaz na FAČR pro osobní převzetí.
 7. Právní stránky: obchodní podmínky, ochrana osobních údajů, cookies, reklamační řád, informace o odstoupení od smlouvy.
@@ -73,7 +73,7 @@ Vzor vzhledu je ve složce `C:\Users\rychl\eshop\foto\`:
 - Rezervace skladu na čas platby (např. 30 min), po vypršení se sklad uvolní.
 - Checkout bez účtu: jméno, e-mail, telefon, doručovací adresa nebo výdejní místo, fakturační údaje (volitelně IČO/DIČ), poznámka.
 - Povinné souhlasy: obchodní podmínky, 18+, ochrana osobních údajů. Souhlas s marketingem je volitelný.
-- Zaškrtávací pole „Chci se zúčastnit losování o vstup na večer 30. 11.“ (viz 4.5). Zákazník v tom případě může zadat jméno doprovodu (volitelné).
+- Zaškrtávací pole „Chci se zúčastnit losování o vstup na večer 30. 11.“ (viz 4.5). Vstup pouze pro 1 osobu na 1 zakoupený box, jméno doprovodu se nesbírá.
 - **Doprava (potvrzeno):**
   - Košík obsahuje box: doprava 490 Kč, nebo osobní převzetí na adrese FAČR zdarma.
   - Košík obsahuje jen kusovky: doprava 100 Kč za kus, nebo osobní převzetí na FAČR zdarma (potvrzeno).
@@ -85,24 +85,24 @@ Vzor vzhledu je ve složce `C:\Users\rychl\eshop\foto\`:
 ### 4.3 Po objednávce
 - **Platba proběhla**: stav „zaplaceno“, odečtení skladu, e-mail s potvrzením platby a PDF s informací o zaplacení (objednávka, částka, způsob platby, prodávající, datum). Potvrzení platby se generuje až po úspěšné platbě. Žádná faktura se negeneruje.
 - Okamžitě po vytvoření objednávky přijde krátký e-mail „objednávka přijata“ s údaji k platbě (u převodu).
-- Provozovatel (Petite Eiffel) dostane e-mail s kompletními údaji o každé zaplacené objednávce (zboží, doprava, adresa nebo osobní převzetí, kontakt, zájem o večer a doprovod). Podle toho zásilky vyřizuje.
+- Provozovatel (Petite Eiffel) dostane e-mail s kompletními údaji o každé zaplacené objednávce (zboží, doprava, adresa nebo osobní převzetí, kontakt, zájem o večer). Podle toho zásilky vyřizuje.
 - E-mail o odeslání zásilky (s dopravcem a číslem zásilky) se posílá automaticky při přepnutí objednávky na „odeslaná“ v administraci (viz 4.4).
 
 ### 4.4 Administrace (jen správa objednávek, za přihlášením)
 Plnohodnotná administrace (úprava textů, cen, fotek) se nevytváří. Je jen malá chráněná sekce pro správu objednávek:
 - **Přihlášení (kvůli GDPR):** e-mail a heslo (hash), povinné dvoufázové ověření (2FA), omezení pokusů, automatické odhlášení po nečinnosti, **jeden společný účet** pro všechny, kdo objednávky vyřizují (potvrzeno), bez rolí a správy uživatelů. Přihlašovací údaje a 2FA se předávají jen oprávněným osobám a heslo jde změnit zásahem v databázi. Celá sekce `/admin` je za přihlášením a není indexovatelná. Bez přihlášení se nedá dostat k žádnému osobnímu údaji.
 - **Seznam objednávek:** filtr podle stavu, hledání (číslo, jméno, e-mail), řazení podle data, zobrazení způsobu platby a dopravy.
-- **Detail objednávky:** zboží, doprava, kontakt a adresa, fakturační údaje, zájem o večer a doprovod, poznámka zákazníka, interní poznámka, historie změn.
+- **Detail objednávky:** zboží, doprava, kontakt a adresa, fakturační údaje, zájem o večer, poznámka zákazníka, interní poznámka, historie změn.
 - **Stavy objednávky:** přijatá (čeká na platbu), zaplacená, odeslaná, dokončená, zrušená. Platba kartou nebo přes GoPay přepne stav na „zaplacená“ automaticky. U ručního převodu to provozovatel přepne tlačítkem po připsání peněz. Změna na „zaplacená“ jednorázově odečte sklad boxů a odešle potvrzení platby s PDF.
 - **Odeslání:** při přepnutí na „odeslaná“ se zadá dopravce a číslo zásilky a zákazníkovi automaticky odejde e-mail o odeslání (potvrzeno). U osobního převzetí odejde e-mail „připraveno k převzetí“.
-- **Export:** CSV objednávek pro účetnictví a CSV zájemců o večer (jen zaplacené objednávky se zájmem a jménem doprovodu).
+- **Export:** CSV objednávek pro účetnictví a CSV zájemců o večer (jen zaplacené objednávky se zájmem, s počtem boxů = počtem vstupů).
 - **Záznam změn (audit log):** kdy a z jaké IP adresy se změnil stav objednávky nebo se vyexportovala data. Protože je účet společný, nelze poznat konkrétní osobu. Volitelně se při změně zadá jméno nebo iniciály.
 - **GDPR:** přístup jen přes přihlášení, osobní údaje nejsou v logu, mazání nebo anonymizace objednávek po uplynutí zákonné doby a na žádost zákazníka (postup popsán v zásadách ochrany osobních údajů), databáze šifrovaná při přenosu a záloha chráněná.
 - **Konfigurační tabulky v databázi (bez rozhraní):** ceny boxu a kusovek, sklad boxů (výchozí 144), ceny dopravy (box 490, kusovka 100 za kus), osobní převzetí a jeho adresa, dodací lhůta kusovek, texty webu, hráči (jméno, číslo, fotka), kontakty a odkazy na sociální sítě. Upravují se přímo v databázi a web je čte s krátkou cache, takže změna se projeví bez nového nasazení.
 
 ### 4.5 Losování o vstup (mimo rozsah)
 - Samotné losování, jeho pravidla a kapacita řeší někdo jiný a e-shop ho neprovádí.
-- E-shop jen sbírá podklady: u zaplacených objednávek eviduje zájem o účast a jméno doprovodu. Dají se vyexportovat do CSV skriptem.
+- E-shop jen sbírá podklady: u zaplacených objednávek eviduje zájem o účast. Dají se vyexportovat do CSV skriptem.
 - Pokud se později rozhodne, že losování poběží v e-shopu, doplní se jako samostatná fáze.
 
 ## 5. Platební brána (GoPay) a platby

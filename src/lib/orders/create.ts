@@ -49,7 +49,6 @@ export const checkoutSchema = z
     note: optionalText(1000),
     paymentMethod: z.enum(["GOPAY", "BANK_TRANSFER"]),
     eveningInterest: z.boolean().default(false),
-    companionName: optionalText(120),
     consents: z.object({
       terms: z.literal(true, { errorMap: () => ({ message: "Je nutný souhlas s obchodními podmínkami." }) }),
       age: z.literal(true, { errorMap: () => ({ message: "Prodej je možný jen osobám starším 18 let." }) }),
@@ -153,7 +152,6 @@ export async function createOrder(raw: unknown, ip: string | null) {
           dic: input.billing?.dic?.toUpperCase(),
           note: input.note,
           eveningInterest: input.eveningInterest,
-          companionName: input.eveningInterest ? input.companionName : null,
           marketingConsent: input.consents.marketing,
           consentsAt: new Date(),
           trackingConsent: input.tracking?.consent ?? false,

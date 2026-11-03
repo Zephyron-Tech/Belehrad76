@@ -31,7 +31,7 @@ export default function ExportsPage() {
       <section className="mt-6 border border-line bg-panel p-5">
         <h2 className="font-serif text-xl font-bold text-cream">Zájemci o slavnostní večer</h2>
         <p className="mt-2 text-sm text-muted">
-          Zaplacené objednávky se zaškrtnutým zájmem o losování o vstup, včetně jména doprovodu. Podklad pro organizátora losování.
+          Zaplacené objednávky se zaškrtnutým zájmem o losování o vstup, s počtem boxů (vstup pro 1 osobu na 1 zakoupený box). Podklad pro organizátora losování.
         </p>
         <form action="/admin/export/vecer" method="get" className="mt-4">
           <button className="bg-gold px-4 py-2 text-sm font-bold text-ink hover:bg-gold-light">Stáhnout CSV</button>

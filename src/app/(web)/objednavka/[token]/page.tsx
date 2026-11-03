@@ -181,7 +181,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
             <div>
               <dt className="text-muted">Slavnostní večer</dt>
               <dd>
-                Zájem o losování o vstup{order.companionName ? ` (doprovod: ${order.companionName})` : ""}
+                Zájem o losování o vstup
                 <span className="block text-sm text-muted">{EVENING_ENTRY_NOTE}</span>
               </dd>
             </div>

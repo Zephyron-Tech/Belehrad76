@@ -6,6 +6,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { usePricedCart } from "@/components/cart/usePricedCart";
 import { formatCzk } from "@/lib/format";
 import { currentConsent, readCookie } from "@/lib/consent";
+import { EVENING_ENTRY_NOTE } from "@/lib/labels";
 import { Turnstile } from "./Turnstile";
 
 type Props = {
@@ -96,7 +97,6 @@ export function CheckoutForm(props: Props) {
       note: s("note") || undefined,
       paymentMethod: payment,
       eveningInterest: evening,
-      companionName: evening ? s("companionName") || undefined : undefined,
       consents: {
         terms: f.get("terms") === "on",
         age: f.get("age") === "on",
@@ -280,15 +280,9 @@ export function CheckoutForm(props: Props) {
             <input type="checkbox" checked={evening} onChange={(e) => setEvening(e.target.checked)} className="mt-1 accent-[var(--gold)]" />
             <span>
               Chci se zúčastnit losování o vstup na slavnostní večer {props.eveningDate}
-              <span className="block text-sm text-muted">Do losování zařadíme zaplacené objednávky z předprodeje. Vstup je včetně doprovodu.</span>
+              <span className="block text-sm text-muted">Do losování zařadíme zaplacené objednávky z předprodeje. {EVENING_ENTRY_NOTE}</span>
             </span>
           </label>
-          {evening && (
-            <label className="mt-4 block text-sm">
-              Jméno doprovodu (nepovinné)
-              <input name="companionName" className={inputCls} />
-            </label>
-          )}
         </fieldset>
 
         <label className="block text-sm">

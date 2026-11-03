@@ -90,7 +90,7 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await page.getByLabel("Město *").fill("Praha");
   await page.getByLabel("PSČ *").fill("160 00");
   await page.getByLabel(/Chci se zúčastnit losování/).check();
-  await page.getByLabel("Jméno doprovodu (nepovinné)").fill("Eva Testovací");
+  await expect(page.getByLabel(/Jméno doprovodu/)).toHaveCount(0);
   await acceptConsents(page);
   await expect(page.locator("aside")).toContainText("11 130 Kč");
   await page.getByRole("button", { name: "Objednat a zaplatit" }).click();
@@ -101,7 +101,8 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await page.getByRole("button", { name: "Simulovat úspěšnou platbu" }).click();
 
   await expect(page.getByRole("heading", { name: "Děkujeme, platba je přijata" })).toBeVisible();
-  await expect(page.getByText("Zájem o losování o vstup (doprovod: Eva Testovací)")).toBeVisible();
+  await expect(page.getByText(/^Zájem o losování o vstup/)).toBeVisible();
+  await expect(page.getByText("Vstup pouze pro 1 osobu na 1 zakoupený box.")).toBeVisible();
   expect(await boxStock()).toBe((stockBefore ?? 0) - 1);
 
   const order = await prisma.order.findFirstOrThrow({ where: { email: "e2e-gopay@example.com" }, orderBy: { id: "desc" } });
@@ -193,7 +194,8 @@ test("administrace: bez přihlášení nic, přihlášení s 2FA, platba převod
   const csv = await page.request.get("/admin/export/vecer");
   expect(csv.status()).toBe(200);
   const text = await csv.text();
-  expect(text).toContain("Eva Testovací");
+  expect(text).toContain("e2e-gopay@example.com");
+  expect(text).not.toContain("Doprovod");
   expect(text).not.toContain("e2e-prevod@example.com");
 
   // Odhlášení

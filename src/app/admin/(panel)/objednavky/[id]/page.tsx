@@ -136,10 +136,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <h2 className="font-serif text-lg font-bold text-gold">Slavnostní večer</h2>
               <p className="mt-2 text-sm">
                 {order.eveningInterest ? (
-                  <>
-                    <strong className="text-gold-light">Má zájem o losování</strong>
-                    {order.companionName ? ` – doprovod: ${order.companionName}` : " – doprovod neuveden"}
-                  </>
+                  <strong className="text-gold-light">Má zájem o losování</strong>
                 ) : (
                   "Bez zájmu"
                 )}
