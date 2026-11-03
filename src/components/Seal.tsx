@@ -34,9 +34,10 @@ export function Seal({
       <circle cx="100" cy="100" r="94" fill="none" stroke={ink} strokeWidth="3" />
       <circle cx="100" cy="100" r="88" fill="none" stroke={ink} strokeWidth="1.5" strokeDasharray="2 4" />
       <circle cx="100" cy="100" r="58" fill="none" stroke={ink} strokeWidth="2.5" />
-      <text fill={ink} fontSize="15" fontWeight="700" letterSpacing="3" fontFamily="var(--font-archivo)">
-        <textPath href={`#${pathId}`} startOffset="0">
-          MISTŘI EVROPY · BĚLEHRAD · 50 LET · MISTŘI EVROPY · BĚLEHRAD ·
+      {/* text vyplní přesně celý obvod kruhu (2π · 74), aby se konec nepřekrýval se začátkem */}
+      <text fill={ink} fontSize="15" fontWeight="700" fontFamily="var(--font-archivo)">
+        <textPath href={`#${pathId}`} startOffset="0" textLength="460" lengthAdjust="spacing">
+          MISTŘI EVROPY · BĚLEHRAD · 1976 · 50 LET ·
         </textPath>
       </text>
       <text

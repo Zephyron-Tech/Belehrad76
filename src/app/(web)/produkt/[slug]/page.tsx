@@ -21,7 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: product.name,
     description: product.shortDescription,
     alternates: { canonical: `/produkt/${product.slug}` },
-    openGraph: { title: product.name, description: product.shortDescription, images: [product.imageUrl] },
+    // obrázek ke sdílení vykreslí opengraph-image.tsx vedle stránky
+    openGraph: { type: "website", locale: "cs_CZ", siteName: "Mistři Evropy – Bělehrad 1976", title: product.name, description: product.shortDescription, url: `/produkt/${product.slug}` },
+    twitter: { card: "summary_large_image", title: product.name, description: product.shortDescription },
   };
 }
 

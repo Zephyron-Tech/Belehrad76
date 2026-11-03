@@ -468,7 +468,8 @@ p {
 }
 @media (min-width: 768px) {
   .hero-title {
-    font-size: min(calc(0.5rem + 7vw), 8.5rem);
+    /* strop podle šířky rámu (96rem): na širokém monitoru nadpis neroste přes pečeť */
+    font-size: min(calc(0.5rem + 7vw), 7.5rem);
   }
 }
 .hero-disc {
@@ -484,15 +485,27 @@ p {
   left: 4vw;
   top: calc(52% + 12vw);
 }
+/* Vrstva pro pečeť a box: na telefonu celá šířka sekce, od tabletu šířka rámu stránky */
+.hero-stage {
+  position: absolute;
+  inset: 0;
+}
 @media (min-width: 768px) {
+  .hero-stage {
+    max-width: 96rem;
+    margin-inline: auto;
+    /* velikost kotouče podle výšky okna, ale nejvýš 75 % šířky rámu (na 1440 × 900 vychází obojí stejně) */
+    --disc: min(120vh, 75cqw);
+    container-type: inline-size;
+  }
   .hero-disc {
-    width: 120vh;
-    height: 120vh;
-    left: calc(78% - 60vh);
-    top: calc(55% - 60vh);
+    width: var(--disc);
+    height: var(--disc);
+    left: calc(78% - var(--disc) / 2);
+    top: calc(55% - var(--disc) / 2);
   }
   .hero-box {
-    width: min(46vw, 840px);
+    width: min(46%, 840px);
     left: auto;
     right: calc(var(--gutter) * 0.5);
     top: 50%;

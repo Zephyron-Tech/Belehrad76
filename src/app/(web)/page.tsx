@@ -33,18 +33,21 @@ export default async function HomePage() {
       <JsonLd data={organizationJsonLd(settings.str("seller.name"), settings.str("contact.email"))} />
       {/* Noc v Bělehradě: nadpis vlevo, obří pečeť oříznutá vpravo, na ní box */}
       <section className="chapter field-night relative min-h-[calc(100svh-var(--header-h))] !pb-[56svh] !pt-10 md:!py-0">
-        <Seal filled decorative id="hero-seal" className="hero-disc" />
-        <div className="hero-box">
-          <div className="hero-box-frame overflow-clip">
-            <Image
-              src="/img/box-vyrez.png"
-              alt={box ? `${box.name}: 13 lahví v otevřeném boxu s fotografií mužstva` : "Box Mistři Evropy"}
-              width={1079}
-              height={640}
-              priority
-              sizes="(min-width: 768px) 50vw, 92vw"
-              className="h-auto w-full"
-            />
+        {/* Pečeť a box se měří od rámu stránky (max. šířka), ne od okna – na širokém monitoru zůstanou u nadpisu */}
+        <div className="hero-stage">
+          <Seal filled decorative id="hero-seal" className="hero-disc" />
+          <div className="hero-box">
+            <div className="hero-box-frame overflow-clip">
+              <Image
+                src="/img/box-vyrez.png"
+                alt={box ? `${box.name}: 13 lahví v otevřeném boxu s fotografií mužstva` : "Box Mistři Evropy"}
+                width={1079}
+                height={640}
+                priority
+                sizes="(min-width: 768px) 50vw, 92vw"
+                className="h-auto w-full"
+              />
+            </div>
           </div>
         </div>
         <div className="frame relative grid md:min-h-[calc(100svh-var(--header-h))] md:grid-cols-12 md:items-center">

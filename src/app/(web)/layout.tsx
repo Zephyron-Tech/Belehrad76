@@ -24,8 +24,9 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Mistři Evropy – Bělehrad 1976",
       title: "Mistři Evropy – Bělehrad 1976",
       description,
-      images: [{ url: "/img/box.jpg", width: 1186, height: 662, alt: "Box Mistři Evropy – Bělehrad 1976" }],
+      url: "/",
     },
+    twitter: { card: "summary_large_image", title: "Mistři Evropy – Bělehrad 1976", description },
   };
 }
 
