@@ -23,10 +23,10 @@ export function PlayerCard({ product, children }: { product: Product; children?:
           />
         </span>
         <span className="min-w-0">
-          <span className="display block text-[1.75rem] leading-none">
+          <span className="display block text-[1.375rem] leading-[1.05] sm:text-[1.75rem]">
             <span className="tabular text-gold">{product.playerNumber}</span> {name}
           </span>
-          <span className="mt-2 block text-muted">Slivovice 50 % s jeho portrétem na etiketě</span>
+          <span className="mt-2 hidden text-muted sm:block">Slivovice 50 % s jeho portrétem na etiketě</span>
         </span>
       </Link>
       <div className="player-row__buy">

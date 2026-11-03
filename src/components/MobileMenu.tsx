@@ -15,6 +15,9 @@ export function MobileMenu({ items }: { items: { href: string; label: string }[]
 
   useEffect(() => {
     if (!open) return;
+    // otevřené menu zabírá celou obrazovku, stránka pod ním se neposouvá
+    const html = document.documentElement;
+    html.style.overflow = "hidden";
     panel.current?.querySelector("a")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
@@ -28,6 +31,7 @@ export function MobileMenu({ items }: { items: { href: string; label: string }[]
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointer);
     return () => {
+      html.style.overflow = "";
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("pointerdown", onPointer);
     };
@@ -50,15 +54,20 @@ export function MobileMenu({ items }: { items: { href: string; label: string }[]
         {open ? "Zavřít" : "Menu"}
       </button>
       <div ref={panel} id="mobilni-menu" className="mobile-menu" data-open={open} inert={!open}>
-        <ul className="frame pb-8 pt-4">
+        <ul className="frame pb-10 pt-6">
           {items.map((item, i) => (
             <li key={item.href} style={{ "--i": i } as React.CSSProperties}>
-              <Link href={item.href} className="display block py-2 text-[2.75rem] text-cream" onClick={() => setOpen(false)}>
+              <Link href={item.href} className="display block py-2 text-[clamp(2.5rem,11vw,3.5rem)] text-cream" onClick={() => setOpen(false)}>
                 {item.label}
               </Link>
             </li>
           ))}
         </ul>
+        <p className="frame pb-10">
+          <Link href="/eshop" className="btn w-full" onClick={() => setOpen(false)}>
+            Objednat box
+          </Link>
+        </p>
       </div>
     </div>
   );

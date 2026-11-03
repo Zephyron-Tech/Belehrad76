@@ -42,11 +42,12 @@ export function LineupPicker({ players, initialSlug }: { players: LineupPlayer[]
     (list.current?.children[n]?.querySelector("button") as HTMLButtonElement | null)?.focus();
   };
 
+  // Seznam zarovnaný nahoru: pravý sloupec mění výšku podle délky jména a svislé centrování by seznam posouvalo pod myší
   return (
-    <div className="lineup grid items-center gap-y-10 md:grid-cols-12 md:gap-x-8">
+    <div className="lineup grid items-start gap-y-10 md:grid-cols-12 md:gap-x-8">
       <ul
         ref={list}
-        className="lineup-names order-2 md:order-1 md:col-span-5"
+        className="lineup-names order-2 md:order-1 md:col-span-5 md:pt-[4vh]"
         aria-label="Hráči – vyberte lahev"
         data-reveal
         style={{ "--i": 1 } as React.CSSProperties}
@@ -67,10 +68,13 @@ export function LineupPicker({ players, initialSlug }: { players: LineupPlayer[]
               onPointerLeave={() => window.clearTimeout(hoverTimer.current)}
               className="lineup-name"
             >
-              <span className="lineup-num tabular">{p.number}</span>
-              {/* na telefonu jen příjmení, jako na soupisce */}
-              <span className="md:hidden">{p.name.split(" ").slice(-1)[0]}</span>
-              <span className="hidden md:inline">{p.name}</span>
+              {/* posun vybraného jména jen uvnitř tlačítka – plocha pro myš zůstává na místě */}
+              <span className="lineup-name__inner">
+                <span className="lineup-num tabular">{p.number}</span>
+                {/* na telefonu jen příjmení, jako na soupisce */}
+                <span className="md:hidden">{p.name.split(" ").slice(-1)[0]}</span>
+                <span className="hidden md:inline">{p.name}</span>
+              </span>
             </button>
           </li>
         ))}
