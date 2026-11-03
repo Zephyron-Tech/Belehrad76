@@ -58,7 +58,7 @@ export function CartView() {
             />
             <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <Link href={`/produkt/${line.slug}`} className="font-serif text-lg text-cream hover:text-gold-light">
+                <Link href={line.type === "BOX" ? "/eshop" : `/produkt/${line.slug}`} className="font-serif text-lg text-cream hover:text-gold-light">
                   {line.name}
                 </Link>
                 <p className="text-sm text-muted">{formatCzk(line.unitPriceCzk)} / ks</p>

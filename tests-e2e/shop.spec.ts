@@ -91,11 +91,14 @@ test("zákazník: box + kusovka, platba kartou přes (simulovanou) GoPay, zájem
   await expect(page.locator("body")).not.toContainText("100 Kč z");
 
   // Box do košíku
+  // Box nemá vlastní stránku: přesměruje se do e-shopu, kupuje se tam
   await gotoShop(page, `/produkt/${BOX_SLUG}`);
-  await expect(page.getByRole("heading", { name: "Obsah boxu" })).toBeVisible();
+  await expect(page).toHaveURL(/\/eshop$/);
+  const boxSection = page.locator("section").filter({ has: page.getByRole("heading", { name: "Box Mistři Evropy" }) });
+  await expect(boxSection.getByRole("link")).toHaveCount(0);
   await expect(page.getByText("Antonín Panenka").first()).toBeVisible();
-  await page.getByRole("button", { name: "Do košíku" }).click();
-  await expect(page.getByRole("button", { name: "Přidáno ✓" })).toBeVisible();
+  await boxSection.getByRole("button", { name: "Do košíku" }).click();
+  await expect(boxSection.getByRole("button", { name: "Přidáno ✓" })).toBeVisible();
 
   // Kusovka do košíku
   await gotoShop(page, "/produkt/antonin-panenka");

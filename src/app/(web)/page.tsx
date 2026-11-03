@@ -121,9 +121,6 @@ export default async function HomePage() {
                 ) : (
                   <p className="border border-line p-3 text-sm text-muted">Prodej bude brzy spuštěn.</p>
                 )}
-                <Link href={`/produkt/${box.slug}`} className="text-sm text-gold-light underline underline-offset-4">
-                  Detail boxu a obsah
-                </Link>
               </div>
             </div>
           </div>

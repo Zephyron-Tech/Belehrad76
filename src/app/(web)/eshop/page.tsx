@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getActiveProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { formatCzk } from "@/lib/format";
@@ -31,19 +30,13 @@ export default async function EshopPage() {
 
       {boxes.map((box) => (
         <section key={box.id} className="mt-10 grid gap-8 border border-line bg-panel p-5 md:grid-cols-[1.2fr_1fr] md:p-8">
-          <Link href={`/produkt/${box.slug}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={box.imageUrl} alt={`${box.name} – vizualizace`} className="w-full border border-line" />
-          </Link>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={box.imageUrl} alt={`${box.name} – vizualizace`} className="w-full border border-line" />
           <div className="flex flex-col">
             {/* Nad nadpisem panáček s míčem a branka – po přidání boxu do košíku vstřelí gól */}
             <div className="self-start">
               <GoalKick slug={box.slug} />
-              <h2 className="font-serif text-3xl font-bold text-cream">
-                <Link href={`/produkt/${box.slug}`} className="hover:text-gold-light">
-                  {box.name}
-                </Link>
-              </h2>
+              <h2 className="font-serif text-3xl font-bold text-cream">{box.name}</h2>
             </div>
             <p className="mt-3 text-cream/85">{box.shortDescription}</p>
             <p className="mt-5 font-serif text-4xl font-bold text-gold-light">{formatCzk(box.priceCzk)}</p>

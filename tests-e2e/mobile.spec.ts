@@ -6,7 +6,7 @@ test("mobil: bez vodorovného posouvání, menu a hlavní stránky", async ({ pa
     { name: "age_verified", value: "1", url },
     { name: "cookie_consent", value: "v1:a0:m0", url },
   ]);
-  for (const path of ["/", "/eshop", "/produkt/box-mistri-evropy", "/pokladna", "/obchodni-podminky"]) {
+  for (const path of ["/", "/eshop", "/produkt/antonin-panenka", "/pokladna", "/obchodni-podminky"]) {
     await page.goto(path);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, `vodorovné přetečení na ${path}`).toBeLessThanOrEqual(1);
