@@ -65,8 +65,14 @@ export default async function HomePage() {
             <p className="hero-load mt-6 max-w-[30ch] text-lead md:mt-8" style={{ "--d": "420ms" } as React.CSSProperties}>
               {settings.text("home.hero_sentence")}
             </p>
+            <ul className="hero-load mt-5 max-w-[44ch] space-y-1 text-muted" style={{ "--d": "480ms" } as React.CSSProperties}>
+              <li>
+                <span className="font-semibold text-cream">Slivovice 50 %</span>, na každé lahvi portrét, jméno a číslo dresu jednoho z mistrů.
+              </li>
+              <li>Celá edice: 152 boxů, 1 976 lahví.</li>
+            </ul>
             {box && (
-              <div className="hero-load mt-8 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ "--d": "520ms" } as React.CSSProperties}>
+              <div className="hero-load mt-7 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ "--d": "520ms" } as React.CSSProperties}>
                 <Link href="/eshop" className="btn">
                   Objednat box · {formatCzk(box.priceCzk)}
                 </Link>
