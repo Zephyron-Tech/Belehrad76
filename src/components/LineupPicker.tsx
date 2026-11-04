@@ -114,7 +114,7 @@ export function LineupPicker({ players, initialSlug }: { players: LineupPlayer[]
             <span className="display block text-[clamp(2.25rem,1rem+2.6vw,3.75rem)] text-gold md:whitespace-nowrap">
               {current.number}&nbsp;{current.name}
             </span>
-            <span className="mt-1 block text-muted">Lahev slivovice 50&nbsp;% s jeho portrétem</span>
+            <span className="mt-1 block text-muted">Lahev slivovice 50&nbsp;% s portrétem</span>
           </p>
           <Link href={`/produkt/${current.slug}`} className="btn w-full md:w-auto md:justify-self-end">
             Koupit lahev
