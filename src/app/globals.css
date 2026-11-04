@@ -396,7 +396,7 @@ p {
 }
 @media (prefers-reduced-motion: no-preference) {
   .cookie-bar {
-    animation: cookie-in 420ms var(--ease-out) 600ms both;
+    animation: cookie-in 320ms var(--ease-out) both;
   }
 }
 @keyframes cookie-in {
@@ -1173,5 +1173,41 @@ p {
   from {
     opacity: 0;
     transform: translateY(14px);
+  }
+}
+
+/* --- Telefon: stejné pořadí příchodu jako na počítači, ale zhruba o polovinu rychlejší (hotovo do ~0,8 s) --- */
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .js .hero-disc {
+    animation-duration: 700ms;
+    animation-delay: 0ms;
+  }
+  .js .hero-line > span {
+    animation-duration: 560ms;
+    animation-delay: calc(60ms + var(--i, 0) * 60ms);
+  }
+  .js .hero-load {
+    animation-duration: 400ms;
+    animation-delay: calc(var(--d, 400ms) * 0.4);
+  }
+  .js .hero-box-frame {
+    animation-duration: 650ms;
+    animation-delay: 150ms;
+  }
+  .js .hero-box-frame img {
+    animation-duration: 800ms;
+    animation-delay: 120ms;
+  }
+  .js [data-reveal] {
+    transition-duration: 450ms, 550ms;
+    transition-delay: calc(var(--i, 0) * 50ms);
+  }
+  .js [data-shutter] {
+    transition-duration: 700ms;
+    transition-delay: calc(var(--i, 0) * 50ms);
+  }
+  .js [data-shutter] img {
+    transition-duration: 900ms;
+    transition-delay: calc(var(--i, 0) * 50ms);
   }
 }

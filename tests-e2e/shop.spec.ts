@@ -31,6 +31,9 @@ async function boxStock() {
 async function passGates(page: Page) {
   // Úvodní stránka je bez věkové brány, brána je až při vstupu do e-shopu
   await page.goto("/");
+  // Lišta cookies se ukáže až po rolování za úvodní sekci
+  await expect(page.getByRole("button", { name: "Jen nezbytné" })).toHaveCount(0);
+  await page.mouse.wheel(0, 3000);
   await page.getByRole("button", { name: "Jen nezbytné" }).click();
   await expect(page.getByRole("dialog", { name: /18 let/ })).toBeHidden();
   await page.goto("/eshop");

@@ -32,7 +32,7 @@ export default async function HomePage() {
     <>
       <JsonLd data={organizationJsonLd(settings.str("seller.name"), settings.str("contact.email"))} />
       {/* Noc v Bělehradě: nadpis vlevo, obří pečeť oříznutá vpravo, na ní box */}
-      <section className="chapter field-night relative flex !min-h-[calc(100svh-var(--header-h))] flex-col !pb-10 !pt-6 md:block md:!py-0">
+      <section data-hero className="chapter field-night relative flex !min-h-[calc(100svh-var(--header-h))] flex-col !pb-10 !pt-6 md:block md:!py-0">
         {/* Pečeť a box se měří od rámu stránky (max. šířka), ne od okna – na širokém monitoru zůstanou u nadpisu */}
         <div className="hero-stage order-2 md:order-none">
           <Seal filled decorative id="hero-seal" className="hero-disc" />
