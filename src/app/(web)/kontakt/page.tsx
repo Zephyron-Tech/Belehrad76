@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getSettings } from "@/lib/settings";
+import { addressLines } from "@/lib/format";
 import { SocialLinks } from "@/components/SocialLinks";
 
 export const metadata: Metadata = { title: "Kontakt" };
@@ -57,9 +58,14 @@ export default async function ContactPage() {
               Prodávající
             </h2>
             <p className="mt-4">
-              {settings.str("seller.name")}, {settings.str("seller.address")}
-              <br />
-              IČO {settings.str("seller.ico")}, DIČ {settings.str("seller.dic")}
+              <span className="block">{settings.str("seller.name")}</span>
+              {addressLines(settings.str("seller.address")).map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+              <span className="mt-3 block">IČO&nbsp;{settings.str("seller.ico")}</span>
+              <span className="block">DIČ&nbsp;{settings.str("seller.dic")}</span>
             </p>
             <p className="mt-3 text-muted">{settings.str("seller.register")}</p>
           </section>

@@ -612,7 +612,9 @@ p {
 .lineup-name {
   display: flex;
   align-items: center;
-  width: 100%;
+  /* plocha pro myš je jen tak široká jako jméno, ne celý sloupec */
+  width: fit-content;
+  max-width: 100%;
   min-height: 2.75rem;
   font-family: var(--font-archivo), sans-serif;
   font-weight: 800;
@@ -651,6 +653,10 @@ p {
     font-size: clamp(1.75rem, 2.9vw, 2.75rem);
     min-height: 0;
     white-space: nowrap;
+  }
+  /* vybrané jméno se posouvá o 0,35 em: tlačítko má stejnou rezervu vpravo, ať jméno z plochy nevyjede */
+  .lineup-name {
+    padding-right: 0.35em;
   }
   .lineup-name[aria-pressed="true"] .lineup-name__inner {
     transform: translateX(0.35em);

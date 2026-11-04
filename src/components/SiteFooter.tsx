@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Settings } from "@/lib/settings";
+import { addressLines } from "@/lib/format";
 import { CookieSettingsLink } from "./CookieConsent";
 import { SocialLinks } from "./SocialLinks";
 
@@ -45,11 +46,14 @@ export function SiteFooter({ settings }: { settings: Settings }) {
           <div className="md:col-span-3 md:col-start-7">
             <h2 className="font-semibold">Prodávající</h2>
             <p className="mt-3 text-muted">
-              {settings.str("seller.name")}
-              <br />
-              {settings.str("seller.address")}
-              <br />
-              IČO {settings.str("seller.ico")}, DIČ {settings.str("seller.dic")}
+              <span className="block">{settings.str("seller.name")}</span>
+              {addressLines(settings.str("seller.address")).map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+              <span className="mt-3 block">IČO&nbsp;{settings.str("seller.ico")}</span>
+              <span className="block">DIČ&nbsp;{settings.str("seller.dic")}</span>
             </p>
           </div>
 
