@@ -79,34 +79,29 @@ export default async function HomePage() {
 
       {/* Příběh: krémové pole etikety */}
       {story && (
-        <section id="pribeh" className="chapter chapter-fit field-paper scroll-mt-16 !pb-0 !pt-14 md:!pt-20" aria-labelledby="pribeh-nadpis">
-          <div className="frame grid gap-y-8 md:grid-cols-12 md:gap-x-8">
-            <div className="md:col-span-5">
-              <h2 id="pribeh-nadpis" className="display text-head" data-reveal style={order(0)}>
-                {story.title}
-              </h2>
-              <p className="display mt-6 text-head tabular md:mt-16" data-reveal style={order(2)}>
-                152 × 13 = 1 976
-              </p>
-            </div>
-            <div className="md:col-span-6 md:col-start-7" data-reveal style={order(1)}>
-              <Markdown source={story.body} settings={settings} className="text-lead [&_p]:leading-[1.45]" />
+        <section id="pribeh" className="chapter chapter-fit field-paper scroll-mt-16 !py-14 md:!py-20" aria-labelledby="pribeh-nadpis">
+          <div className="frame">
+            <h2 id="pribeh-nadpis" className="display text-head" data-reveal style={order(0)}>
+              {story.title}
+            </h2>
+            <div className="mt-10 grid items-center gap-y-10 md:mt-14 md:grid-cols-2 md:gap-x-12 lg:gap-x-20">
+              <div data-reveal style={order(1)}>
+                <Markdown source={story.body} settings={settings} className="text-lead [&_p]:leading-[1.45]" />
+              </div>
+              <figure data-reveal style={order(2)}>
+                {/* výřez lahví bez pozadí (PNG s průhledností) – žádné prolnutí, které by při animaci problikávalo */}
+                <Image
+                  src="/img/lahve-vyrez.png"
+                  alt="Třináct lahví edice vedle sebe, na každé portrét, jméno a číslo hráče"
+                  width={1280}
+                  height={543}
+                  sizes="(min-width: 768px) 46vw, 100vw"
+                  className="h-auto w-full"
+                />
+                <figcaption className="display mt-6 text-head tabular">152 × 13 = 1 976</figcaption>
+              </figure>
             </div>
           </div>
-
-          <figure className="frame mt-8 md:mt-10">
-            {/* výřez lahví bez pozadí (PNG s průhledností) – žádné prolnutí, které by při animaci problikávalo */}
-            <div className="mx-auto max-w-[62rem]" data-reveal style={order(0)}>
-              <Image
-                src="/img/lahve-vyrez.png"
-                alt="Třináct lahví edice vedle sebe, na každé portrét, jméno a číslo hráče"
-                width={1280}
-                height={543}
-                sizes="100vw"
-                className="h-auto w-full"
-              />
-            </div>
-          </figure>
         </section>
       )}
 
