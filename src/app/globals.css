@@ -473,6 +473,9 @@ p {
   }
 }
 .hero-disc {
+  /* tlumená pečeť: tmavá vínová, aby nepřebíjela nadpis a box */
+  --seal: #341113;
+  --seal-deep: #26100f;
   position: absolute;
   width: 130vw;
   height: 130vw;

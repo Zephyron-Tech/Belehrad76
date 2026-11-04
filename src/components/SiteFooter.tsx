@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Settings } from "@/lib/settings";
-import { PHOTO_CREDITS } from "@/config/credits";
 import { CookieSettingsLink } from "./CookieConsent";
 import { SocialLinks } from "./SocialLinks";
 
@@ -74,21 +73,6 @@ export function SiteFooter({ settings }: { settings: Settings }) {
         <div className="mt-16 grid gap-4 text-small text-muted md:grid-cols-12">
           <p className="md:col-span-5">
             <strong className="text-cream">18+</strong> Prodej alkoholu osobám mladším 18 let je zakázán. Pijte zodpovědně.
-          </p>
-          <p className="md:col-span-6 md:col-start-7">
-            Fotografie Bělehradu: Wikimedia Commons –{" "}
-            {PHOTO_CREDITS.map((c, i) => (
-              <span key={c.src}>
-                <a href={c.page} target="_blank" rel="noopener noreferrer" className="link decoration-transparent hover:decoration-current">
-                  {c.title}
-                </a>{" "}
-                ({c.author},{" "}
-                <a href={c.licenceUrl} target="_blank" rel="noopener noreferrer" className="link decoration-transparent hover:decoration-current">
-                  {c.licence}
-                </a>
-                ){i < PHOTO_CREDITS.length - 1 ? ", " : "."}
-              </span>
-            ))}
           </p>
         </div>
       </div>
