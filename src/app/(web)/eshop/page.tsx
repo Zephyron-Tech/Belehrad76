@@ -99,7 +99,7 @@ export default async function EshopPage() {
         </section>
       ))}
 
-      <section id="lahve" className="field-night scroll-mt-16 py-16 md:py-28" aria-labelledby="lahve-nadpis">
+      <section id="lahve" className="field-night scroll-mt-[-1.25rem] py-16 md:py-28" aria-labelledby="lahve-nadpis">
         <header className="frame grid gap-6 md:grid-cols-12 md:items-end">
           <h2 id="lahve-nadpis" className="display text-head md:col-span-6" data-reveal style={order(0)}>
             Lahve jednotlivých hráčů

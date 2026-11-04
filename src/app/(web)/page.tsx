@@ -91,7 +91,7 @@ export default async function HomePage() {
 
       {/* Příběh: krémové pole etikety */}
       {story && (
-        <section id="pribeh" className="chapter chapter-fit field-paper scroll-mt-16 !py-14 md:!py-20" aria-labelledby="pribeh-nadpis">
+        <section id="pribeh" className="chapter chapter-fit field-paper !py-14 md:!py-20" aria-labelledby="pribeh-nadpis">
           <div className="frame">
             <h2 id="pribeh-nadpis" className="display text-head" data-reveal style={order(0)}>
               {story.title}
@@ -118,7 +118,7 @@ export default async function HomePage() {
       )}
 
       {/* Soupiska: živý výběr lahve */}
-      <section id="soupiska" className="chapter field-night scroll-mt-16 !pt-16 md:!pt-24" aria-labelledby="soupiska-nadpis">
+      <section id="soupiska" className="chapter field-night scroll-mt-[-1.25rem] !pt-16 md:!pt-24" aria-labelledby="soupiska-nadpis">
         <div className="frame">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 md:mb-16">
             <h2 id="soupiska-nadpis" className="display text-head" data-reveal style={order(0)}>
@@ -192,7 +192,7 @@ export default async function HomePage() {
 
       {/* Nadace: červené pole pečeti */}
       {foundation && (
-        <section id="nadace" className="chapter chapter-fit field-seal scroll-mt-16" aria-labelledby="nadace-nadpis">
+        <section id="nadace" className="chapter chapter-fit field-seal" aria-labelledby="nadace-nadpis">
           <Seal decorative id="nadace-seal" className="pointer-events-none absolute -right-[18vw] top-1/2 h-[80vw] w-[80vw] -translate-y-1/2 opacity-40 [&_*]:stroke-[var(--seal-deep)] [&_text]:fill-[var(--seal-deep)] md:-right-[8vw] md:h-[46vw] md:w-[46vw]" />
           <div className="frame relative grid md:grid-cols-12">
             <div className="md:col-span-7">
@@ -215,7 +215,7 @@ export default async function HomePage() {
       )}
 
       {/* Večer a dražba */}
-      <section id="vecer" className="chapter chapter-fit field-night scroll-mt-16" aria-labelledby="vecer-nadpis">
+      <section id="vecer" className="chapter chapter-fit field-night" aria-labelledby="vecer-nadpis">
         <div className="frame grid gap-y-14 lg:grid-cols-12 lg:gap-x-8">
           {evening && (
             <div className="lg:col-span-7">
