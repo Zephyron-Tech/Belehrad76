@@ -1210,4 +1210,23 @@ p {
     transition-duration: 900ms;
     transition-delay: calc(var(--i, 0) * 50ms);
   }
+  /* věková brána: první, co zákazník vidí v e-shopu, musí naskočit hned */
+  .age-gate {
+    animation-duration: 200ms;
+  }
+  .age-gate__seal {
+    animation-duration: 650ms;
+  }
+  .age-gate__body > * {
+    animation-duration: 380ms;
+  }
+  .age-gate__body > :nth-child(2) {
+    animation-delay: 50ms;
+  }
+  .age-gate__body > :nth-child(3) {
+    animation-delay: 100ms;
+  }
+  .age-gate__body > :nth-child(4) {
+    animation-delay: 150ms;
+  }
 }
