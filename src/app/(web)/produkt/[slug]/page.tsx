@@ -51,31 +51,24 @@ export default async function ProductPage({ params }: Props) {
   return (
     <>
       <JsonLd data={productJsonLd(product, settings.str("seller.name"))} />
-      <div className="field-night pb-20 pt-8 md:pb-28 md:pt-12">
-        <div className="frame">
+      <div className="field-night flex flex-col pb-6 pt-5 md:min-h-[calc(100svh-var(--header-h))] md:pb-8 md:pt-6">
+        <div className="frame flex flex-1 flex-col">
           <nav aria-label="Drobečková navigace">
-            <ol className="flex flex-wrap gap-x-2 text-muted">
-              <li>
-                <Link href="/eshop" className="link decoration-transparent hover:text-cream hover:decoration-current">
-                  E-shop
-                </Link>
-              </li>
-              <li aria-hidden="true">→</li>
+            <ol className="flex flex-wrap gap-x-6 text-muted">
               <li>
                 <Link href="/eshop#lahve" className="link decoration-transparent hover:text-cream hover:decoration-current">
                   Lahve hráčů
                 </Link>
               </li>
-              <li aria-hidden="true">→</li>
               <li aria-current="page" className="text-cream">
                 {name}
               </li>
             </ol>
           </nav>
 
-          <div className="mt-10 grid items-center gap-y-12 md:grid-cols-12 md:gap-x-10">
+          <div className="my-6 grid flex-1 items-center gap-y-8 md:my-4 md:grid-cols-12 md:gap-x-10">
             <div className="md:col-span-6">
-              <div className="lineup-stage" data-reveal>
+              <div className="lineup-stage lineup-stage--fit" data-reveal>
                 <Seal filled decorative id="produkt-seal" className="lineup-disc" />
                 <Image
                   src={product.imageUrl}
@@ -88,23 +81,26 @@ export default async function ProductPage({ params }: Props) {
                   data-active="true"
                 />
               </div>
-              <p className="mt-4 text-center text-small text-muted">Obrázky jsou ilustrační vizualizace.</p>
+              <p className="mt-3 text-center text-small text-muted">Obrázky jsou ilustrační vizualizace.</p>
             </div>
 
             <div className="md:col-span-6">
-              <p className="display text-[clamp(5rem,4rem+6vw,10rem)] leading-[0.8] text-gold tabular" aria-hidden="true">
-                {product.playerNumber}
-              </p>
-              <h1 className="display mt-4 text-head">{product.name}</h1>
-              <p className="mt-4 max-w-[44ch] text-lead">{product.shortDescription}</p>
-              <p className="display mt-8 text-head tabular">{formatCzk(product.priceCzk)}</p>
-              <p className="mt-2 max-w-[52ch] text-muted">
+              {/* číslo dresu vedle nadpisu: ušetří výšku, aby se vše vešlo do první obrazovky */}
+              <div className="flex items-end gap-5">
+                <p className="display text-[clamp(4rem,3rem+3.5vw,6.5rem)] leading-[0.78] text-gold tabular" aria-hidden="true">
+                  {product.playerNumber}
+                </p>
+                <h1 className="display text-head">{product.name}</h1>
+              </div>
+              <p className="mt-3 max-w-[44ch] text-lead">{product.shortDescription}</p>
+              <p className="display mt-5 text-head tabular">{formatCzk(product.priceCzk)}</p>
+              <p className="mt-1 max-w-[52ch] text-muted">
                 Cena včetně DPH. {shippingText} Nebo osobní převzetí na FAČR zdarma.
               </p>
-              <StockBadge stock={product.stock} className="mt-4 text-lead text-gold-light" />
-              {product.madeToOrder && <p className="mt-6 max-w-[52ch] bg-panel-2 p-4">{settings.text("bottle.lead_time")}</p>}
+              <StockBadge stock={product.stock} className="mt-3 text-lead text-gold-light" />
+              {product.madeToOrder && <p className="mt-4 max-w-[52ch] bg-panel-2 px-4 py-3">{settings.text("bottle.lead_time")}</p>}
 
-              <div className="mt-8">
+              <div className="mt-6">
                 {salesOpen ? (
                   <AddToCart slug={product.slug} max={max} />
                 ) : (
@@ -113,6 +109,23 @@ export default async function ProductPage({ params }: Props) {
               </div>
             </div>
           </div>
+
+          {prev && next && (
+            <nav aria-label="Další hráči" className="grid grid-cols-2 gap-6 pt-2">
+              <Link href={`/produkt/${prev.slug}`} className="sibling group">
+                <span className="text-muted">Předchozí hráč</span>
+                <span className="display block text-[clamp(1.25rem,1rem+1.2vw,2rem)]">
+                  <span className="tabular text-gold">{prev.playerNumber}</span> {prev.playerName}
+                </span>
+              </Link>
+              <Link href={`/produkt/${next.slug}`} className="sibling group text-right">
+                <span className="text-muted">Další hráč</span>
+                <span className="display block text-[clamp(1.25rem,1rem+1.2vw,2rem)]">
+                  <span className="tabular text-gold">{next.playerNumber}</span> {next.playerName}
+                </span>
+              </Link>
+            </nav>
+          )}
         </div>
       </div>
 
@@ -148,25 +161,6 @@ export default async function ProductPage({ params }: Props) {
           </div>
         </div>
       </section>
-
-      {prev && next && (
-        <nav aria-label="Další hráči" className="field-night">
-          <div className="frame grid grid-cols-2 gap-6 py-10">
-            <Link href={`/produkt/${prev.slug}`} className="sibling group">
-              <span className="text-muted">Předchozí hráč</span>
-              <span className="display block text-[clamp(1.5rem,1rem+2vw,2.75rem)]">
-                ← <span className="tabular text-gold">{prev.playerNumber}</span> {prev.playerName}
-              </span>
-            </Link>
-            <Link href={`/produkt/${next.slug}`} className="sibling group text-right">
-              <span className="text-muted">Další hráč</span>
-              <span className="display block text-[clamp(1.5rem,1rem+2vw,2.75rem)]">
-                <span className="tabular text-gold">{next.playerNumber}</span> {next.playerName} →
-              </span>
-            </Link>
-          </div>
-        </nav>
-      )}
     </>
   );
 }

@@ -53,3 +53,14 @@ export function typo(text: string): string {
     .replace(/(?<=^|[\s („"])([kKsSvVzZoOuUaAiI])[ \t]+(?=\S)/g, `$1${NBSP}`)
     .replace(/(\d)[ \t]+(%|Kč|ks|dní|dnů|let|lahví|lahve|boxů|boxy|hráčů|minut)(?=$|[\s.,;:!?)–])/g, `$1${NBSP}$2`);
 }
+
+/**
+ * Adresu „ulice, část obce, PSČ obec“ rozdělí na řádky: ulice (s částí obce) a PSČ s obcí.
+ * PSČ drží pohromadě pevnou mezerou, aby se „702 / 00“ nezalomilo.
+ */
+export function addressLines(address: string): string[] {
+  const parts = address.split(",").map((p) => p.trim()).filter(Boolean);
+  const last = parts[parts.length - 1] ?? "";
+  const lines = /^\d{3}\s?\d{2}\b/.test(last) && parts.length > 1 ? [parts.slice(0, -1).join(", "), last] : [parts.join(", ")];
+  return lines.map((l) => l.replace(/^(\d{3})\s(\d{2})\b/, "$1\u00a0$2"));
+}

@@ -32,9 +32,9 @@ export default async function HomePage() {
     <>
       <JsonLd data={organizationJsonLd(settings.str("seller.name"), settings.str("contact.email"))} />
       {/* Noc v Bělehradě: nadpis vlevo, obří pečeť oříznutá vpravo, na ní box */}
-      <section className="chapter field-night relative min-h-[calc(100svh-var(--header-h))] !pb-[56svh] !pt-10 md:!py-0">
+      <section data-hero className="chapter field-night relative flex !min-h-[calc(100svh-var(--header-h))] flex-col !pb-10 !pt-6 md:block md:!py-0">
         {/* Pečeť a box se měří od rámu stránky (max. šířka), ne od okna – na širokém monitoru zůstanou u nadpisu */}
-        <div className="hero-stage">
+        <div className="hero-stage order-2 md:order-none">
           <Seal filled decorative id="hero-seal" className="hero-disc" />
           <div className="hero-box">
             <div className="hero-box-frame overflow-clip">
@@ -48,9 +48,14 @@ export default async function HomePage() {
                 className="h-auto w-full"
               />
             </div>
+            {box && (
+              <div className="hero-load" style={{ "--d": "1100ms" } as React.CSSProperties}>
+                <StockBadge stock={box.stock} className="mt-4 text-center text-gold-light md:text-left" />
+              </div>
+            )}
           </div>
         </div>
-        <div className="frame relative grid md:min-h-[calc(100svh-var(--header-h))] md:grid-cols-12 md:items-center">
+        <div className="frame relative z-10 order-1 grid md:order-none md:min-h-[calc(100svh-var(--header-h))] md:grid-cols-12 md:items-center">
           <div className="md:col-span-7 md:py-24">
             <h1 className="display hero-title text-gold">
               <span className="hero-line">
@@ -62,15 +67,22 @@ export default async function HomePage() {
                 </span>
               </span>
             </h1>
-            <p className="hero-load mt-6 max-w-[30ch] text-lead md:mt-8" style={{ "--d": "420ms" } as React.CSSProperties}>
+            <p className="hero-load mt-5 max-w-[30ch] text-lead md:mt-8" style={{ "--d": "420ms" } as React.CSSProperties}>
               {settings.text("home.hero_sentence")}
             </p>
+            <ul className="hero-load mt-4 max-w-[44ch] space-y-1 text-muted" style={{ "--d": "480ms" } as React.CSSProperties}>
+              <li>
+                <span className="font-semibold text-cream">Slivovice 50 %</span>, na každé lahvi portrét, jméno a číslo dresu jednoho z mistrů.
+              </li>
+            </ul>
             {box && (
-              <div className="hero-load mt-8 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ "--d": "520ms" } as React.CSSProperties}>
+              <div className="hero-load mt-6 flex flex-wrap items-center gap-3" style={{ "--d": "520ms" } as React.CSSProperties}>
                 <Link href="/eshop" className="btn">
                   Objednat box · {formatCzk(box.priceCzk)}
                 </Link>
-                <StockBadge stock={box.stock} className="text-gold-light" />
+                <Link href="/#soupiska" className="btn btn-quiet">
+                  Jednotlivé lahve
+                </Link>
               </div>
             )}
           </div>
@@ -79,73 +91,34 @@ export default async function HomePage() {
 
       {/* Příběh: krémové pole etikety */}
       {story && (
-        <section id="pribeh" className="chapter field-paper scroll-mt-16" aria-labelledby="pribeh-nadpis">
-          <div className="frame grid gap-y-12 md:grid-cols-12 md:gap-x-8">
-            <div className="md:col-span-6">
-              <h2 id="pribeh-nadpis" className="display text-head" data-reveal style={order(0)}>
-                {story.title}
-              </h2>
+        <section id="pribeh" className="chapter chapter-fit field-paper !py-14 md:!py-20" aria-labelledby="pribeh-nadpis">
+          <div className="frame">
+            <h2 id="pribeh-nadpis" className="display text-head" data-reveal style={order(0)}>
+              {story.title}
+            </h2>
+            <div className="mt-10 grid items-center gap-y-10 md:mt-14 md:grid-cols-2 md:gap-x-12 lg:gap-x-20">
               <div data-reveal style={order(1)}>
-                <Markdown source={story.body} settings={settings} className="mt-8 text-lead [&_p]:leading-[1.45]" />
+                <Markdown source={story.body} settings={settings} className="text-lead [&_p]:leading-[1.45]" />
               </div>
-            </div>
-            <figure className="md:col-span-5 md:col-start-8 md:pt-4">
-              <div className="overflow-clip" data-reveal style={order(2)}>
+              <figure data-reveal style={order(2)}>
+                {/* výřez lahví bez pozadí (PNG s průhledností) – žádné prolnutí, které by při animaci problikávalo */}
                 <Image
-                  src="/img/archiv/beograd-1976-terazije.jpg"
-                  alt="Černobílá fotografie: auta v Terazijském tunelu v Bělehradě, 1976"
-                  width={1400}
-                  height={1700}
-                  sizes="(min-width: 768px) 36vw, 100vw"
-                  className="aspect-[4/5] h-auto w-full object-cover"
+                  src="/img/lahve-vyrez.png"
+                  alt="Třináct lahví edice vedle sebe, na každé portrét, jméno a číslo hráče"
+                  width={1280}
+                  height={543}
+                  sizes="(min-width: 768px) 46vw, 100vw"
+                  className="h-auto w-full"
                 />
-              </div>
-              <figcaption className="mt-3 text-small text-[var(--soft)]">Bělehrad v roce 1976, Terazijský tunel.</figcaption>
-            </figure>
-          </div>
-
-          <figure className="frame mt-20 md:mt-32">
-            {/* výřez lahví bez pozadí (PNG s průhledností) – žádné prolnutí, které by při animaci problikávalo */}
-            <div data-reveal style={order(0)}>
-              <Image
-                src="/img/lahve-vyrez.png"
-                alt="Třináct lahví edice vedle sebe, na každé portrét, jméno a číslo hráče"
-                width={1280}
-                height={543}
-                sizes="100vw"
-                className="h-auto w-full"
-              />
+                <figcaption className="display mt-6 text-right text-head tabular">152 × 13 = 1 976</figcaption>
+              </figure>
             </div>
-            <figcaption className="mt-8 flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2" data-reveal style={order(1)}>
-              <span className="display text-head tabular">152 × 13 = 1 976</span>
-              <span className="max-w-[34ch] text-[var(--soft)]">
-                152 boxů po 13 lahvích. Celkem 1 976 lahví – ani to číslo není náhoda.
-              </span>
-            </figcaption>
-          </figure>
+          </div>
         </section>
       )}
 
-      {/* Stadion finále: jediná velká fotografie, pomalu se posouvá s rolováním */}
-      <figure className="field-night relative">
-        <div className="drift-frame h-[62svh] md:h-[88svh]">
-          <Image
-            src="/img/archiv/marakana.jpg"
-            alt="Černobílá fotografie tribun stadionu Crvena zvezda v Bělehradě"
-            width={1800}
-            height={635}
-            sizes="100vw"
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <figcaption className="frame flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2 py-8">
-          <span className="display text-lead text-gold">Stadion Crvena zvezda, 20. června 1976</span>
-          <span className="text-muted">Finále ČSSR – NSR 2:2 po prodloužení, na penalty 5:3.</span>
-        </figcaption>
-      </figure>
-
       {/* Soupiska: živý výběr lahve */}
-      <section id="soupiska" className="chapter field-night scroll-mt-16 !pt-16 md:!pt-24" aria-labelledby="soupiska-nadpis">
+      <section id="soupiska" className="chapter field-night scroll-mt-[-1.25rem] !pt-16 md:!pt-24" aria-labelledby="soupiska-nadpis">
         <div className="frame">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 md:mb-16">
             <h2 id="soupiska-nadpis" className="display text-head" data-reveal style={order(0)}>
@@ -165,58 +138,6 @@ export default async function HomePage() {
             }))}
             initialSlug="antonin-panenka"
           />
-          <p className="mt-14">
-            <Link href="/eshop#lahve" className="link text-gold-light">
-              Všech 13 lahví v e-shopu
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* Nadace: červené pole pečeti */}
-      {foundation && (
-        <section id="nadace" className="chapter chapter-fit field-seal scroll-mt-16" aria-labelledby="nadace-nadpis">
-          <Seal decorative id="nadace-seal" className="pointer-events-none absolute -right-[18vw] top-1/2 h-[80vw] w-[80vw] -translate-y-1/2 opacity-40 [&_*]:stroke-[var(--seal-deep)] [&_text]:fill-[var(--seal-deep)] md:-right-[8vw] md:h-[46vw] md:w-[46vw]" />
-          <div className="frame relative grid md:grid-cols-12">
-            <div className="md:col-span-7">
-              <h2 id="nadace-nadpis" className="display text-head" data-reveal style={order(0)}>
-                {foundation.title}
-              </h2>
-              <div data-reveal style={order(1)}>
-                <Markdown source={foundation.body} settings={settings} className="mt-8 text-lead [&_p]:leading-[1.45]" />
-              </div>
-              {foundationUrl && (
-                <p className="mt-10" data-reveal style={order(2)}>
-                  <a href={foundationUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ink">
-                    Web Nadace fotbalových internacionálů
-                  </a>
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Večer a dražba */}
-      <section id="vecer" className="chapter chapter-fit field-night scroll-mt-16" aria-labelledby="vecer-nadpis">
-        <div className="frame grid gap-y-14 lg:grid-cols-12 lg:gap-x-8">
-          {evening && (
-            <div className="lg:col-span-7">
-              <h2 id="vecer-nadpis" className="display text-head" data-reveal style={order(0)}>
-                {evening.title}
-              </h2>
-              <div data-reveal style={order(1)}>
-                <Markdown source={evening.body} settings={settings} className="mt-8 text-lead [&_p]:leading-[1.45]" />
-              </div>
-            </div>
-          )}
-          {auction && (
-            <aside className="field-panel self-end p-8 md:max-w-xl md:p-10 lg:col-span-4 lg:col-start-9" data-reveal style={order(2)}>
-              <Seal size={88} id="drazba-seal" />
-              <h3 className="display mt-6 text-[2rem]">{auction.title}</h3>
-              <Markdown source={auction.body} settings={settings} className="mt-4" />
-            </aside>
-          )}
         </div>
       </section>
 
@@ -268,6 +189,53 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Nadace: červené pole pečeti */}
+      {foundation && (
+        <section id="nadace" className="chapter chapter-fit field-seal" aria-labelledby="nadace-nadpis">
+          <Seal decorative id="nadace-seal" className="pointer-events-none absolute -right-[18vw] top-1/2 h-[80vw] w-[80vw] -translate-y-1/2 opacity-40 [&_*]:stroke-[var(--seal-deep)] [&_text]:fill-[var(--seal-deep)] md:-right-[8vw] md:h-[46vw] md:w-[46vw]" />
+          <div className="frame relative grid md:grid-cols-12">
+            <div className="md:col-span-7">
+              <h2 id="nadace-nadpis" className="display text-head" data-reveal style={order(0)}>
+                {foundation.title}
+              </h2>
+              <div data-reveal style={order(1)}>
+                <Markdown source={foundation.body} settings={settings} className="mt-8 text-lead [&_p]:leading-[1.45]" />
+              </div>
+              {foundationUrl && (
+                <p className="mt-10" data-reveal style={order(2)}>
+                  <a href={foundationUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ink">
+                    Web Nadace fotbalových internacionálů
+                  </a>
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Večer a dražba */}
+      <section id="vecer" className="chapter chapter-fit field-night" aria-labelledby="vecer-nadpis">
+        <div className="frame grid gap-y-14 lg:grid-cols-12 lg:gap-x-8">
+          {evening && (
+            <div className="lg:col-span-7">
+              <h2 id="vecer-nadpis" className="display text-head" data-reveal style={order(0)}>
+                {evening.title}
+              </h2>
+              <div data-reveal style={order(1)}>
+                <Markdown source={evening.body} settings={settings} className="mt-8 text-lead [&_p]:leading-[1.45]" />
+              </div>
+            </div>
+          )}
+          {auction && (
+            <aside className="field-panel self-end p-8 md:max-w-xl md:p-10 lg:col-span-4 lg:col-start-9" data-reveal style={order(2)}>
+              <Seal size={88} id="drazba-seal" />
+              <h3 className="display mt-6 text-[2rem]">{auction.title}</h3>
+              <Markdown source={auction.body} settings={settings} className="mt-4" />
+            </aside>
+          )}
+        </div>
+      </section>
     </>
   );
 }

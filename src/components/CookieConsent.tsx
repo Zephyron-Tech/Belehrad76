@@ -3,6 +3,7 @@
 import Script from "next/script";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { CONSENT_COOKIE, currentConsent, serializeConsent, writeCookie, type Consent } from "@/lib/consent";
 
 export const OPEN_COOKIE_SETTINGS_EVENT = "open-cookie-settings";
@@ -15,6 +16,9 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
   const [loaded, setLoaded] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  // Lišta se ukáže až po rolování za úvodní sekci (jinde po kousku rolování), ať nezakrývá první dojem
+  const [armed, setArmed] = useState(false);
+  const pathname = usePathname();
   const [draft, setDraft] = useState<Consent>({ analytics: false, marketing: false });
 
   useEffect(() => {
@@ -26,10 +30,34 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
       setDraft(currentConsent() ?? { analytics: false, marketing: false });
       setShowSettings(true);
       setShowBanner(true);
+      setArmed(true);
     };
     window.addEventListener(OPEN_COOKIE_SETTINGS_EVENT, open);
     return () => window.removeEventListener(OPEN_COOKIE_SETTINGS_EVENT, open);
   }, []);
+
+  useEffect(() => {
+    setArmed(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!showBanner || armed) return;
+    const check = () => {
+      const hero = document.querySelector("[data-hero]");
+      const past = hero ? hero.getBoundingClientRect().bottom <= 120 : window.scrollY > 240;
+      if (past) setArmed(true);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    // stránky bez úvodní sekce a bez rolování (krátký obsah): lišta se ukáže po chvíli
+    const timer = document.querySelector("[data-hero]") ? undefined : window.setTimeout(() => setArmed(true), 10_000);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+      window.clearTimeout(timer);
+    };
+  }, [showBanner, armed, pathname]);
 
   const save = (c: Consent) => {
     const hadTracking = consent && (consent.analytics || consent.marketing);
@@ -57,7 +85,7 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
         </Script>
       )}
 
-      {showBanner && (
+      {showBanner && armed && (
         <div className="cookie-bar fixed inset-x-0 bottom-0 z-[90] bg-panel-2 pb-[env(safe-area-inset-bottom)]" role="region" aria-label="Souhlas s cookies">
           <div className="frame flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between md:gap-10 md:py-5">
             <p className="max-w-[72ch] text-small leading-normal text-cream md:text-[1rem]">

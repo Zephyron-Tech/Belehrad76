@@ -25,7 +25,8 @@ export function RevealObserver() {
           io.unobserve(e.target);
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
+      // kladný dolní okraj: animace se spustí o 10 % výšky okna dřív, než prvek vjede do záběru
+      { rootMargin: "0px 0px 10% 0px", threshold: 0.05 },
     );
     const scan = () =>
       document.querySelectorAll(SELECTOR).forEach((el) => {

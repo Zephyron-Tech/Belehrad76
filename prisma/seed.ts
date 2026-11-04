@@ -48,7 +48,7 @@ async function main() {
         name: `Slivovice ${fullName}`,
         playerName: fullName,
         playerNumber: p.number,
-        shortDescription: `${fullName}, číslo ${p.number} – lahev slivovice 50 % s jeho portrétem na etiketě.`,
+        shortDescription: `${fullName}, číslo ${p.number} – lahev slivovice 50 % s portrétem na etiketě.`,
         description: [
           `Samostatná lahev z edice **Mistři Evropy – Bělehrad 1976**. Etiketu zdobí portrét, jméno a číslo dresu – **${fullName}, ${p.number}**.`,
           "",

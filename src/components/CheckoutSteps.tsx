@@ -5,10 +5,9 @@ export function CheckoutSteps({ current }: { current: (typeof STEPS)[number] }) 
   return (
     <nav aria-label="Postup objednávky">
       <ol className="steps">
-        {STEPS.map((s, i) => (
-          <li key={s} aria-current={s === current ? "step" : undefined} className="flex items-center gap-5">
+        {STEPS.map((s) => (
+          <li key={s} aria-current={s === current ? "step" : undefined}>
             {s}
-            {i < STEPS.length - 1 && <span aria-hidden="true">→</span>}
           </li>
         ))}
       </ol>
