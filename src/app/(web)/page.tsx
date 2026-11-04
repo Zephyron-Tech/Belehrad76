@@ -98,7 +98,7 @@ export default async function HomePage() {
                   sizes="(min-width: 768px) 46vw, 100vw"
                   className="h-auto w-full"
                 />
-                <figcaption className="display mt-6 text-head tabular">152 × 13 = 1 976</figcaption>
+                <figcaption className="display mt-6 text-right text-head tabular">152 × 13 = 1 976</figcaption>
               </figure>
             </div>
           </div>
