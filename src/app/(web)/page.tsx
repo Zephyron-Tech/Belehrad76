@@ -32,9 +32,9 @@ export default async function HomePage() {
     <>
       <JsonLd data={organizationJsonLd(settings.str("seller.name"), settings.str("contact.email"))} />
       {/* Noc v Bělehradě: nadpis vlevo, obří pečeť oříznutá vpravo, na ní box */}
-      <section className="chapter field-night relative min-h-[calc(100svh-var(--header-h))] !pb-[56svh] !pt-10 md:!py-0">
+      <section className="chapter field-night relative flex min-h-[calc(100svh-var(--header-h))] flex-col !pb-10 !pt-6 md:block md:!py-0">
         {/* Pečeť a box se měří od rámu stránky (max. šířka), ne od okna – na širokém monitoru zůstanou u nadpisu */}
-        <div className="hero-stage">
+        <div className="hero-stage order-2 md:order-none">
           <Seal filled decorative id="hero-seal" className="hero-disc" />
           <div className="hero-box">
             <div className="hero-box-frame overflow-clip">
@@ -55,7 +55,7 @@ export default async function HomePage() {
             )}
           </div>
         </div>
-        <div className="frame relative grid md:min-h-[calc(100svh-var(--header-h))] md:grid-cols-12 md:items-center">
+        <div className="frame relative z-10 order-1 grid md:order-none md:min-h-[calc(100svh-var(--header-h))] md:grid-cols-12 md:items-center">
           <div className="md:col-span-7 md:py-24">
             <h1 className="display hero-title text-gold">
               <span className="hero-line">
@@ -67,16 +67,16 @@ export default async function HomePage() {
                 </span>
               </span>
             </h1>
-            <p className="hero-load mt-6 max-w-[30ch] text-lead md:mt-8" style={{ "--d": "420ms" } as React.CSSProperties}>
+            <p className="hero-load mt-5 max-w-[30ch] text-lead md:mt-8" style={{ "--d": "420ms" } as React.CSSProperties}>
               {settings.text("home.hero_sentence")}
             </p>
-            <ul className="hero-load mt-5 max-w-[44ch] space-y-1 text-muted" style={{ "--d": "480ms" } as React.CSSProperties}>
+            <ul className="hero-load mt-4 max-w-[44ch] space-y-1 text-muted" style={{ "--d": "480ms" } as React.CSSProperties}>
               <li>
                 <span className="font-semibold text-cream">Slivovice 50 %</span>, na každé lahvi portrét, jméno a číslo dresu jednoho z mistrů.
               </li>
             </ul>
             {box && (
-              <div className="hero-load mt-7 flex flex-wrap items-center gap-3" style={{ "--d": "520ms" } as React.CSSProperties}>
+              <div className="hero-load mt-6 flex flex-wrap items-center gap-3" style={{ "--d": "520ms" } as React.CSSProperties}>
                 <Link href="/eshop" className="btn">
                   Objednat box · {formatCzk(box.priceCzk)}
                 </Link>
