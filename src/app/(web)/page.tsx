@@ -48,6 +48,11 @@ export default async function HomePage() {
                 className="h-auto w-full"
               />
             </div>
+            {box && (
+              <div className="hero-load" style={{ "--d": "1100ms" } as React.CSSProperties}>
+                <StockBadge stock={box.stock} className="mt-4 text-center text-gold-light md:text-left" />
+              </div>
+            )}
           </div>
         </div>
         <div className="frame relative grid md:min-h-[calc(100svh-var(--header-h))] md:grid-cols-12 md:items-center">
@@ -69,14 +74,15 @@ export default async function HomePage() {
               <li>
                 <span className="font-semibold text-cream">Slivovice 50 %</span>, na každé lahvi portrét, jméno a číslo dresu jednoho z mistrů.
               </li>
-              <li>Celá edice: 152 boxů, 1 976 lahví.</li>
             </ul>
             {box && (
-              <div className="hero-load mt-7 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ "--d": "520ms" } as React.CSSProperties}>
+              <div className="hero-load mt-7 flex flex-wrap items-center gap-3" style={{ "--d": "520ms" } as React.CSSProperties}>
                 <Link href="/eshop" className="btn">
                   Objednat box · {formatCzk(box.priceCzk)}
                 </Link>
-                <StockBadge stock={box.stock} className="text-gold-light" />
+                <Link href="/#soupiska" className="btn btn-quiet">
+                  Jednotlivé lahve
+                </Link>
               </div>
             )}
           </div>
