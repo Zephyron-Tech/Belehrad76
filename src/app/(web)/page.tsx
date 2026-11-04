@@ -79,19 +79,24 @@ export default async function HomePage() {
 
       {/* Příběh: krémové pole etikety */}
       {story && (
-        <section id="pribeh" className="chapter field-paper scroll-mt-16" aria-labelledby="pribeh-nadpis">
+        <section id="pribeh" className="chapter chapter-fit field-paper scroll-mt-16 !pb-0 !pt-14 md:!pt-20" aria-labelledby="pribeh-nadpis">
           <div className="frame grid gap-y-8 md:grid-cols-12 md:gap-x-8">
-            <h2 id="pribeh-nadpis" className="display text-head md:col-span-5" data-reveal style={order(0)}>
-              {story.title}
-            </h2>
+            <div className="md:col-span-5">
+              <h2 id="pribeh-nadpis" className="display text-head" data-reveal style={order(0)}>
+                {story.title}
+              </h2>
+              <p className="display mt-6 text-head tabular md:mt-16" data-reveal style={order(2)}>
+                152 × 13 = 1 976
+              </p>
+            </div>
             <div className="md:col-span-6 md:col-start-7" data-reveal style={order(1)}>
               <Markdown source={story.body} settings={settings} className="text-lead [&_p]:leading-[1.45]" />
             </div>
           </div>
 
-          <figure className="frame mt-20 md:mt-32">
+          <figure className="frame mt-8 md:mt-10">
             {/* výřez lahví bez pozadí (PNG s průhledností) – žádné prolnutí, které by při animaci problikávalo */}
-            <div data-reveal style={order(0)}>
+            <div className="mx-auto max-w-[62rem]" data-reveal style={order(0)}>
               <Image
                 src="/img/lahve-vyrez.png"
                 alt="Třináct lahví edice vedle sebe, na každé portrét, jméno a číslo hráče"
