@@ -26,11 +26,13 @@ export function PlayerCard({ product, children }: { product: Product; children?:
           <span className="display block text-[1.375rem] leading-[1.05] sm:text-[1.75rem]">
             <span className="tabular text-gold">{product.playerNumber}</span> {name}
           </span>
+          {/* na telefonu cena pod jménem – jméno dostane celou šířku, tlačítko je jen ikona */}
+          <span className="tabular mt-1 block font-semibold text-muted sm:hidden">{formatCzk(product.priceCzk)}</span>
           <span className="mt-2 hidden text-muted sm:block">Slivovice 50 % s jeho portrétem na etiketě</span>
         </span>
       </Link>
       <div className="player-row__buy">
-        <p className="tabular font-semibold">{formatCzk(product.priceCzk)}</p>
+        <p className="tabular hidden font-semibold sm:block">{formatCzk(product.priceCzk)}</p>
         {children}
       </div>
     </div>
