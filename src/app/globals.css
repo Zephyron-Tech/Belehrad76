@@ -132,6 +132,8 @@ p {
   font-stretch: 62%;
   text-transform: uppercase;
   letter-spacing: -0.005em;
+  /* úzké řezy mají úzkou mezeru mezi slovy; bez přídavku se v nadpisech slévají („E-SHOP EDICE“) */
+  word-spacing: 0.14em;
   /* pod 0.94 ořezává háček nad Ř a Ě o řádek výš */
   line-height: 0.94;
 }
