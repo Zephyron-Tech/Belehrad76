@@ -126,11 +126,6 @@ export default async function HomePage() {
             }))}
             initialSlug="antonin-panenka"
           />
-          <p className="mt-14">
-            <Link href="/eshop#lahve" className="link text-gold-light">
-              Všech 13 lahví v e-shopu
-            </Link>
-          </p>
         </div>
       </section>
 
