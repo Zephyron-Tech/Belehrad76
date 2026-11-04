@@ -479,15 +479,15 @@ p {
   position: absolute;
   width: 130vw;
   height: 130vw;
-  /* telefon: kotouč je vycentrovaný za boxem, který následuje hned za tlačítky */
+  /* telefon: horní okraj kotouče zapadá za horní hranu boxu, aby neprocházel za tlačítky */
   left: 50%;
-  top: 50%;
-  translate: -50% -50%;
+  top: 8%;
+  translate: -50% 0;
 }
 .hero-box {
   position: relative;
   width: 92vw;
-  margin: 2rem auto 0;
+  margin: 2.75rem auto 0;
 }
 /* Vrstva pro pečeť a box: na telefonu je box v toku stránky pod tlačítky, od tabletu absolutně přes sekci */
 .hero-stage {

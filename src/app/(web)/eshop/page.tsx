@@ -35,8 +35,8 @@ export default async function EshopPage() {
       {products.map((p) => (
         <JsonLd key={p.id} data={productJsonLd(p, settings.str("seller.name"))} />
       ))}
-      <header className="field-night pb-12 pt-14 md:pb-16 md:pt-20">
-        <div className="frame grid gap-6 md:grid-cols-12 md:items-end">
+      <header className="field-night pb-8 pt-6 md:pb-16 md:pt-20">
+        <div className="frame grid gap-4 md:grid-cols-12 md:items-end md:gap-6">
           <h1 className="display text-head md:col-span-6" data-reveal style={order(0)}>
             E-shop edice 1976
           </h1>
@@ -52,8 +52,8 @@ export default async function EshopPage() {
       </header>
 
       {boxes.map((box) => (
-        <section key={box.id} className="field-paper py-16 md:py-24" aria-labelledby={`nadpis-${box.slug}`}>
-          <div className="frame grid items-center gap-y-10 md:grid-cols-12 md:gap-x-10">
+        <section key={box.id} className="field-paper py-10 md:py-24" aria-labelledby={`nadpis-${box.slug}`}>
+          <div className="frame grid items-center gap-y-8 md:grid-cols-12 md:gap-x-10">
             <div className="md:col-span-7" data-reveal style={order(0)}>
               <Image
                 src="/img/box-vyrez.png"
@@ -66,18 +66,21 @@ export default async function EshopPage() {
               />
               <p className="mt-3 text-small text-[var(--soft)]">Vizualizace boxu, finální podoba se může lišit.</p>
             </div>
-            <div className="md:col-span-5">
-              {/* Nad nadpisem panáček s míčem a branka – po přidání boxu do košíku vstřelí gól */}
-              <div className="max-w-md" style={goalKickOnPaper}>
+            <div className="flex flex-col md:col-span-5 md:block">
+              {/* Panáček s míčem a branka – po přidání boxu do košíku vstřelí gól. Na telefonu pod tlačítkem, aby nezabíral první obrazovku. */}
+              <div className="order-1 mt-6 max-w-md md:order-none md:mt-0" style={goalKickOnPaper}>
                 <GoalKick slug={box.slug} />
               </div>
               <h2 id={`nadpis-${box.slug}`} className="display mt-2 text-head">
                 {box.name}
               </h2>
               <p className="mt-4 text-lead">{box.shortDescription}</p>
-              <p className="display mt-8 text-head tabular">{formatCzk(box.priceCzk)}</p>
-              <StockBadge stock={box.stock} className="mt-2 text-lead text-seal" />
-              <div className="mt-8">
+              {/* cena a sklad na telefonu v jednom řádku */}
+              <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-6 md:mt-8 md:block">
+                <p className="display text-head tabular">{formatCzk(box.priceCzk)}</p>
+                <StockBadge stock={box.stock} className="text-lead text-seal md:mt-2" />
+              </div>
+              <div className="mt-5 md:mt-8">
                 {salesOpen && (
                   <>
                     <AddToCart slug={box.slug} max={Math.min(box.stock ?? 0, settings.num("order.max_boxes"))} />
@@ -85,7 +88,7 @@ export default async function EshopPage() {
                   </>
                 )}
               </div>
-              <dl className="mt-10 grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr]">
+              <dl className="order-2 mt-8 grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr] md:order-none md:mt-10">
                 <dt className="font-semibold">Doprava</dt>
                 <dd>
                   {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku, ať objednáte jeden box, nebo více – i s lahvemi
