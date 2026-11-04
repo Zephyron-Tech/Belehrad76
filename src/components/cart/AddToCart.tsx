@@ -48,11 +48,13 @@ export function AddToCart({
 
   return (
     // Počet a tlačítko vždy v jednom řádku (i na telefonu): pole počtu má svou šířku, tlačítko vyplní zbytek
-    <div className={compact ? "flex items-center gap-3" : "flex flex-wrap items-stretch gap-3"}>
+    <div className={compact ? "flex items-center gap-3" : "flex flex-wrap items-stretch gap-y-3"}>
       {!compact && (
         <div className="stepper" role="group" aria-label="Počet kusů">
           <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1} aria-label="Méně">
-            −
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <path d="M5 12h14" />
+            </svg>
           </button>
           <input
             type="number"
@@ -70,7 +72,9 @@ export function AddToCart({
             disabled={qty >= available}
             aria-label="Více"
           >
-            +
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
           </button>
         </div>
       )}
@@ -78,7 +82,7 @@ export function AddToCart({
         type="button"
         onClick={onAdd}
         disabled={available <= 0}
-        className={`btn add-btn ${compact ? "min-h-11 px-4 text-[1rem]" : "min-w-32 flex-1"}`}
+        className={`btn add-btn ${compact ? "min-h-11 px-4 text-[1rem]" : "min-h-14 min-w-32 flex-1"}`}
         data-added={added}
       >
         {available <= 0 ? (
@@ -95,7 +99,7 @@ export function AddToCart({
         )}
       </button>
       {added && !compact && (
-        <Link href="/kosik" className="link basis-full self-center whitespace-nowrap font-semibold sm:basis-auto">
+        <Link href="/kosik" className="link basis-full self-center whitespace-nowrap font-semibold sm:ml-5 sm:basis-auto">
           Zobrazit košík
         </Link>
       )}
