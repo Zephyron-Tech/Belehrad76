@@ -218,12 +218,15 @@ test("administrace: bez přihlášení nic, přihlášení s 2FA, platba převod
 
   await page.getByLabel(/Vaše jméno nebo iniciály/).fill("E2E");
   await page.getByRole("button", { name: "Platba přijata → Zaplacená" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ano, zaplacená" }).click();
   await expect(page.getByText("Stav objednávky byl změněn.")).toBeVisible();
   await expect(page.locator("main").getByText("Zaplacená", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: "Připraveno k převzetí" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ano, připravena" }).click();
   await expect(page.getByText("Připravená k převzetí").first()).toBeVisible();
   await page.getByRole("button", { name: "Předáno zákazníkovi → Dokončená" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ano, dokončit" }).click();
   await expect(page.getByText("Objednávka je uzavřená, další změny stavu nejsou možné.")).toBeVisible();
   await expect(page.getByText(/administrace · E2E/).first()).toBeVisible();
 

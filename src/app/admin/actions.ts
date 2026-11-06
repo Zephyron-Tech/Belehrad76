@@ -48,8 +48,11 @@ export async function changeStatusAction(_: ActionState, form: FormData): Promis
   const actor = String(form.get("actor") ?? "").trim() || null;
   if (!Number.isInteger(orderId) || !STATUSES.includes(to)) return { error: "Neplatný požadavek." };
 
+  const expected = String(form.get("expectedStatus") ?? "");
   const order = await prisma.order.findUnique({ where: { id: orderId }, select: { status: true } });
   if (!order) return { error: "Objednávka neexistuje." };
+  // jiný admin (nebo GoPay) mezitím stav změnil: nic neprovádět naslepo
+  if (expected && order.status !== expected) return { error: "Stav objednávky se mezitím změnil. Obnovte stránku a zkontrolujte ho." };
   if (!ADMIN_TRANSITIONS[order.status].includes(to)) return { error: "Tento přechod stavu není povolen." };
 
   try {
@@ -75,7 +78,11 @@ export async function saveNoteAction(_: ActionState, form: FormData): Promise<Ac
   const note = String(form.get("internalNote") ?? "").slice(0, 4000);
   const actor = String(form.get("actor") ?? "").trim() || null;
   if (!Number.isInteger(orderId)) return { error: "Neplatný požadavek." };
-  await prisma.order.update({ where: { id: orderId }, data: { internalNote: note || null } });
+  try {
+    await prisma.order.update({ where: { id: orderId }, data: { internalNote: note || null } });
+  } catch {
+    return { error: "Poznámku se nepodařilo uložit (objednávka možná neexistuje)." };
+  }
   await audit({ action: "internal_note", orderId }, { source: "admin", actor, ip });
   revalidatePath(`/admin/objednavky/${orderId}`);
   return { ok: "Poznámka uložena." };
@@ -88,7 +95,8 @@ export async function anonymizeAction(_: ActionState, form: FormData): Promise<A
   if (!Number.isInteger(orderId)) return { error: "Neplatný požadavek." };
   if (form.get("confirm") !== "on") return { error: "Potvrďte anonymizaci zaškrtnutím." };
   try {
-    await anonymizeOrder(orderId, { source: "admin", actor: String(form.get("actor") ?? "").trim() || null, ip });
+    const done = await anonymizeOrder(orderId, { source: "admin", actor: String(form.get("actor") ?? "").trim() || null, ip });
+    if (!done) return { error: "Objednávka už je anonymizovaná." };
   } catch (err) {
     if (!(err instanceof AppError)) console.error("[admin] anonymize failed", err);
     return { error: userMessage(err, "Anonymizaci se nepodařilo provést.") };

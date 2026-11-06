@@ -1,11 +1,36 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import type { DeliveryMethod, OrderStatus, PaymentMethod } from "@prisma/client";
 import type { PacketDraft } from "@/lib/packeta";
+import { ConfirmSubmit } from "@/components/ConfirmDialog";
 import { anonymizeAction, changeStatusAction, createPacketsAction, saveNoteAction, type ActionState } from "../../../actions";
 
 const inputCls = "mt-1 w-full border border-line bg-ink px-3 py-2 text-sm text-cream focus:border-gold focus:outline-none";
+
+/**
+ * Zavolá serverovou akci mimo <form action>: React 19 po akci formulář vynuluje (při chybě by admin přišel o úpravy),
+ * takhle zůstanou vyplněné hodnoty zachované.
+ */
+function useServerAction(fn: (prev: ActionState, form: FormData) => Promise<ActionState>) {
+  const [state, setState] = useState<ActionState>(undefined);
+  const [pending, start] = useTransition();
+  const run = (form: FormData) => {
+    setState(undefined);
+    start(async () => {
+      try {
+        setState(await fn(undefined, form));
+      } catch {
+        setState({ error: "Spojení se serverem selhalo. Zkuste to znovu (případně obnovte stránku)." });
+      }
+    });
+  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    run(new FormData(e.currentTarget));
+  };
+  return { state, pending, run, onSubmit, reset: () => setState(undefined) };
+}
 
 function Feedback({ state }: { state: ActionState }) {
   if (!state) return null;
@@ -35,9 +60,8 @@ export function StatusActions(props: {
   /** Čárové kódy zásilek založených přes API Zásilkovny – předvyplní číslo zásilky */
   packetaBarcodes?: string[];
 }) {
-  const [state, action, pending] = useActionState(changeStatusAction, undefined);
+  const { state, pending, onSubmit } = useServerAction(changeStatusAction);
   const [actor, setActor] = useState("");
-  const [confirmCancel, setConfirmCancel] = useState(false);
   const isPickup = props.deliveryMethod === "PICKUP";
   const isPacketa = props.deliveryMethod === "PACKETA";
 
@@ -46,9 +70,20 @@ export function StatusActions(props: {
       <section className="border border-line bg-panel p-5">
         <h2 className="font-serif text-lg font-bold text-gold">Stav</h2>
         <p className="mt-2 text-sm text-muted">Objednávka je uzavřená, další změny stavu nejsou možné.</p>
+        <Feedback state={state} />
       </section>
     );
   }
+
+  /** Společná skrytá pole každého formuláře; expectedStatus chrání před souběžnou změnou jiným adminem */
+  const hidden = (to: OrderStatus) => (
+    <>
+      <input type="hidden" name="orderId" value={props.orderId} />
+      <input type="hidden" name="to" value={to} />
+      <input type="hidden" name="expectedStatus" value={props.status} />
+      <input type="hidden" name="actor" value={actor} />
+    </>
+  );
 
   return (
     <section className="space-y-4 border border-gold/50 bg-panel p-5">
@@ -56,10 +91,8 @@ export function StatusActions(props: {
       <ActorField value={actor} onChange={setActor} />
 
       {props.transitions.includes("PAID") && (
-        <form action={action} className="border-t border-line pt-4">
-          <input type="hidden" name="orderId" value={props.orderId} />
-          <input type="hidden" name="to" value="PAID" />
-          <input type="hidden" name="actor" value={actor} />
+        <form onSubmit={onSubmit} className="border-t border-line pt-4">
+          {hidden("PAID")}
           <p className="text-sm text-muted">
             {props.status === "CANCELLED"
               ? "Platba dorazila po zrušení objednávky. Box se znovu odečte ze skladu, pokud je k dispozici."
@@ -67,18 +100,25 @@ export function StatusActions(props: {
                 ? "Po připsání platby na účet (zkontrolujte VS a částku)."
                 : "Platba přes GoPay se označí automaticky. Ručně jen ve výjimečných případech."}
           </p>
-          <button disabled={pending} className="mt-2 w-full bg-ok px-4 py-2 text-sm font-bold text-ink disabled:opacity-60">
-            Platba přijata → Zaplacená
-          </button>
-          <p className="mt-1 text-xs text-muted">Zákazníkovi odejde potvrzení platby s PDF.</p>
+          <div className="mt-2">
+            <ConfirmSubmit
+              trigger="Platba přijata → Zaplacená"
+              triggerClassName="w-full bg-ok px-4 py-2 text-sm font-bold text-ink transition-opacity hover:opacity-90 disabled:opacity-60"
+              title="Označit objednávku jako zaplacenou?"
+              confirmLabel="Ano, zaplacená"
+              pendingLabel="Ukládám…"
+              pending={pending}
+            >
+              <p>Zákazníkovi odejde e-mail s potvrzením platby a PDF, provozovateli upozornění na novou zaplacenou objednávku.</p>
+              <p>Zkontrolujte, že na účtu je správná částka a variabilní symbol.</p>
+            </ConfirmSubmit>
+          </div>
         </form>
       )}
 
       {props.transitions.includes("SHIPPED") && (
-        <form action={action} className="space-y-2 border-t border-line pt-4">
-          <input type="hidden" name="orderId" value={props.orderId} />
-          <input type="hidden" name="to" value="SHIPPED" />
-          <input type="hidden" name="actor" value={actor} />
+        <form onSubmit={onSubmit} className="space-y-2 border-t border-line pt-4">
+          {hidden("SHIPPED")}
           {isPickup ? (
             <p className="text-sm text-muted">Zákazník dostane e-mail, že objednávka je připravena k převzetí na FAČR.</p>
           ) : isPacketa ? (
@@ -111,41 +151,55 @@ export function StatusActions(props: {
               </label>
             </>
           )}
-          <button disabled={pending} className="w-full bg-gold px-4 py-2 text-sm font-bold text-ink hover:bg-gold-light disabled:opacity-60">
-            {isPickup ? "Připraveno k převzetí" : "Odesláno → poslat e-mail zákazníkovi"}
-          </button>
+          <ConfirmSubmit
+            trigger={isPickup ? "Připraveno k převzetí" : "Odesláno → poslat e-mail zákazníkovi"}
+            triggerClassName="w-full bg-gold px-4 py-2 text-sm font-bold text-ink transition-colors hover:bg-gold-light disabled:opacity-60"
+            title={isPickup ? "Označit jako připravenou k převzetí?" : "Označit objednávku jako odeslanou?"}
+            confirmLabel={isPickup ? "Ano, připravena" : "Ano, odeslána"}
+            pendingLabel="Odesílám e-mail…"
+            pending={pending}
+          >
+            <p>
+              {isPickup
+                ? "Zákazníkovi odejde e-mail, že si objednávku může převzít na FAČR."
+                : "Zákazníkovi odejde e-mail, že objednávka byla odeslána (s dopravcem a číslem zásilky)."}
+            </p>
+            <p>E-mail se odesílá jen jednou, změnu pak nelze vzít zpět.</p>
+          </ConfirmSubmit>
         </form>
       )}
 
       {props.transitions.includes("COMPLETED") && (
-        <form action={action} className="border-t border-line pt-4">
-          <input type="hidden" name="orderId" value={props.orderId} />
-          <input type="hidden" name="to" value="COMPLETED" />
-          <input type="hidden" name="actor" value={actor} />
-          <button disabled={pending} className="w-full border border-gold px-4 py-2 text-sm font-semibold text-gold-light disabled:opacity-60">
-            {isPickup ? "Předáno zákazníkovi → Dokončená" : "Doručeno → Dokončená"}
-          </button>
+        <form onSubmit={onSubmit} className="border-t border-line pt-4">
+          {hidden("COMPLETED")}
+          <ConfirmSubmit
+            trigger={isPickup ? "Předáno zákazníkovi → Dokončená" : "Doručeno → Dokončená"}
+            triggerClassName="w-full border border-gold px-4 py-2 text-sm font-semibold text-gold-light transition-colors hover:bg-gold hover:text-ink disabled:opacity-60"
+            title="Dokončit objednávku?"
+            confirmLabel="Ano, dokončit"
+            pendingLabel="Ukládám…"
+            pending={pending}
+          >
+            <p>Objednávka se uzavře. Další změny stavu už nebudou možné.</p>
+          </ConfirmSubmit>
         </form>
       )}
 
       {props.transitions.includes("CANCELLED") && (
-        <form action={action} className="border-t border-line pt-4">
-          <input type="hidden" name="orderId" value={props.orderId} />
-          <input type="hidden" name="to" value="CANCELLED" />
-          <input type="hidden" name="actor" value={actor} />
-          <label className="flex items-start gap-2 text-sm text-muted">
-            <input type="checkbox" checked={confirmCancel} onChange={(e) => setConfirmCancel(e.target.checked)} className="mt-1" />
-            <span>
-              Opravdu zrušit? Box se vrátí na sklad.
-              {props.status === "PAID" && " Peníze je nutné vrátit ručně (GoPay / převodem)."}
-            </span>
-          </label>
-          <button
-            disabled={pending || !confirmCancel}
-            className="mt-2 w-full border border-danger/70 px-4 py-2 text-sm text-danger disabled:opacity-40"
+        <form onSubmit={onSubmit} className="border-t border-line pt-4">
+          {hidden("CANCELLED")}
+          <ConfirmSubmit
+            trigger="Zrušit objednávku"
+            triggerClassName="w-full border border-danger/70 px-4 py-2 text-sm text-danger transition-colors hover:bg-danger hover:text-ink disabled:opacity-40"
+            title="Opravdu zrušit objednávku?"
+            confirmLabel="Ano, zrušit"
+            pendingLabel="Ruším…"
+            danger
+            pending={pending}
           >
-            Zrušit objednávku
-          </button>
+            <p>Box se vrátí na sklad a objednávku už nepůjde obnovit jinak než ručním označením platby.</p>
+            {props.status === "PAID" && <p className="text-warn">Objednávka je zaplacená: peníze je nutné vrátit ručně (GoPay / převodem).</p>}
+          </ConfirmSubmit>
         </form>
       )}
 
@@ -155,44 +209,62 @@ export function StatusActions(props: {
 }
 
 export function NoteForm({ orderId, note }: { orderId: number; note: string }) {
-  const [state, action, pending] = useActionState(saveNoteAction, undefined);
+  const { state, pending, onSubmit } = useServerAction(saveNoteAction);
+  // řízená pole: text zůstane i po chybě
+  const [text, setText] = useState(note);
+  const [actor, setActor] = useState("");
+  const dirty = text !== note;
   return (
-    <form action={action} className="border border-line bg-panel p-5">
+    <form onSubmit={onSubmit} className="border border-line bg-panel p-5">
       <h2 className="font-serif text-lg font-bold text-gold">Interní poznámka</h2>
       <input type="hidden" name="orderId" value={orderId} />
-      <textarea name="internalNote" defaultValue={note} rows={4} maxLength={4000} className={inputCls} />
+      <textarea name="internalNote" value={text} onChange={(e) => setText(e.target.value)} rows={4} maxLength={4000} className={inputCls} />
       <label className="mt-2 block text-xs text-muted">
         Jméno / iniciály
-        <input name="actor" maxLength={40} className={inputCls} />
+        <input name="actor" value={actor} onChange={(e) => setActor(e.target.value)} maxLength={40} className={inputCls} />
       </label>
-      <button disabled={pending} className="mt-3 border border-line px-4 py-2 text-sm hover:border-gold disabled:opacity-60">
-        Uložit poznámku
-      </button>
+      <div className="mt-3 flex items-center gap-3">
+        <button disabled={pending} className="border border-line px-4 py-2 text-sm transition-colors hover:border-gold disabled:opacity-60">
+          {pending ? "Ukládám…" : "Uložit poznámku"}
+        </button>
+        {dirty && !pending && <span className="text-xs text-warn">Neuloženo</span>}
+      </div>
       <Feedback state={state} />
     </form>
   );
 }
 
 export function AnonymizeForm({ orderId }: { orderId: number }) {
-  const [state, action, pending] = useActionState(anonymizeAction, undefined);
+  const { state, pending, onSubmit } = useServerAction(anonymizeAction);
+  const [actor, setActor] = useState("");
   return (
-    <form action={action} className="border border-line bg-panel p-5">
+    <form onSubmit={onSubmit} className="border border-line bg-panel p-5">
       <h2 className="font-serif text-lg font-bold text-gold">GDPR – anonymizace</h2>
       <p className="mt-2 text-xs text-muted">
         Nevratně nahradí osobní údaje zákazníka (jméno, kontakt, adresa, poznámky). Položky a částky zůstanou. Používejte na žádost
         zákazníka nebo po uplynutí doby uchování – pozor na povinnosti pro účetnictví.
       </p>
       <input type="hidden" name="orderId" value={orderId} />
-      <label className="mt-3 flex items-center gap-2 text-sm">
-        <input type="checkbox" name="confirm" /> Rozumím, anonymizovat
-      </label>
+      <input type="hidden" name="confirm" value="on" />
       <label className="mt-2 block text-xs text-muted">
         Jméno / iniciály
-        <input name="actor" maxLength={40} className={inputCls} />
+        <input name="actor" value={actor} onChange={(e) => setActor(e.target.value)} maxLength={40} className={inputCls} />
       </label>
-      <button disabled={pending} className="mt-3 border border-danger/70 px-4 py-2 text-sm text-danger disabled:opacity-60">
-        Anonymizovat
-      </button>
+      <div className="mt-3">
+        <ConfirmSubmit
+          trigger="Anonymizovat"
+          triggerClassName="border border-danger/70 px-4 py-2 text-sm text-danger transition-colors hover:bg-danger hover:text-ink disabled:opacity-60"
+          title="Nevratně anonymizovat objednávku?"
+          confirmLabel="Anonymizovat"
+          pendingLabel="Anonymizuji…"
+          requireText="ANONYMIZOVAT"
+          danger
+          pending={pending}
+        >
+          <p>Jméno, kontakt, adresa a poznámky zákazníka se nenávratně smažou. Částky a položky zůstanou.</p>
+          <p className="text-warn">Tuto akci nelze vrátit zpět.</p>
+        </ConfirmSubmit>
+      </div>
       <Feedback state={state} />
     </form>
   );
@@ -206,7 +278,7 @@ export function PacketaForm(props: {
   barcodes: string[];
   draft: PacketDraft;
 }) {
-  const [state, action, pending] = useActionState(createPacketsAction, undefined);
+  const { state, pending, onSubmit, reset } = useServerAction(createPacketsAction);
   const [adult, setAdult] = useState(props.draft.adultContent);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { draft } = props;
@@ -239,6 +311,8 @@ export function PacketaForm(props: {
           </ul>
           <a
             href={`/admin/zasilkovna/stitek/${props.orderId}`}
+            target="_blank"
+            rel="noreferrer"
             className="mt-3 inline-block border border-gold px-4 py-2 text-sm font-semibold text-gold-light hover:bg-gold hover:text-ink"
           >
             Stáhnout štítek{props.barcodes.length > 1 ? "y" : ""} (PDF)
@@ -257,17 +331,24 @@ export function PacketaForm(props: {
           <>
           <button
             type="button"
-            onClick={() => dialogRef.current?.showModal()}
-            className="mt-3 w-full bg-gold px-4 py-2 text-sm font-bold text-ink hover:bg-gold-light"
+            onClick={() => {
+              reset();
+              dialogRef.current?.showModal();
+            }}
+            className="mt-3 w-full bg-gold px-4 py-2 text-sm font-bold text-ink transition-colors hover:bg-gold-light"
           >
             {props.barcodes.length > 0 ? "Založit zbývající zásilky…" : "Založit zásilku…"}
           </button>
           <dialog
             ref={dialogRef}
             aria-labelledby={`packeta-dialog-${props.orderId}`}
+            // během zakládání (volání API Zásilkovny) okno nejde zavřít, ať admin nepřijde o výsledek
+            onCancel={(e) => {
+              if (pending) e.preventDefault();
+            }}
             className="m-auto w-[min(36rem,calc(100vw-2rem))] border border-gold/50 bg-panel p-0 text-cream backdrop:bg-black/70"
           >
-          <form action={action} className="max-h-[85svh] space-y-4 overflow-y-auto p-5 text-sm">
+          <form onSubmit={onSubmit} className="max-h-[85svh] space-y-4 overflow-y-auto p-5 text-sm">
             <div className="flex items-start justify-between gap-4">
               <h3 id={`packeta-dialog-${props.orderId}`} className="font-serif text-lg font-bold text-gold">
                 Nová zásilka Zásilkovny
@@ -275,8 +356,9 @@ export function PacketaForm(props: {
               <button
                 type="button"
                 onClick={() => dialogRef.current?.close()}
+                disabled={pending}
                 aria-label="Zavřít"
-                className="px-2 text-xl leading-none text-muted hover:text-cream"
+                className="px-2 text-xl leading-none text-muted transition-colors hover:text-cream disabled:opacity-40"
               >
                 ×
               </button>
@@ -378,13 +460,15 @@ export function PacketaForm(props: {
               <button
                 type="button"
                 onClick={() => dialogRef.current?.close()}
-                className="border border-line px-4 py-2 text-sm text-cream hover:border-gold"
+                disabled={pending}
+                className="border border-line px-4 py-2 text-sm text-cream transition-colors hover:border-gold disabled:opacity-50"
               >
                 Zrušit
               </button>
               <button
                 disabled={pending}
-                className="flex-1 bg-gold px-4 py-2 text-sm font-bold text-ink hover:bg-gold-light disabled:opacity-60"
+                aria-busy={pending}
+                className="flex-1 bg-gold px-4 py-2 text-sm font-bold text-ink transition-colors hover:bg-gold-light disabled:opacity-60"
               >
                 {pending
                   ? "Zakládám…"
