@@ -67,14 +67,19 @@ export default async function HomePage() {
                 </span>
               </span>
             </h1>
-            <p className="hero-load mt-5 max-w-[30ch] text-lead md:mt-8" style={{ "--d": "420ms" } as React.CSSProperties}>
-              {settings.text("home.hero_sentence")}
-            </p>
-            <ul className="hero-load mt-4 max-w-[44ch] space-y-1 text-muted" style={{ "--d": "480ms" } as React.CSSProperties}>
-              <li>
-                <span className="font-semibold text-cream">Slivovice 50 %</span>, na každé lahvi portrét, jméno a číslo dresu jednoho z mistrů.
-              </li>
-            </ul>
+            {settings
+              .text("home.hero_sentence")
+              .split("\n")
+              .filter((line) => line.trim())
+              .map((line, i) => (
+                <p
+                  key={i}
+                  className={`hero-load max-w-[36ch] ${i === 0 ? "mt-5 text-lead md:mt-8" : "mt-4 text-muted"}`}
+                  style={{ "--d": `${420 + i * 60}ms` } as React.CSSProperties}
+                >
+                  {line}
+                </p>
+              ))}
             {box && (
               <div className="hero-load mt-6 flex flex-wrap items-center gap-3" style={{ "--d": "520ms" } as React.CSSProperties}>
                 <Link href="/eshop" className="btn">
@@ -122,10 +127,10 @@ export default async function HomePage() {
         <div className="frame">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 md:mb-16">
             <h2 id="soupiska-nadpis" className="display text-head" data-reveal style={order(0)}>
-              Soupiska: 13 mistrů, 13 lahví
+              Soupiska finále: 13&nbsp;hráčů, 13&nbsp;lahví
             </h2>
             <p className="max-w-[40ch]" data-reveal style={order(1)}>
-              Každý hráč má vlastní lahev s portrétem a číslem dresu. V boxu jich je všech 13, koupit jde i lahev jednoho hráče.
+              Každý hráč finále má vlastní lahev. V&nbsp;boxu je všech 13, lahev svého oblíbeného hráče můžete koupit i&nbsp;samostatně za {formatCzk(bottles[0]?.priceCzk ?? 760)}.
             </p>
           </div>
           <LineupPicker
@@ -170,9 +175,17 @@ export default async function HomePage() {
                 {box.shortDescription}
               </p>
               <div data-reveal style={order(3)}>
-                <p className="display mt-10 text-head tabular">{formatCzk(box.priceCzk)}</p>
+                <p className="display mt-10 text-head tabular">
+                  {bottles.length > 0 && (
+                    <span className="mr-2 align-middle text-lead font-normal text-[var(--soft)]">
+                      {bottles.length}&nbsp;×&nbsp;{formatCzk(bottles[0].priceCzk)}&nbsp;=
+                    </span>
+                  )}
+                  {formatCzk(box.priceCzk)}
+                </p>
                 <p className="mt-2 text-[var(--soft)]">
-                  Doprava {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku, osobní převzetí na FAČR zdarma.
+                  Doprava {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku. Osobní převzetí v&nbsp;sídle FAČR
+                  v&nbsp;Praze zdarma.
                 </p>
                 <StockBadge stock={box.stock} className="mt-6 text-lead" />
                 <div className="mt-8">

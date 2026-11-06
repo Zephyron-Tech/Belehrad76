@@ -17,6 +17,8 @@ type Props = {
   transferDays: number;
   gopayMinutes: number;
   boxShippingCzk: number;
+  /** Platba převodem / QR kódem (nastavení payment.bank_transfer) – vypnutá, platí se jen bránou */
+  bankTransferEnabled: boolean;
   packetaApiKey?: string;
   packetaMock: boolean;
   turnstileSiteKey?: string;
@@ -36,7 +38,8 @@ export function CheckoutForm(props: Props) {
 
   const [delivery, setDelivery] = useState<Delivery>("PACKETA");
   const [packetaPoint, setPacketaPoint] = useState<PacketaPoint | null>(null);
-  const [payment, setPayment] = useState<Payment>("GOPAY");
+  const [paymentChoice, setPayment] = useState<Payment>("GOPAY");
+  const payment: Payment = props.bankTransferEnabled ? paymentChoice : "GOPAY";
   const [company, setCompany] = useState(false);
   const [evening, setEvening] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -215,6 +218,19 @@ export function CheckoutForm(props: Props) {
         <fieldset>
           <legend className={legendCls}>Doprava</legend>
           <div className="mt-6 grid gap-3">
+            {data.pickupEnabled && (
+              <label className="option-tile" data-selected={effectiveDelivery === "PICKUP"}>
+                <input type="radio" name="delivery" checked={effectiveDelivery === "PICKUP"} onChange={() => setDelivery("PICKUP")} className={checkCls} />
+                <span className="flex-1">
+                  <span className="flex justify-between gap-4 font-semibold">
+                    Osobní převzetí na FAČR <span className="text-gold-light">zdarma</span>
+                  </span>
+                  <span className="mt-1 block text-muted">
+                    {props.pickupAddress}. {props.pickupNote}
+                  </span>
+                </span>
+              </label>
+            )}
             {available("PACKETA") && (
               <label className="option-tile" data-selected={effectiveDelivery === "PACKETA"}>
                 <input type="radio" name="delivery" checked={effectiveDelivery === "PACKETA"} onChange={() => setDelivery("PACKETA")} className={checkCls} />
@@ -240,19 +256,6 @@ export function CheckoutForm(props: Props) {
                       ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem. ${data.boxDelivery}`
                       : `${formatCzk(props.boxShippingCzk)} za celou zásilku.`}{" "}
                     Při převzetí může dopravce ověřit věk 18+.
-                  </span>
-                </span>
-              </label>
-            )}
-            {data.pickupEnabled && (
-              <label className="option-tile" data-selected={effectiveDelivery === "PICKUP"}>
-                <input type="radio" name="delivery" checked={effectiveDelivery === "PICKUP"} onChange={() => setDelivery("PICKUP")} className={checkCls} />
-                <span className="flex-1">
-                  <span className="flex justify-between gap-4 font-semibold">
-                    Osobní převzetí na FAČR <span className="text-gold-light">zdarma</span>
-                  </span>
-                  <span className="mt-1 block text-muted">
-                    {props.pickupAddress}. {props.pickupNote}
                   </span>
                 </span>
               </label>
@@ -310,15 +313,17 @@ export function CheckoutForm(props: Props) {
                 </span>
               </span>
             </label>
-            <label className="option-tile" data-selected={payment === "BANK_TRANSFER"}>
-              <input type="radio" name="payment" checked={payment === "BANK_TRANSFER"} onChange={() => setPayment("BANK_TRANSFER")} className={checkCls} />
-              <span>
-                <span className="block font-semibold">Bankovním převodem / QR kódem</span>
-                <span className="mt-1 block text-muted">
-                  Platební údaje a QR kód dostanete po odeslání objednávky. Zboží držíme {props.transferDays} dní.
+            {props.bankTransferEnabled && (
+              <label className="option-tile" data-selected={payment === "BANK_TRANSFER"}>
+                <input type="radio" name="payment" checked={payment === "BANK_TRANSFER"} onChange={() => setPayment("BANK_TRANSFER")} className={checkCls} />
+                <span>
+                  <span className="block font-semibold">Bankovním převodem / QR kódem</span>
+                  <span className="mt-1 block text-muted">
+                    Platební údaje a QR kód dostanete po odeslání objednávky. Zboží držíme {props.transferDays} dní.
+                  </span>
                 </span>
-              </span>
-            </label>
+              </label>
+            )}
           </div>
         </fieldset>
 

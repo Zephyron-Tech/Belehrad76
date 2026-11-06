@@ -9,12 +9,13 @@ import type { NextConfig } from "next";
  */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://challenges.cloudflare.com https://widget.packeta.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://challenges.cloudflare.com https://widget.packeta.com https://*.widget.packeta.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.facebook.com",
   "font-src 'self'",
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://challenges.cloudflare.com",
-  "frame-src https://challenges.cloudflare.com https://widget.packeta.com",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://challenges.cloudflare.com https://widget.packeta.com https://*.widget.packeta.com",
+  // iframe mapy z widget.packeta.com nebo záložních *.widget.packeta.com; při výpadku chybová stránka na codenow.com
+  "frame-src https://challenges.cloudflare.com https://widget.packeta.com https://*.widget.packeta.com https://error-page-service-widget-errors.prod.packeta-com.codenow.com",
   "media-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

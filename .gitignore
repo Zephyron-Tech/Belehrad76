@@ -25,3 +25,6 @@ playwright-report/
 # nástroje
 .claude/
 .taste-skill/
+
+# lokální přístupové údaje
+.secrets/

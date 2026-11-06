@@ -83,6 +83,11 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
     value: "7",
     description: "Jak dlouho se drží box při platbě převodem (dny). Pak se nezaplacená objednávka zruší.",
   },
+  {
+    key: "payment.bank_transfer",
+    value: "false",
+    description: "Platba bankovním převodem / QR kódem (true/false). Vypnuto = platí se jen přes platební bránu GoPay.",
+  },
   { key: "bank.account", value: "303642799/0300", description: "Číslo účtu pro platbu převodem (formát číslo/kód banky)" },
 
   // Texty úvodní stránky
@@ -90,8 +95,9 @@ export const DEFAULT_SETTINGS: { key: string; value: string; description: string
   { key: "home.hero_subtitle", value: "Bělehrad 1976", description: "Hlavní nadpis, druhý řádek" },
   {
     key: "home.hero_sentence",
-    value: "Sběratelská slivovice: 13 lahví za 13 mistrů z Bělehradu, jen 152 boxů.",
-    description: "Jedna věta pod hlavním nadpisem (co edice je)",
+    value:
+      "Třináct hráčů finále, každý na vlastní lahvi speciální 50% slivovice.\nLegendární vítězství. Výjimečná sběratelská edice: 152 číslovaných boxů po 13 lahvích, dohromady 1976 lahví.",
+    description: "Úvod pod hlavním nadpisem (nový řádek = nový odstavec)",
   },
   { key: "evening.date", value: "30. 11. 2026", description: "Datum slavnostního večera" },
   { key: "seo.description", value: "Limitovaná edice slivovice Mistři Evropy – Bělehrad 1976. 152 sběratelských boxů, 13 hráčů, 1 976 lahví. Výtěžek edice jde na podporu Nadace fotbalových internacionálů.", description: "Popis webu pro vyhledávače a sdílení" },

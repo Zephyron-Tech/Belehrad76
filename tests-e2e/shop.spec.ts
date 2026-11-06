@@ -12,6 +12,12 @@ const BOX_SLUG = "box-mistri-evropy";
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async () => {
+  // Převod / QR je v provozu vypnutý, testy ho zapnou (po testech se nastavení vrátí na výchozí)
+  await prisma.setting.upsert({
+    where: { key: "payment.bank_transfer" },
+    update: { value: "true" },
+    create: { key: "payment.bank_transfer", value: "true", description: "e2e" },
+  });
   await prisma.adminUser.upsert({
     where: { email: ADMIN_EMAIL },
     update: { passwordHash: await bcrypt.hash(ADMIN_PASSWORD, 10), totpSecret: TOTP_SECRET, failedAttempts: 0, lockedUntil: null },
@@ -20,6 +26,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
+  await prisma.setting.deleteMany({ where: { key: "payment.bank_transfer" } });
   await prisma.adminUser.deleteMany({ where: { email: ADMIN_EMAIL } });
   await prisma.$disconnect();
 });

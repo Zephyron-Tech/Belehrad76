@@ -78,7 +78,14 @@ export default async function EshopPage() {
               <p className="mt-4 text-lead">{box.shortDescription}</p>
               {/* cena a sklad na telefonu v jednom řádku */}
               <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-6 md:mt-8 md:block">
-                <p className="display text-head tabular">{formatCzk(box.priceCzk)}</p>
+                <p className="display text-head tabular">
+                  {bottles.length > 0 && (
+                    <span className="mr-2 align-middle text-lead font-normal text-[var(--soft)]">
+                      {bottles.length}&nbsp;×&nbsp;{formatCzk(bottles[0].priceCzk)}&nbsp;=
+                    </span>
+                  )}
+                  {formatCzk(box.priceCzk)}
+                </p>
                 <StockBadge stock={box.stock} className="text-lead text-seal md:mt-2" />
               </div>
               <div className="mt-5 md:mt-8">
@@ -93,7 +100,7 @@ export default async function EshopPage() {
                 <dt className="font-semibold">Doprava</dt>
                 <dd>
                   {formatCzk(settings.num("shipping.box_czk"))} za celou objednávku, ať objednáte jeden box, nebo více – i s lahvemi
-                  navíc. Osobní převzetí na FAČR je zdarma.
+                  navíc. Osobní převzetí v&nbsp;sídle FAČR v&nbsp;Praze je zdarma.
                 </dd>
                 <dt className="font-semibold">Doručení</dt>
                 <dd>{settings.text("box.delivery")}</dd>
@@ -111,7 +118,7 @@ export default async function EshopPage() {
           <p className="max-w-[52ch] md:col-span-6" data-reveal style={order(1)}>
             Každá lahev slivovice 50 % nese portrét, jméno a číslo dresu. {settings.text("bottle.lead_time")} Lahve posíláme Zásilkovnou na výdejní místo od{" "}
             {formatCzk(bottleShippingFromCzk(shippingRates(settings)))} za zásilku (podle hmotnosti, s ověřením věku 18+), s boxem v objednávce
-            kurýrem jen {formatCzk(settings.num("shipping.box_czk"))} za celou zásilku. Osobní převzetí na FAČR je zdarma.
+            kurýrem jen {formatCzk(settings.num("shipping.box_czk"))} za celou zásilku. Osobní převzetí v&nbsp;sídle FAČR v&nbsp;Praze je zdarma.
           </p>
         </header>
         <div className="frame mt-12 grid gap-x-16 md:mt-16 lg:grid-cols-2">

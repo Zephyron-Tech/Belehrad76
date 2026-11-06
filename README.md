@@ -4,7 +4,7 @@ Web a e-shop limitované edice slivovice k 50. výročí vítězství na ME 1976
 
 - **Prodej:** 1 box (13 lahví, sklad 144 = 152 − 8 do dražby) + 13 kusovek (neomezeně, vyrábí se na objednávku)
 - **Doprava:** objednávka s boxem kurýrem 490 Kč jednou (i více boxů a kusovky), jen kusovky Zásilkovnou na výdejní místo (bez Z-BOXů – neumí ověření věku 18+) podle hmotnosti (dráž než 490 Kč → kurýr na adresu za 490 Kč), osobní převzetí na FAČR zdarma
-- **Platby:** GoPay (karta, rychlý převod, Apple/Google Pay) + ruční převod s QR kódem na účet 303642799/0300
+- **Platby:** jen platební brána GoPay (karta, rychlý převod, Apple/Google Pay). Ruční převod s QR kódem na účet 303642799/0300 je **vypnutý** (`payment.bank_transfer` = `false`), kód zůstává – zapne se přepnutím na `true`
 - **Po zaplacení:** e-mail s PDF potvrzením o zaplacení (ne faktura), upozornění provozovateli
 - **Administrace:** jen objednávky, za přihlášením s 2FA, jeden společný účet, audit log, exporty CSV
 - **Konfigurace** (ceny, sklad, doprava, texty, hráči, kontakty): přímo v databázi, bez administrace
@@ -69,6 +69,7 @@ Nejdůležitější klíče v `Setting` (úplný seznam s popisy: [`src/config/d
 | `bottle.lead_time` | | Text o dodací lhůtě kusovek (8 dní) |
 | `box.delivery` | | Text o doručení boxu (kurýr, 8 dní) |
 | `reservation.gopay_minutes` / `reservation.transfer_days` | 30 / 7 | Jak dlouho se drží box před zaplacením |
+| `payment.bank_transfer` | `false` | Platba převodem / QR kódem v pokladně (vypnuto – jen GoPay) |
 | `order.max_boxes` / `order.max_bottles` | 10 / 50 | Limit na objednávku |
 | `bank.account` | 303642799/0300 | Účet pro platbu převodem a QR |
 | `contact.email`, `contact.phone`, `owner.notify_email` | | **Doplnit skutečné adresy** |
