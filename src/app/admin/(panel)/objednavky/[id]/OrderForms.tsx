@@ -267,7 +267,7 @@ export function PacketaForm(props: {
             aria-labelledby={`packeta-dialog-${props.orderId}`}
             className="m-auto w-[min(36rem,calc(100vw-2rem))] border border-gold/50 bg-panel p-0 text-cream backdrop:bg-black/70"
           >
-          <form action={action} className="max-h-[85vh] space-y-4 overflow-y-auto p-5 text-sm">
+          <form action={action} className="max-h-[85svh] space-y-4 overflow-y-auto p-5 text-sm">
             <div className="flex items-start justify-between gap-4">
               <h3 id={`packeta-dialog-${props.orderId}`} className="font-serif text-lg font-bold text-gold">
                 Nová zásilka Zásilkovny

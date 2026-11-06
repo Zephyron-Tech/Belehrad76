@@ -79,6 +79,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* zámek posouvání (věková brána, menu) nesmí posunout stránku o šířku posuvníku */
+  scrollbar-gutter: stable;
   scroll-padding-top: var(--header-h);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -99,6 +101,20 @@ body {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* Ovládací prvky vždy ukazují rukou (Tailwind v4 to už nedělá), zakázané zákazem */
+button:not(:disabled),
+[role="button"],
+summary,
+select,
+label:has(input[type="checkbox"]:not(:disabled), input[type="radio"]:not(:disabled)),
+a[href] {
+  cursor: pointer;
+}
+button:disabled,
+label:has(input[type="checkbox"]:disabled, input[type="radio"]:disabled) {
+  cursor: not-allowed;
 }
 
 ::selection {
@@ -125,6 +141,7 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
+@layer components {
 /* --- Písmo nadpisů: Archivo zúžené, těžké, verzálky (jako jména na etiketách) --- */
 .display {
   font-family: var(--font-archivo), system-ui, sans-serif;
@@ -137,13 +154,14 @@ p {
   /* pod 0.94 ořezává háček nad Ř a Ě o řádek výš */
   line-height: 0.94;
 }
+}
 
 /* --- Rám stránky: jeden pár okrajů, jedna mřížka --- */
 .frame {
   width: 100%;
   max-width: 96rem;
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
 }
 
 /* --- Kapitoly úvodu: celoplošná pole jedné barvy, bez mezer mezi sebou --- */
@@ -188,6 +206,7 @@ p {
   --accent: var(--ink);
 }
 
+@layer components {
 /* --- Tlačítko: jeden tvar (hranatý, plná výplň) na celém webu --- */
 .btn {
   display: inline-flex;
@@ -262,16 +281,23 @@ p {
 /* --- Textový odkaz: podtržení, které na najetí zesílí --- */
 .link {
   text-decoration: underline;
+  text-decoration-color: currentColor;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
   transition:
     text-decoration-thickness var(--t-hover) ease,
-    color var(--t-hover) ease;
+    text-decoration-color var(--t-hover) ease,
+    color var(--t-hover) ease,
+    opacity var(--t-press) ease;
+}
+.link:active {
+  opacity: 0.7;
 }
 @media (hover: hover) {
   .link:hover {
     text-decoration-thickness: 2px;
   }
+}
 }
 
 /* --- Hlavička: odkaz s podtržením, které vyroste zleva --- */
@@ -405,6 +431,7 @@ p {
   }
 }
 
+@layer components {
 /* --- Formulářová pole (jediné místo s linkou: ohraničení pole) --- */
 .input {
   width: 100%;
@@ -429,6 +456,7 @@ p {
 }
 .input[aria-invalid="true"] {
   border-color: var(--danger);
+}
 }
 
 /* --- Vstup částí sekce: nadpis, text, obrázek postupně. Skryté jen se skriptem (html.js). --- */
@@ -503,7 +531,7 @@ p {
     max-width: 96rem;
     margin-inline: auto;
     /* velikost kotouče podle výšky okna, ale nejvýš 75 % šířky rámu (na 1440 × 900 vychází obojí stejně) */
-    --disc: min(120vh, 75cqw);
+    --disc: min(120svh, 75cqw);
     container-type: inline-size;
   }
   .hero-disc {
@@ -646,6 +674,10 @@ p {
   min-width: 1.4em;
   color: var(--gold);
   opacity: 0.85;
+  transition: opacity var(--t-hover) ease;
+}
+.lineup-name:active {
+  opacity: 0.7;
 }
 .lineup-name[aria-pressed="true"] {
   color: var(--cream);
@@ -677,7 +709,7 @@ p {
 }
 .lineup-stage {
   position: relative;
-  width: min(64vh, 100%);
+  width: min(64svh, 100%);
   aspect-ratio: 1;
   margin-inline: auto;
 }
@@ -851,7 +883,8 @@ p {
   outline-offset: -2px;
   transition:
     background-color var(--t-hover) ease,
-    outline-color var(--t-hover) ease;
+    outline-color var(--t-hover) ease,
+    transform var(--t-press) var(--ease-out);
 }
 .option-tile[data-selected="true"] {
   background: var(--panel-2);
@@ -859,6 +892,10 @@ p {
 }
 .option-tile:has(:focus-visible) {
   outline-color: var(--gold-light);
+}
+.option-tile:active {
+  background: var(--panel-2);
+  transform: scale(0.995);
 }
 @media (hover: hover) {
   .option-tile:hover {
