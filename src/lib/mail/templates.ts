@@ -24,7 +24,6 @@ const GOLD_LIGHT = "#e6c98f";
 const CREAM = "#efe8dc";
 const MUTED = "#b0a48c";
 const PAPER = "#e8e0cf";
-const PAPER_MUTED = "#4a4135";
 const SEAL = "#b3262d";
 // Úzké patkové řezy webu (Archivo) nejsou v poštovních klientech k dispozici, proto záložní úzké písmo
 const DISPLAY = "'Archivo Narrow','Arial Narrow','Helvetica Neue',Arial,sans-serif";
