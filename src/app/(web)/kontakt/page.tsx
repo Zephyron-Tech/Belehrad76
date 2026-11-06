@@ -25,7 +25,7 @@ export default async function ContactPage() {
             Dotazy k objednávkám
           </h2>
           <p className="mt-4">
-            <a href={`mailto:${email}`} className="display link text-[clamp(2rem,1.2rem+3vw,3.5rem)] text-gold-light">
+            <a href={`mailto:${email}`} className="display link break-all text-[clamp(1.6rem,1rem+3vw,3.5rem)] text-gold-light">
               {email}
             </a>
           </p>

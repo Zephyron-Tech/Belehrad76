@@ -34,7 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="cs" className={archivo.variable} suppressHydrationWarning>
       <head>
         {/* Skryté výchozí stavy animací platí jen se skriptem – bez JS je obsah vidět hned */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script dangerouslySetInnerHTML={{ __html: "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(d.dataset.reveal!=='ready')d.classList.add('reveal-fallback')},4000)" }} />
       </head>
       <body className="antialiased">{children}</body>
     </html>

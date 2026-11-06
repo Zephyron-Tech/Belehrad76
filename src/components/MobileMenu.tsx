@@ -51,7 +51,11 @@ export function MobileMenu({ items }: { items: { href: string; label: string }[]
           <span />
           <span />
         </span>
-        {open ? "Zavřít" : "Menu"}
+        {/* oba štítky v jedné buňce a prolnou se: tlačítko při otevření nemění šířku */}
+        <span className="menu-label">
+          <span aria-hidden={open}>Menu</span>
+          <span aria-hidden={!open}>Zavřít</span>
+        </span>
       </button>
       <div ref={panel} id="mobilni-menu" className="mobile-menu" data-open={open} inert={!open}>
         <ul className="frame pb-10 pt-6">

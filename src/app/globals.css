@@ -409,8 +409,49 @@ p {
     transform: scale(1);
   }
 }
+.cart-count {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  display: inline-flex;
+  min-width: 1.375rem;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.25rem;
+  border-radius: 9999px;
+  background: var(--seal);
+  color: var(--cream);
+  font-size: 0.8125rem;
+  line-height: 1.375rem;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity var(--t-ui) var(--ease-out),
+    transform var(--t-ui) var(--ease-out);
+  pointer-events: none;
+}
+.cart-count[data-visible="true"] {
+  opacity: 1;
+  transform: scale(1);
+}
 .cart-count[data-bump="true"] {
   animation: bump 420ms var(--ease-out);
+}
+
+/* Štítek tlačítka Menu / Zavřít: dva texty v jedné buňce, prolnutí místo skoku šířky */
+.menu-label {
+  display: grid;
+}
+.menu-label > span {
+  grid-area: 1 / 1;
+  transition: opacity var(--t-hover) ease;
+}
+.menu-label > span:last-child,
+.menu-toggle[aria-expanded="true"] .menu-label > span:first-child {
+  opacity: 0;
+}
+.menu-toggle[aria-expanded="true"] .menu-label > span:last-child {
+  opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
   .cart-count[data-bump="true"] {
@@ -491,6 +532,15 @@ p {
   }
   .js [data-shutter].is-in img {
     transform: none;
+  }
+  /* pojistka: kdyby se RevealObserver nespustil, po pár sekundách se vše ukáže */
+  .reveal-fallback [data-reveal],
+  .reveal-fallback [data-shutter],
+  .reveal-fallback [data-shutter] img {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: opacity 400ms ease;
   }
 }
 
@@ -739,16 +789,12 @@ p {
   object-fit: cover;
   opacity: 0;
   transform: translateY(18px) rotate(2deg) scale(0.97);
-  /* rozmazání maskuje chvíli, kdy jsou vidět dvě etikety přes sebe */
-  filter: blur(3px);
   transition:
     opacity 280ms ease,
-    filter 280ms ease,
     transform 480ms var(--ease-out);
 }
 .lineup-label[data-active="true"] {
   opacity: 1;
-  filter: none;
   transform: rotate(-2.5deg);
 }
 @media (min-width: 768px) {
@@ -1206,6 +1252,31 @@ p {
 @keyframes fade-in {
   from {
     opacity: 0;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+.age-gate[data-leaving="true"] {
+  pointer-events: none;
+  animation: fade-out 260ms ease forwards;
+}
+.cookie-bar[data-leaving="true"] {
+  pointer-events: none;
+  animation: cookie-out 260ms var(--ease-exit) forwards;
+}
+@keyframes cookie-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* Podmíněné bloky formuláře (výdejní místo, adresa, firma) se nepřidají skokem */
+@media (prefers-reduced-motion: no-preference) {
+  .appear {
+    animation: fade-in 280ms var(--ease-out) both;
   }
 }
 @keyframes rise-in {

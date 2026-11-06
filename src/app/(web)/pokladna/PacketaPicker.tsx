@@ -97,7 +97,7 @@ export function PacketaPicker(props: {
   }
 
   return (
-    <div className="mt-4 bg-panel p-5 md:p-6">
+    <div className="appear mt-4 bg-panel p-5 md:p-6">
       {props.value ? (
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>

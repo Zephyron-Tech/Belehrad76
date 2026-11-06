@@ -329,7 +329,7 @@ export function CheckoutForm(props: Props) {
             Nakupuji na firmu (doplnit IČO a DIČ)
           </label>
           {company && (
-            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+            <div className="appear mt-4 grid gap-4 sm:grid-cols-3">
               <label className={`${labelCls} sm:col-span-3`}>
                 Název firmy
                 <input name="companyName" autoComplete="organization" className={inputCls} {...aria("billing.companyName")} />

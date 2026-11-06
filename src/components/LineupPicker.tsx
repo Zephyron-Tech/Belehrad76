@@ -100,6 +100,8 @@ export function LineupPicker({ players, initialSlug }: { players: LineupPlayer[]
               width={352}
               height={600}
               sizes="(min-width: 768px) 22vw, 46vw"
+              loading={Math.abs(i - active) <= 2 ? "eager" : "lazy"}
+              fetchPriority={i === active ? "high" : undefined}
               className="lineup-label label-paper"
               data-active={i === active}
             />

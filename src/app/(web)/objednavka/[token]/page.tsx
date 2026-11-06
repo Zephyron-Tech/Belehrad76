@@ -100,7 +100,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
               <dt className="text-muted">Číslo účtu</dt>
               <dd className="font-semibold text-cream">{transfer.account}</dd>
               <dt className="text-muted">IBAN</dt>
-              <dd className="text-cream">{formatIban(transfer.iban)}</dd>
+              <dd className="break-words text-cream">{formatIban(transfer.iban)}</dd>
               <dt className="text-muted">Variabilní symbol</dt>
               <dd className="font-semibold text-cream">{transfer.variableSymbol}</dd>
               <dt className="text-muted">Částka</dt>
