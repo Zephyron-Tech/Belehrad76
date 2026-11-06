@@ -15,7 +15,7 @@ const csp = [
   "font-src 'self'",
   "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://challenges.cloudflare.com https://widget.packeta.com https://*.widget.packeta.com",
   // iframe mapy z widget.packeta.com nebo záložních *.widget.packeta.com; při výpadku chybová stránka na codenow.com
-  "frame-src https://challenges.cloudflare.com https://widget.packeta.com https://*.widget.packeta.com https://error-page-service-widget-errors.prod.packeta-com.codenow.com",
+  "frame-src 'self' https://challenges.cloudflare.com https://widget.packeta.com https://*.widget.packeta.com https://error-page-service-widget-errors.prod.packeta-com.codenow.com",
   "media-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
@@ -45,6 +45,16 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // Náhledy e-mailů na /preview se vkládají do rámečku telefonu na téže stránce (jen stejný původ)
+      {
+        source: "/preview/emaily/:path*",
+        headers: [
+          ...(process.env.NODE_ENV === "production"
+            ? [{ key: "Content-Security-Policy", value: csp.replace("frame-ancestors 'none'", "frame-ancestors 'self'") }]
+            : []),
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        ],
+      },
       // Obrázky: prohlížeč je drží 1 den a další týden je smí použít, zatímco si na pozadí ověří novou verzi.
       // (Krátká doba, protože finální fotky se budou nahrávat pod stejnými názvy.)
       {
