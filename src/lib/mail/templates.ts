@@ -15,26 +15,51 @@ export function esc(value: string | null | undefined): string {
     .replace(/'/g, "&#39;");
 }
 
-const GOLD = "#a8823c";
-const INK = "#1b1712";
+// Barvy a písmo podle webu: noc (černá), krémová etiketa, zlato a červená pečeť. Web je záměrně tmavý, e-mail také.
+const INK = "#0f0d0b";
+const PANEL = "#19150f";
+const PANEL2 = "#241e16";
+const GOLD = "#c9a35c";
+const GOLD_LIGHT = "#e6c98f";
+const CREAM = "#efe8dc";
+const MUTED = "#b0a48c";
+const PAPER = "#e8e0cf";
+const PAPER_MUTED = "#4a4135";
+const SEAL = "#b3262d";
+// Úzké patkové řezy webu (Archivo) nejsou v poštovních klientech k dispozici, proto záložní úzké písmo
+const DISPLAY = "'Archivo Narrow','Arial Narrow','Helvetica Neue',Arial,sans-serif";
+const BODY = "'Helvetica Neue',Helvetica,Arial,sans-serif";
 
-function layout(settings: Settings, title: string, body: string): string {
+/** Barevné pole s nadpisem: stejné „kapitoly“ jako na webu (noc, zlato, krémová etiketa) */
+type Tone = "night" | "gold" | "paper";
+const TONES: Record<Tone, { bg: string; title: string; eyebrow: string }> = {
+  night: { bg: PANEL2, title: GOLD, eyebrow: MUTED },
+  gold: { bg: GOLD, title: INK, eyebrow: INK },
+  paper: { bg: PAPER, title: INK, eyebrow: SEAL },
+};
+
+function layout(settings: Settings, title: string, body: string, opts: { tone?: Tone; eyebrow?: string } = {}): string {
+  const tone = TONES[opts.tone ?? "night"];
   return `<!doctype html>
-<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark">
 <title>${esc(title)}</title></head>
-<body style="margin:0;background:#f4efe6;font-family:Arial,Helvetica,sans-serif;color:${INK};">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4efe6;padding:24px 0;">
-<tr><td align="center">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;">
-<tr><td style="background:${INK};padding:24px 28px;text-align:center;">
-<div style="font-family:Georgia,serif;font-size:26px;letter-spacing:2px;color:#d9b46a;font-weight:bold;">MISTŘI EVROPY</div>
-<div style="font-family:Georgia,serif;font-size:14px;letter-spacing:4px;color:#f4ecdc;margin-top:4px;">BĚLEHRAD 1976</div>
+<body style="margin:0;background:${INK};font-family:${BODY};color:${CREAM};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${INK};">
+<tr><td align="center" style="padding:0 0 24px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+<tr><td align="center" style="background:${INK};padding:32px 28px 28px;">
+<table role="presentation" cellpadding="0" cellspacing="0" align="center"><tr><td align="center" valign="middle" width="64" height="64" style="width:64px;height:64px;background:${SEAL};border-radius:32px;font-family:${DISPLAY};font-size:22px;font-weight:800;letter-spacing:1px;color:#8f1d24;line-height:64px;">1976</td></tr></table>
+<div style="font-family:${DISPLAY};font-size:26px;font-weight:800;letter-spacing:3px;color:${GOLD};text-transform:uppercase;margin-top:16px;">Mistři Evropy</div>
+<div style="font-family:${DISPLAY};font-size:13px;letter-spacing:5px;color:${CREAM};text-transform:uppercase;margin-top:4px;">Bělehrad 1976</div>
 </td></tr>
-<tr><td style="padding:28px;font-size:15px;line-height:1.55;">
-<h1 style="font-family:Georgia,serif;font-size:22px;margin:0 0 16px;color:${INK};">${esc(title)}</h1>
+<tr><td style="background:${tone.bg};padding:36px 32px 32px;">
+${opts.eyebrow ? `<div style="font-family:${BODY};font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${tone.eyebrow};margin-bottom:10px;">${esc(opts.eyebrow)}</div>` : ""}
+<h1 style="font-family:${DISPLAY};font-size:36px;line-height:1;font-weight:800;text-transform:uppercase;letter-spacing:0;margin:0;color:${tone.title};">${esc(title)}</h1>
+</td></tr>
+<tr><td style="background:${PANEL};padding:30px 32px 34px;font-size:16px;line-height:1.6;color:${CREAM};">
 ${body}
 </td></tr>
-<tr><td style="padding:20px 28px;background:#faf6ee;font-size:12px;color:#6b6252;line-height:1.5;">
+<tr><td style="background:${INK};padding:24px 32px 8px;font-size:12px;color:${MUTED};line-height:1.6;text-align:center;">
 Výtěžek edice jde na podporu Nadace fotbalových internacionálů.<br>
 Prodávající: ${esc(settings.str("seller.name"))}, IČO ${esc(settings.str("seller.ico"))}, ${esc(settings.str("seller.address"))}<br>
 Kontakt: ${esc(settings.str("contact.email"))}${settings.str("contact.phone") ? `, ${esc(settings.str("contact.phone"))}` : ""}<br>
@@ -45,22 +70,24 @@ Prodej alkoholu osobám mladším 18 let je zakázán.
 </body></html>`;
 }
 
+/** Řádky se oddělují tónem pozadí, ne linkami (jako na webu) */
 function itemsTable(order: OrderWithItems): string {
+  const cell = `padding:11px 14px;background:${PANEL2};border-bottom:2px solid ${PANEL};`;
   const rows = order.items
     .map(
       (i) => `<tr>
-<td style="padding:6px 0;border-bottom:1px solid #eee;">${esc(i.name)}${i.madeToOrder ? '<br><span style="font-size:12px;color:#6b6252;">vyrábí se na objednávku</span>' : ""}</td>
-<td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:center;">${i.quantity}×</td>
-<td style="padding:6px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;">${formatCzk(i.unitPriceCzk * i.quantity)}</td>
+<td style="${cell}">${esc(i.name)}${i.madeToOrder ? `<br><span style="font-size:12px;color:${MUTED};">vyrábí se na objednávku</span>` : ""}</td>
+<td style="${cell}text-align:center;" width="48">${i.quantity}×</td>
+<td style="${cell}text-align:right;white-space:nowrap;" width="100">${formatCzk(i.unitPriceCzk * i.quantity)}</td>
 </tr>`,
     )
     .join("");
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;margin:12px 0;">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:15px;margin:18px 0;">
 ${rows}
-<tr><td style="padding:6px 0;">Doprava – ${esc(DELIVERY_LABEL[order.deliveryMethod])}</td><td></td>
-<td style="padding:6px 0;text-align:right;white-space:nowrap;">${order.shippingCzk ? formatCzk(order.shippingCzk) : "zdarma"}</td></tr>
-<tr><td style="padding:8px 0;font-weight:bold;border-top:2px solid ${INK};">Celkem</td><td style="border-top:2px solid ${INK};"></td>
-<td style="padding:8px 0;font-weight:bold;text-align:right;border-top:2px solid ${INK};white-space:nowrap;">${formatCzk(order.totalCzk)}</td></tr>
+<tr><td style="${cell}color:${MUTED};">Doprava – ${esc(DELIVERY_LABEL[order.deliveryMethod])}</td><td style="${cell}"></td>
+<td style="${cell}text-align:right;white-space:nowrap;">${order.shippingCzk ? formatCzk(order.shippingCzk) : "zdarma"}</td></tr>
+<tr><td style="padding:16px 14px 6px;font-family:${DISPLAY};font-size:20px;font-weight:800;text-transform:uppercase;color:${GOLD};">Celkem</td><td></td>
+<td style="padding:16px 14px 6px;font-family:${DISPLAY};font-size:24px;font-weight:800;text-align:right;white-space:nowrap;color:${GOLD_LIGHT};">${formatCzk(order.totalCzk)}</td></tr>
 </table>`;
 }
 
@@ -83,7 +110,7 @@ function deliveryHtml(order: OrderWithItems, settings: Settings): string {
 }
 
 function button(href: string, label: string): string {
-  return `<p style="margin:20px 0;"><a href="${esc(href)}" style="display:inline-block;background:${GOLD};color:#ffffff;text-decoration:none;padding:12px 22px;font-weight:bold;">${esc(label)}</a></p>`;
+  return `<p style="margin:24px 0;"><a href="${esc(href)}" style="display:inline-block;background:${GOLD};color:${INK};text-decoration:none;padding:14px 26px;font-family:${DISPLAY};font-size:16px;font-weight:800;letter-spacing:1px;text-transform:uppercase;">${esc(label)}</a></p>`;
 }
 
 /** Doručení a dodací lhůta: box kurýrem (jen při doručení na adresu), kusovky na objednávku */
@@ -91,7 +118,7 @@ function madeToOrderNote(order: OrderWithItems, settings: Settings): string {
   const notes: string[] = [];
   if (order.deliveryMethod === "SHIPPING" && order.items.some((i) => i.type === "BOX")) notes.push(settings.str("box.delivery"));
   if (order.items.some((i) => i.madeToOrder)) notes.push(settings.str("bottle.lead_time"));
-  return notes.map((n) => `<p style="font-size:14px;color:#6b6252;">${esc(n)}</p>`).join("\n");
+  return notes.map((n) => `<p style="font-size:14px;color:${MUTED};">${esc(n)}</p>`).join("\n");
 }
 
 /** E-mail ihned po vytvoření objednávky */
@@ -106,13 +133,13 @@ export function orderReceivedMail(
 
   if (order.paymentMethod === "BANK_TRANSFER" && opts.transfer) {
     const t = opts.transfer;
-    payment = `<h2 style="font-family:Georgia,serif;font-size:18px;margin:24px 0 8px;">Platební údaje</h2>
+    payment = `<h2 style="font-family:${DISPLAY};font-size:22px;font-weight:800;text-transform:uppercase;color:${GOLD};margin:28px 0 8px;">Platební údaje</h2>
 <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:14px;">
-<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">Číslo účtu</td><td><strong>${esc(t.account)}</strong></td></tr>
-<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">IBAN</td><td>${esc(formatIban(t.iban))}</td></tr>
-<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">Variabilní symbol</td><td><strong>${esc(t.variableSymbol)}</strong></td></tr>
-<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">Částka</td><td><strong>${formatCzk(t.amountCzk)}</strong></td></tr>
-<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">Zaplaťte do</td><td>${esc(formatDateTime(order.reservedUntil))}</td></tr>
+<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Číslo účtu</td><td><strong>${esc(t.account)}</strong></td></tr>
+<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">IBAN</td><td>${esc(formatIban(t.iban))}</td></tr>
+<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Variabilní symbol</td><td><strong>${esc(t.variableSymbol)}</strong></td></tr>
+<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Částka</td><td><strong>${formatCzk(t.amountCzk)}</strong></td></tr>
+<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Zaplaťte do</td><td>${esc(formatDateTime(order.reservedUntil))}</td></tr>
 </table>
 ${opts.qrCid ? `<p><img src="cid:${opts.qrCid}" width="180" height="180" alt="QR platba"></p>` : ""}
 <p style="font-size:14px;">Po připsání platby vám pošleme potvrzení. Nezaplacená objednávka se po uplynutí lhůty automaticky zruší.</p>`;
@@ -132,7 +159,8 @@ ${payment}
 ${deliveryHtml(order, settings)}
 ${madeToOrderNote(order, settings)}
 ${order.eveningInterest ? `<p>Po zaplacení vás zařadíme do losování o vstup na slavnostní večer. <strong>${EVENING_ENTRY_NOTE}</strong></p>` : ""}
-<p style="font-size:13px;color:#6b6252;">Stav objednávky: <a href="${esc(opts.orderUrl)}">${esc(opts.orderUrl)}</a></p>`,
+<p style="font-size:13px;color:${MUTED};">Stav objednávky: <a href="${esc(opts.orderUrl)}" style="color:${GOLD_LIGHT};">${esc(opts.orderUrl)}</a></p>`,
+    { tone: "night", eyebrow: "Čeká na zaplacení" },
   );
 
   const text = `Dobrý den, ${order.firstName},\n\nděkujeme za objednávku ${order.number}. Objednávka čeká na zaplacení.\n\n${itemsText(order)}\n\n${paymentText}${order.eveningInterest ? `\nPo zaplacení vás zařadíme do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
@@ -157,6 +185,7 @@ ${
 }
 <p>O odeslání vás budeme informovat dalším e-mailem.</p>
 <p>Děkujeme, že podporujete Nadaci fotbalových internacionálů.</p>`,
+    { tone: "gold", eyebrow: "Potvrzení platby" },
   );
   const text = `Dobrý den, ${order.firstName},\n\npotvrzujeme přijetí platby ${formatCzk(order.totalCzk)} za objednávku ${order.number}. Potvrzení najdete v příloze.\n\n${itemsText(order)}\n\n${order.eveningInterest ? `Jste zařazeni do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n\n` : ""}Stav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
@@ -171,7 +200,7 @@ export function ownerPaidMail(order: OrderWithItems, settings: Settings, opts: {
     title,
     `${
       opts.oversold
-        ? `<p style="background:#fde8e8;border-left:4px solid #b0262c;padding:10px 12px;"><strong>Pozor:</strong> objednávka byla zaplacena přes GoPay až po vypršení rezervace a box už nebyl skladem. Vyřešte prosím ručně (vrácení peněz nebo box z rezervy).</p>`
+        ? `<p style="background:${PANEL2};border-left:4px solid ${SEAL};padding:12px 16px;"><strong>Pozor:</strong> objednávka byla zaplacena přes GoPay až po vypršení rezervace a box už nebyl skladem. Vyřešte prosím ručně (vrácení peněz nebo box z rezervy).</p>`
         : ""
     }
 <p><strong>${esc(order.firstName)} ${esc(order.lastName)}</strong><br>${esc(order.email)} · ${esc(order.phone)}</p>
@@ -182,6 +211,7 @@ ${deliveryHtml(order, settings)}
 <p>Zájem o slavnostní večer: <strong>${order.eveningInterest ? "ANO" : "ne"}</strong></p>
 ${order.note ? `<p>Poznámka zákazníka: ${esc(order.note)}</p>` : ""}
 ${button(opts.adminUrl, "Otevřít v administraci")}`,
+    { tone: "night", eyebrow: "Pro provozovatele" },
   );
   const text = `${title}\n\n${order.firstName} ${order.lastName}, ${order.email}, ${order.phone}\n${billing}\n\n${itemsText(order)}\n\nPlatba: ${PAYMENT_LABEL[order.paymentMethod]}\nDoprava: ${DELIVERY_LABEL[order.deliveryMethod]}\nVečer: ${order.eveningInterest ? "ANO" : "ne"}\n${order.note ? `Poznámka: ${order.note}\n` : ""}\n${opts.adminUrl}\n`;
   return { subject: title, html, text };
@@ -198,6 +228,7 @@ export function shippedMail(order: OrderWithItems, settings: Settings, opts: { o
 <p>vaše objednávka <strong>${esc(order.number)}</strong> je připravena k osobnímu převzetí.</p>
 <p><strong>Adresa:</strong> ${esc(settings.str("pickup.address"))}<br>${esc(settings.str("pickup.note"))}</p>
 <p>Při převzetí prosím prokažte věk 18+ a uveďte číslo objednávky.</p>`,
+      { tone: "paper", eyebrow: "K převzetí" },
     );
     const text = `Dobrý den, ${order.firstName},\n\nobjednávka ${order.number} je připravena k převzetí.\nAdresa: ${settings.str("pickup.address")}\n${settings.str("pickup.note")}\n\nPři převzetí prokažte věk 18+.\n`;
     return { subject: title, html, text };
@@ -210,8 +241,8 @@ export function shippedMail(order: OrderWithItems, settings: Settings, opts: { o
     `<p>Dobrý den, ${esc(order.firstName)},</p>
 <p>vaši objednávku <strong>${esc(order.number)}</strong> jsme předali dopravci.</p>
 <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:14px;">
-<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">Dopravce</td><td><strong>${esc(order.carrier)}</strong></td></tr>
-${order.trackingNumber ? `<tr><td style="padding:3px 16px 3px 0;color:#6b6252;">Číslo zásilky</td><td><strong>${esc(order.trackingNumber)}</strong></td></tr>` : ""}
+<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Dopravce</td><td><strong>${esc(order.carrier)}</strong></td></tr>
+${order.trackingNumber ? `<tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Číslo zásilky</td><td><strong>${esc(order.trackingNumber)}</strong></td></tr>` : ""}
 </table>
 ${deliveryHtml(order, settings)}
 ${
@@ -219,6 +250,7 @@ ${
     ? "<p>Až zásilka dorazí na výdejní místo, Zásilkovna vám pošle zprávu s kódem pro vyzvednutí. Zásilka obsahuje alkohol – při vyzvednutí prokažte věk 18+ dokladem totožnosti.</p>"
     : "<p>Zásilka obsahuje alkohol – při převzetí může dopravce ověřit věk 18+.</p>"
 }`,
+    { tone: "paper", eyebrow: "Na cestě" },
   );
   const text = `Dobrý den, ${order.firstName},\n\nobjednávku ${order.number} jsme předali dopravci.\nDopravce: ${order.carrier}\n${order.trackingNumber ? `Číslo zásilky: ${order.trackingNumber}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
