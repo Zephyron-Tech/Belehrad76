@@ -165,7 +165,7 @@ ${opts.qrCid ? `<p><img src="cid:${opts.qrCid}" width="180" height="180" alt="QR
   const html = layout(
     settings,
     title,
-    `<p>Dobrý den, ${esc(order.firstName)},</p>
+    `<p>Dobrý den,</p>
 <p>děkujeme za objednávku z limitované edice Mistři Evropy – Bělehrad 1976. Objednávka čeká na zaplacení.</p>
 ${itemsTable(order)}
 ${payment}
@@ -176,7 +176,7 @@ ${order.eveningInterest ? `<p>Po zaplacení vás zařadíme do losování o vstu
     { tone: "night", eyebrow: "Čeká na zaplacení", preheader: `Objednávka ${order.number} čeká na zaplacení, celkem ${formatCzk(order.totalCzk)}.` },
   );
 
-  const text = `Dobrý den, ${order.firstName},\n\nděkujeme za objednávku ${order.number}. Objednávka čeká na zaplacení.\n\n${itemsText(order)}\n\n${paymentText}${order.eveningInterest ? `\nPo zaplacení vás zařadíme do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
+  const text = `Dobrý den,\n\nděkujeme za objednávku ${order.number}. Objednávka čeká na zaplacení.\n\n${itemsText(order)}\n\n${paymentText}${order.eveningInterest ? `\nPo zaplacení vás zařadíme do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
 }
 
@@ -186,7 +186,7 @@ export function paymentConfirmedMail(order: OrderWithItems, settings: Settings, 
   const html = layout(
     settings,
     title,
-    `<p>Dobrý den, ${esc(order.firstName)},</p>
+    `<p>Dobrý den,</p>
 <p>potvrzujeme přijetí platby <strong>${formatCzk(order.totalCzk)}</strong> za objednávku <strong>${esc(order.number)}</strong>. Potvrzení o zaplacení najdete v příloze (PDF).</p>
 ${itemsTable(order)}
 ${deliveryHtml(order, settings)}
@@ -200,7 +200,7 @@ ${
 <p>Děkujeme, že podporujete Nadaci fotbalových internacionálů.</p>`,
     { tone: "gold", eyebrow: "Potvrzení platby", preheader: `Platbu ${formatCzk(order.totalCzk)} jsme přijali. Potvrzení najdete v příloze.` },
   );
-  const text = `Dobrý den, ${order.firstName},\n\npotvrzujeme přijetí platby ${formatCzk(order.totalCzk)} za objednávku ${order.number}. Potvrzení najdete v příloze.\n\n${itemsText(order)}\n\n${order.eveningInterest ? `Jste zařazeni do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n\n` : ""}Stav objednávky: ${opts.orderUrl}\n`;
+  const text = `Dobrý den,\n\npotvrzujeme přijetí platby ${formatCzk(order.totalCzk)} za objednávku ${order.number}. Potvrzení najdete v příloze.\n\n${itemsText(order)}\n\n${order.eveningInterest ? `Jste zařazeni do losování o vstup na slavnostní večer. ${EVENING_ENTRY_NOTE}\n\n` : ""}Stav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
 }
 
@@ -237,13 +237,13 @@ export function shippedMail(order: OrderWithItems, settings: Settings, opts: { o
     const html = layout(
       settings,
       title,
-      `<p>Dobrý den, ${esc(order.firstName)},</p>
+      `<p>Dobrý den,</p>
 <p>vaše objednávka <strong>${esc(order.number)}</strong> je připravena k osobnímu převzetí.</p>
 <p><strong>Adresa:</strong> ${esc(settings.str("pickup.address"))}<br>${esc(settings.str("pickup.note"))}</p>
 <p>Při převzetí prosím prokažte věk 18+ a uveďte číslo objednávky.</p>`,
       { tone: "paper", eyebrow: "K převzetí", preheader: `Objednávku ${order.number} si můžete vyzvednout.` },
     );
-    const text = `Dobrý den, ${order.firstName},\n\nobjednávka ${order.number} je připravena k převzetí.\nAdresa: ${settings.str("pickup.address")}\n${settings.str("pickup.note")}\n\nPři převzetí prokažte věk 18+.\n`;
+    const text = `Dobrý den,\n\nobjednávka ${order.number} je připravena k převzetí.\nAdresa: ${settings.str("pickup.address")}\n${settings.str("pickup.note")}\n\nPři převzetí prokažte věk 18+.\n`;
     return { subject: title, html, text };
   }
 
@@ -251,7 +251,7 @@ export function shippedMail(order: OrderWithItems, settings: Settings, opts: { o
   const html = layout(
     settings,
     title,
-    `<p>Dobrý den, ${esc(order.firstName)},</p>
+    `<p>Dobrý den,</p>
 <p>vaši objednávku <strong>${esc(order.number)}</strong> jsme předali dopravci.</p>
 <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:14px;">
 <tr><td style="padding:3px 16px 3px 0;color:${MUTED};">Dopravce</td><td><strong>${esc(order.carrier)}</strong></td></tr>
@@ -265,6 +265,6 @@ ${
 }`,
     { tone: "paper", eyebrow: "Na cestě", preheader: `Objednávku ${order.number} jsme předali dopravci.` },
   );
-  const text = `Dobrý den, ${order.firstName},\n\nobjednávku ${order.number} jsme předali dopravci.\nDopravce: ${order.carrier}\n${order.trackingNumber ? `Číslo zásilky: ${order.trackingNumber}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
+  const text = `Dobrý den,\n\nobjednávku ${order.number} jsme předali dopravci.\nDopravce: ${order.carrier}\n${order.trackingNumber ? `Číslo zásilky: ${order.trackingNumber}\n` : ""}\nStav objednávky: ${opts.orderUrl}\n`;
   return { subject: title, html, text };
 }
