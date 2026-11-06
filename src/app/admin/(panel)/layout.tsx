@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { logoutAction } from "../actions";
+import { LogoutButton } from "./LogoutButton";
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
@@ -24,7 +25,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <div className="flex items-center gap-3 text-sm text-muted">
             <span className="hidden sm:inline">{session.email}</span>
             <form action={logoutAction}>
-              <button className="border border-line px-3 py-1.5 text-cream hover:border-gold">Odhlásit</button>
+              <LogoutButton />
             </form>
           </div>
         </div>

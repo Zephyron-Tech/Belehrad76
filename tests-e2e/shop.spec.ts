@@ -249,3 +249,15 @@ test("administrace: bez přihlášení nic, přihlášení s 2FA, platba převod
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/admin\/login/);
 });
+
+test("košík: odebrání lze vrátit tlačítkem Vrátit", async ({ page }) => {
+  await passGates(page);
+  await gotoShop(page, "/produkt/jan-svehlik");
+  await page.getByRole("button", { name: "Do košíku" }).click();
+  await gotoShop(page, "/kosik");
+  await page.getByRole("button", { name: /Odebrat – / }).click();
+  await expect(page.getByText("Košík je prázdný")).toBeVisible();
+  await expect(page.getByRole("status").getByText(/odebráno z košíku/)).toBeVisible();
+  await page.getByRole("button", { name: "Vrátit" }).click();
+  await expect(page.getByRole("link", { name: /Švehlík/ }).first()).toBeVisible();
+});

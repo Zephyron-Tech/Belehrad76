@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
 import { useSyncedPricedCart } from "@/components/cart/usePricedCart";
 import { formatCzk } from "@/lib/format";
+import { useToast } from "@/components/Toast";
 
 export function CartView() {
-  const { setQuantity, remove } = useCart();
+  const { setQuantity, remove, add } = useCart();
+  const toast = useToast();
   const { data, loading, error, ready, notices } = useSyncedPricedCart();
 
   if (!ready || (loading && !data)) return <p className="mt-10 text-muted">Načítám košík…</p>;
@@ -89,7 +91,11 @@ export function CartView() {
                 <p className="tabular w-28 text-right font-semibold">{formatCzk(line.lineTotalCzk)}</p>
                 <button
                   type="button"
-                  onClick={() => remove(line.slug)}
+                  onClick={() => {
+                    const { slug, quantity, name } = { slug: line.slug, quantity: line.quantity, name: line.name };
+                    remove(slug);
+                    toast.show({ message: `${name} odebráno z košíku`, actionLabel: "Vrátit", onAction: () => add(slug, quantity) });
+                  }}
                   className="link min-h-11 text-muted hover:text-danger"
                   aria-label={`Odebrat – ${line.name}`}
                 >

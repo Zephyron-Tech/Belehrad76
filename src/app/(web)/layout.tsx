@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { AgeGate } from "@/components/AgeGate";
 import { AGE_COOKIE } from "@/lib/consent";
 import { CookieConsent } from "@/components/CookieConsent";
+import { ToastProvider } from "@/components/Toast";
 import { RevealObserver } from "@/components/RevealObserver";
 
 // Sklad, ceny a texty se čtou z databáze při každém požadavku
@@ -36,6 +37,7 @@ export default async function WebLayout({ children }: { children: React.ReactNod
 
   return (
     <CartProvider>
+      <ToastProvider>
       <a href="#obsah" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[200] focus:bg-gold focus:px-4 focus:py-3 focus:text-ink">
         Přeskočit na obsah
       </a>
@@ -45,6 +47,7 @@ export default async function WebLayout({ children }: { children: React.ReactNod
       <AgeGate verified={ageVerified} />
       <RevealObserver />
       <CookieConsent ga4Id={env.ga4Id || undefined} metaPixelId={env.metaPixelId || undefined} />
+      </ToastProvider>
     </CartProvider>
   );
 }

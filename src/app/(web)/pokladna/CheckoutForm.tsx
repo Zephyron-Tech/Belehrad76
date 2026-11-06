@@ -44,6 +44,10 @@ export function CheckoutForm(props: Props) {
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
+  // Turnstile token je jednorázový: po neúspěšném odeslání se widget načte znovu
+  const [tsKey, setTsKey] = useState(0);
+  const submittingRef = useRef(false);
+
   const onToken = useCallback((t: string | null) => setTurnstileToken(t), []);
   const alertRef = useRef<HTMLDivElement>(null);
 
@@ -134,6 +138,9 @@ export function CheckoutForm(props: Props) {
       turnstileToken: turnstileToken ?? undefined,
     };
 
+    // dvojklik / dvojí klepnutí dřív, než se překreslí tlačítko
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
     try {
       const res = await fetch("/api/objednavka", {
@@ -145,7 +152,10 @@ export function CheckoutForm(props: Props) {
       if (!res.ok || !json.redirectUrl) {
         setFieldErrors(json.fieldErrors ?? {});
         setFormError(json.error ?? "Objednávku se nepodařilo odeslat.");
+        submittingRef.current = false;
         setSubmitting(false);
+        setTurnstileToken(null);
+        setTsKey((k) => k + 1);
         refresh(); // ceny a sklad se mohly mezitím změnit
         return;
       }
@@ -153,7 +163,10 @@ export function CheckoutForm(props: Props) {
       window.location.href = json.redirectUrl;
     } catch {
       setFormError("Spojení selhalo. Zkuste to prosím znovu.");
+      submittingRef.current = false;
       setSubmitting(false);
+      setTurnstileToken(null);
+      setTsKey((k) => k + 1);
     }
   }
 
@@ -320,6 +333,7 @@ export function CheckoutForm(props: Props) {
               <label className={`${labelCls} sm:col-span-3`}>
                 Název firmy
                 <input name="companyName" autoComplete="organization" className={inputCls} {...aria("billing.companyName")} />
+                {err("billing.companyName")}
               </label>
               <label className={labelCls}>
                 IČO
@@ -390,7 +404,7 @@ export function CheckoutForm(props: Props) {
           </label>
         </fieldset>
 
-        {props.turnstileSiteKey && <Turnstile siteKey={props.turnstileSiteKey} onToken={onToken} />}
+        {props.turnstileSiteKey && <Turnstile key={tsKey} siteKey={props.turnstileSiteKey} onToken={onToken} />}
       </div>
 
       <aside className="self-start bg-panel p-6 md:p-8 lg:sticky lg:top-24">
@@ -417,7 +431,7 @@ export function CheckoutForm(props: Props) {
         {data.hasMadeToOrder && <p className="mt-3 text-small">{data.leadTime}</p>}
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || loading}
           aria-busy={submitting}
           className="btn mt-6 w-full disabled:cursor-wait"
         >

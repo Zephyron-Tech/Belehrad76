@@ -103,6 +103,7 @@ body {
   }
 }
 
+@layer base {
 /* Ovládací prvky vždy ukazují rukou (Tailwind v4 to už nedělá), zakázané zákazem */
 button:not(:disabled),
 [role="button"],
@@ -115,6 +116,7 @@ a[href] {
 button:disabled,
 label:has(input[type="checkbox"]:disabled, input[type="radio"]:disabled) {
   cursor: not-allowed;
+}
 }
 
 ::selection {
@@ -1210,5 +1212,18 @@ p {
   from {
     opacity: 0;
     transform: translateY(14px);
+  }
+}
+
+/* --- Oznámení dole (košík: „Odebráno – Vrátit“) --- */
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: toast-in 260ms var(--ease-out) both;
+  }
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
   }
 }
