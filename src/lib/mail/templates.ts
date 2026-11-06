@@ -172,7 +172,7 @@ ${payment}
 ${deliveryHtml(order, settings)}
 ${madeToOrderNote(order, settings)}
 ${order.eveningInterest ? `<p>Po zaplacení vás zařadíme do losování o vstup na slavnostní večer. <strong>${EVENING_ENTRY_NOTE}</strong></p>` : ""}
-<p style="font-size:13px;color:${MUTED};">Stav objednávky: <a href="${esc(opts.orderUrl)}" class="lnk" style="color:${LINK};">${esc(opts.orderUrl)}</a></p>`,
+<p class="muted" style="font-size:13px;color:${MUTED};word-break:break-all;">Stav objednávky: <a href="${esc(opts.orderUrl)}" class="lnk" style="color:${LINK};">${esc(opts.orderUrl)}</a></p>`,
     { tone: "night", eyebrow: "Čeká na zaplacení", preheader: `Objednávka ${order.number} čeká na zaplacení, celkem ${formatCzk(order.totalCzk)}.` },
   );
 

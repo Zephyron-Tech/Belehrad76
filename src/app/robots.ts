@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
     return { rules: [{ userAgent: "*", disallow: "/" }] };
   }
   return {
-    rules: [{ userAgent: "*", allow: "/", disallow: ["/admin", "/api", "/objednavka", "/kosik", "/pokladna", "/platba-test"] }],
+    rules: [{ userAgent: "*", allow: "/", disallow: ["/admin", "/api", "/objednavka", "/kosik", "/pokladna", "/platba-test", "/preview"] }],
     sitemap: `${base}/sitemap.xml`,
   };
 }

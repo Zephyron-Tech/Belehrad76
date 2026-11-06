@@ -1,0 +1,474 @@
+/*
+ * Prezentace návrhu (/preview): MacBook s oknem Chrome a iPhone se stavovým řádkem iOS.
+ * Vše je pod třídou .pv, ať styly nezasáhnou zbytek webu. Velikosti uvnitř zařízení se řídí šířkou zařízení (cqw).
+ */
+.pv {
+  --pv-metal: #2b2925;
+  --pv-metal-edge: #4a4640;
+  --pv-chrome-frame: #202124;
+  --pv-chrome-tab: #35363a;
+  --pv-chrome-text: #e8eaed;
+  --pv-chrome-dim: #9aa0a6;
+  --pv-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100svh;
+  background: var(--ink) radial-gradient(ellipse 80% 55% at 50% 62%, rgba(201, 163, 92, 0.1), transparent 70%);
+  color: var(--cream);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 56px;
+}
+.pv * {
+  box-sizing: border-box;
+}
+.pv-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+}
+
+.pv-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px 32px;
+}
+.pv-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pv-seal {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--seal);
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 62%;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--seal-deep);
+  box-shadow:
+    inset 0 0 0 3px var(--seal-deep),
+    inset 0 0 0 6px var(--seal),
+    inset 0 0 0 7px var(--seal-deep);
+}
+.pv-title {
+  margin: 0;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 62%;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 0.94;
+  color: var(--gold);
+  word-spacing: 0.14em;
+}
+.pv-title span {
+  color: var(--cream);
+}
+
+.pv-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.pv-nav a {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 75%;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 15px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 10px 14px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease;
+}
+.pv-nav a:hover {
+  color: var(--cream);
+}
+.pv-nav a[aria-current="page"] {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold);
+}
+.pv-nav a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* --- Scéna --- */
+.pv-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(24px, 4vw, 64px);
+}
+.pv-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--ink);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.pv-scroll::-webkit-scrollbar {
+  display: none;
+}
+.pv-scroll img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+}
+
+/* MacBook */
+.pv-mac {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 960px;
+}
+.pv-mac-lid {
+  background: #050505;
+  border-radius: 18px 18px 6px 6px;
+  padding: 2.2% 2.2% 3%;
+  box-shadow:
+    0 0 0 1.5px var(--pv-metal-edge),
+    0 40px 80px -30px rgba(0, 0, 0, 0.9);
+  position: relative;
+}
+.pv-mac-lid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 13%;
+  height: 2.3%;
+  min-height: 10px;
+  background: #050505;
+  border-radius: 0 0 8px 8px;
+  z-index: 2;
+}
+.pv-mac-screen {
+  aspect-ratio: 16 / 10;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--pv-chrome-frame);
+  container-type: inline-size;
+}
+.pv-mac-base {
+  height: 14px;
+  margin: 0 -7%;
+  border-radius: 0 0 14px 14px;
+  background: linear-gradient(#5a5650, #2b2925 55%, #191714);
+  position: relative;
+}
+.pv-mac-base::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16%;
+  height: 5px;
+  background: #1a1916;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Chrome */
+.pv-chrome {
+  flex: none;
+  font-family: var(--pv-ui);
+  color: var(--pv-chrome-text);
+}
+.pv-tabs {
+  display: flex;
+  align-items: flex-end;
+  height: 3.9cqw;
+  padding: 0 1cqw;
+  gap: 0.5cqw;
+}
+.pv-lights {
+  display: flex;
+  gap: 0.7cqw;
+  align-self: center;
+  margin-right: 1.4cqw;
+}
+.pv-lights i {
+  width: 1.15cqw;
+  height: 1.15cqw;
+  border-radius: 50%;
+  display: block;
+}
+.pv-lights i:nth-child(1) {
+  background: #ff5f57;
+}
+.pv-lights i:nth-child(2) {
+  background: #febc2e;
+}
+.pv-lights i:nth-child(3) {
+  background: #28c840;
+}
+.pv-tab {
+  height: 3cqw;
+  width: 22cqw;
+  background: var(--pv-chrome-tab);
+  border-radius: 0.8cqw 0.8cqw 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.7cqw;
+  padding: 0 0.9cqw;
+  font-size: 1.12cqw;
+  min-width: 0;
+}
+.pv-tab img {
+  width: 1.5cqw;
+  height: 1.5cqw;
+  flex: none;
+  border-radius: 50%;
+}
+.pv-tab span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pv-tab b {
+  font-weight: 400;
+  color: var(--pv-chrome-dim);
+  font-size: 1.3cqw;
+  line-height: 1;
+}
+.pv-newtab {
+  color: var(--pv-chrome-dim);
+  font-size: 1.7cqw;
+  line-height: 1;
+  align-self: center;
+  padding: 0 0.6cqw;
+}
+.pv-toolbar {
+  height: 3.4cqw;
+  background: var(--pv-chrome-tab);
+  display: flex;
+  align-items: center;
+  gap: 1.1cqw;
+  padding: 0 1.1cqw;
+  border-bottom: 1px solid #0c0c0d;
+}
+.pv-toolbar svg {
+  width: 1.45cqw;
+  height: 1.45cqw;
+  flex: none;
+  fill: none;
+  stroke: var(--pv-chrome-dim);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pv-omnibox {
+  flex: 1;
+  min-width: 0;
+  height: 2.4cqw;
+  background: var(--pv-chrome-frame);
+  border-radius: 1.2cqw;
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  padding: 0 1.1cqw;
+  font-size: 1.15cqw;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pv-host {
+  color: var(--pv-chrome-text);
+}
+.pv-path {
+  color: var(--pv-chrome-dim);
+}
+.pv-avatar {
+  width: 1.8cqw;
+  height: 1.8cqw;
+  border-radius: 50%;
+  background: #5f6368;
+  flex: none;
+}
+
+/* iPhone */
+.pv-phone {
+  flex: 0 0 auto;
+  width: clamp(220px, 22vw, 300px);
+}
+.pv-phone-body {
+  background: #050505;
+  border-radius: 46px;
+  padding: 11px;
+  box-shadow:
+    0 0 0 2px var(--pv-metal-edge),
+    0 0 0 5px var(--pv-metal),
+    0 40px 70px -25px rgba(0, 0, 0, 0.9);
+}
+.pv-phone-screen {
+  aspect-ratio: 390 / 844;
+  border-radius: 36px;
+  overflow: hidden;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  container-type: inline-size;
+}
+.pv-island {
+  position: absolute;
+  top: 3.2cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 31cqw;
+  height: 9.4cqw;
+  background: #000;
+  border-radius: 5cqw;
+  z-index: 3;
+}
+.pv-status {
+  flex: none;
+  height: 14cqw;
+  padding: 0 7cqw 0 9.5cqw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--pv-ui);
+  font-weight: 600;
+  font-size: 4.3cqw;
+  color: #fff;
+}
+.pv-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.5cqw;
+}
+.pv-icons svg {
+  height: 3.2cqw;
+  width: auto;
+  fill: #fff;
+  display: block;
+}
+
+/* E-maily: tři telefony s otevřenou zprávou */
+.pv-stage-mails {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.pv-mail {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
+.pv-mailhead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+  padding: 2cqw 5cqw 3.5cqw;
+  background: var(--ink);
+  font-family: var(--pv-ui);
+  border-bottom: 1px solid #2a2620;
+}
+.pv-mailseal {
+  width: 9cqw;
+  height: 9cqw;
+  border-radius: 50%;
+  background: var(--seal);
+  color: var(--cream);
+  display: grid;
+  place-items: center;
+  font-size: 3.4cqw;
+  font-weight: 700;
+  flex: none;
+}
+.pv-mailmeta {
+  display: grid;
+  min-width: 0;
+  font-size: 3.4cqw;
+  line-height: 1.3;
+  color: var(--muted);
+}
+.pv-mailmeta b {
+  color: #fff;
+  font-weight: 600;
+  font-size: 3.8cqw;
+}
+.pv-mailmeta span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pv-mailframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #efe8dc;
+}
+.pv-caption {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 75%;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.pv-hint {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .pv-stage {
+    flex-direction: column;
+    align-items: center;
+  }
+  .pv-mac {
+    width: 100%;
+    flex: none;
+  }
+  .pv-mac-base {
+    margin: 0 -4%;
+  }
+  .pv-phone {
+    width: min(280px, 78vw);
+  }
+  .pv-nav {
+    gap: 0;
+  }
+  .pv-nav a {
+    font-size: 13px;
+    padding: 8px 9px;
+    letter-spacing: 0.04em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pv-nav a {
+    transition: none;
+  }
+}
