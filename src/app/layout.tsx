@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo } from "next/font/google";
 import "./globals.css";
+import { NavigationProgress } from "@/components/NavigationProgress";
 
 // Jedna rodina: zúžený řez na nadpisy (jako jména na etiketách lahví), normální šířka na text
 const archivo = Archivo({
@@ -36,7 +37,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* Skryté výchozí stavy animací platí jen se skriptem – bez JS je obsah vidět hned */}
         <script dangerouslySetInnerHTML={{ __html: "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(d.dataset.reveal!=='ready')d.classList.add('reveal-fallback')},4000)" }} />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <NavigationProgress />
+        {children}
+      </body>
     </html>
   );
 }
