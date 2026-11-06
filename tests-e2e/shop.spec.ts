@@ -176,6 +176,8 @@ test("validace pokladny: chybějící údaje a souhlasy", async ({ page }) => {
   await gotoShop(page, "/produkt/jan-svehlik");
   await page.getByRole("button", { name: "Do košíku" }).click();
   await gotoShop(page, "/pokladna");
+  // Kusovky jdou Zásilkovnou (výdejní místo je povinné) – validaci ostatních polí ověříme s osobním převzetím
+  await page.getByRole("radio", { name: /Osobní převzetí/ }).check();
   await page.getByRole("button", { name: "Objednat a zaplatit" }).click();
   await expect(page.getByRole("alert").first()).toContainText("Zkontrolujte");
   await expect(page.getByText("Vyplňte jméno.")).toBeVisible();

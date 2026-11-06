@@ -110,10 +110,18 @@ export function CartView() {
             <dt className="text-muted">Zboží</dt>
             <dd className="tabular">{formatCzk(data.itemsTotalCzk)}</dd>
           </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-muted">Doprava na adresu</dt>
-            <dd className="tabular">{formatCzk(data.shipping.SHIPPING)}</dd>
-          </div>
+          {data.shipping.PACKETA !== null && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Zásilkovna – výdejní místo</dt>
+              <dd className="tabular">{formatCzk(data.shipping.PACKETA)}</dd>
+            </div>
+          )}
+          {data.shipping.SHIPPING !== null && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Kurýr na adresu</dt>
+              <dd className="tabular">{formatCzk(data.shipping.SHIPPING)}</dd>
+            </div>
+          )}
           {data.pickupEnabled && (
             <div className="flex justify-between gap-4">
               <dt className="text-muted">nebo osobní převzetí na FAČR</dt>
@@ -121,8 +129,8 @@ export function CartView() {
             </div>
           )}
           <div className="!mt-6 flex items-baseline justify-between gap-4 bg-panel-2 px-4 py-4">
-            <dt className="font-semibold">Celkem s dopravou na adresu</dt>
-            <dd className="display tabular text-[2rem] text-gold-light">{formatCzk(data.itemsTotalCzk + data.shipping.SHIPPING)}</dd>
+            <dt className="font-semibold">Celkem s dopravou</dt>
+            <dd className="display tabular text-[2rem] text-gold-light">{formatCzk(data.itemsTotalCzk + (data.shipping.PACKETA ?? data.shipping.SHIPPING ?? 0))}</dd>
           </div>
         </dl>
 

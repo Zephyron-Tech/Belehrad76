@@ -8,6 +8,7 @@ import { formatCzk } from "@/lib/format";
 import { currentConsent, readCookie } from "@/lib/consent";
 import { EVENING_ENTRY_NOTE } from "@/lib/labels";
 import { Turnstile } from "./Turnstile";
+import { PacketaPicker, type PacketaPoint } from "./PacketaPicker";
 
 type Props = {
   pickupAddress: string;
@@ -16,11 +17,12 @@ type Props = {
   transferDays: number;
   gopayMinutes: number;
   boxShippingCzk: number;
-  bottleShippingCzk: number;
+  packetaApiKey?: string;
+  packetaMock: boolean;
   turnstileSiteKey?: string;
 };
 
-type Delivery = "SHIPPING" | "PICKUP";
+type Delivery = "SHIPPING" | "PACKETA" | "PICKUP";
 type Payment = "GOPAY" | "BANK_TRANSFER";
 
 const inputCls = "input mt-2";
@@ -32,7 +34,8 @@ export function CheckoutForm(props: Props) {
   const { clear } = useCart();
   const { data, loading, ready, notices, inSync, refresh } = useSyncedPricedCart();
 
-  const [delivery, setDelivery] = useState<Delivery>("SHIPPING");
+  const [delivery, setDelivery] = useState<Delivery>("PACKETA");
+  const [packetaPoint, setPacketaPoint] = useState<PacketaPoint | null>(null);
   const [payment, setPayment] = useState<Payment>("GOPAY");
   const [company, setCompany] = useState(false);
   const [evening, setEvening] = useState(false);
@@ -51,8 +54,12 @@ export function CheckoutForm(props: Props) {
     (invalid ?? alertRef.current)?.focus();
   }, [formError, fieldErrors]);
 
-  const effectiveDelivery: Delivery = data && !data.pickupEnabled ? "SHIPPING" : delivery;
-  const shipping = data ? data.shipping[effectiveDelivery] : 0;
+  // Nabízí se jen způsoby dostupné pro obsah košíku (box → kurýr, kusovky → Zásilkovna, nad 490 Kč → kurýr)
+  const available = (d: Delivery) => !!data && data.shipping[d] !== null && (d !== "PICKUP" || data.pickupEnabled);
+  const effectiveDelivery: Delivery = available(delivery)
+    ? delivery
+    : ((["PACKETA", "SHIPPING", "PICKUP"] as const).find(available) ?? delivery);
+  const shipping = data ? (data.shipping[effectiveDelivery] ?? 0) : 0;
   const total = data ? data.itemsTotalCzk + shipping : 0;
   const hasBox = useMemo(() => (data?.boxes ?? 0) > 0, [data]);
 
@@ -90,6 +97,11 @@ export function CheckoutForm(props: Props) {
       setFormError("Košík se mezitím změnil – zkontrolujte prosím souhrn objednávky a odešlete ji znovu.");
       return;
     }
+    if (effectiveDelivery === "PACKETA" && !packetaPoint) {
+      setFieldErrors({ packetaPoint: "Vyberte výdejní místo Zásilkovny." });
+      setFormError("Vyberte prosím výdejní místo Zásilkovny.");
+      return;
+    }
     if (props.turnstileSiteKey && !turnstileToken) {
       setFormError("Počkejte prosím na ověření, že nejste robot.");
       return;
@@ -103,6 +115,7 @@ export function CheckoutForm(props: Props) {
       customer: { firstName: s("firstName"), lastName: s("lastName"), email: s("email"), phone: s("phone") },
       deliveryMethod: effectiveDelivery,
       address: effectiveDelivery === "SHIPPING" ? { street: s("street"), city: s("city"), zip: s("zip") } : undefined,
+      packetaPoint: effectiveDelivery === "PACKETA" ? (packetaPoint ?? undefined) : undefined,
       billing: company ? { companyName: s("companyName"), ico: s("ico"), dic: s("dic") } : undefined,
       note: s("note") || undefined,
       paymentMethod: payment,
@@ -189,20 +202,35 @@ export function CheckoutForm(props: Props) {
         <fieldset>
           <legend className={legendCls}>Doprava</legend>
           <div className="mt-6 grid gap-3">
-            <label className="option-tile" data-selected={effectiveDelivery === "SHIPPING"}>
-              <input type="radio" name="delivery" checked={effectiveDelivery === "SHIPPING"} onChange={() => setDelivery("SHIPPING")} className={checkCls} />
-              <span className="flex-1">
-                <span className="flex justify-between gap-4 font-semibold">
-                  Doručení na adresu v ČR <span className="tabular text-gold-light">{formatCzk(data.shipping.SHIPPING)}</span>
+            {available("PACKETA") && (
+              <label className="option-tile" data-selected={effectiveDelivery === "PACKETA"}>
+                <input type="radio" name="delivery" checked={effectiveDelivery === "PACKETA"} onChange={() => setDelivery("PACKETA")} className={checkCls} />
+                <span className="flex-1">
+                  <span className="flex justify-between gap-4 font-semibold">
+                    Zásilkovna – výdejní místo <span className="tabular text-gold-light">{formatCzk(data.shipping.PACKETA ?? 0)}</span>
+                  </span>
+                  <span className="mt-1 block text-muted">
+                    Cena podle hmotnosti zásilky. Jen výdejní místa s obsluhou (ne Z-BOX), při vyzvednutí Zásilkovna ověří věk 18+ (doklad totožnosti).
+                  </span>
                 </span>
-                <span className="mt-1 block text-muted">
-                  {hasBox
-                    ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem. ${data.boxDelivery}`
-                    : `${formatCzk(props.bottleShippingCzk)} za každou lahev.`}{" "}
-                  Při převzetí může dopravce ověřit věk 18+.
+              </label>
+            )}
+            {available("SHIPPING") && (
+              <label className="option-tile" data-selected={effectiveDelivery === "SHIPPING"}>
+                <input type="radio" name="delivery" checked={effectiveDelivery === "SHIPPING"} onChange={() => setDelivery("SHIPPING")} className={checkCls} />
+                <span className="flex-1">
+                  <span className="flex justify-between gap-4 font-semibold">
+                    Kurýr na adresu v ČR <span className="tabular text-gold-light">{formatCzk(data.shipping.SHIPPING ?? 0)}</span>
+                  </span>
+                  <span className="mt-1 block text-muted">
+                    {hasBox
+                      ? `${formatCzk(props.boxShippingCzk)} za celou objednávku s boxem. ${data.boxDelivery}`
+                      : `${formatCzk(props.boxShippingCzk)} za celou zásilku.`}{" "}
+                    Při převzetí může dopravce ověřit věk 18+.
+                  </span>
                 </span>
-              </span>
-            </label>
+              </label>
+            )}
             {data.pickupEnabled && (
               <label className="option-tile" data-selected={effectiveDelivery === "PICKUP"}>
                 <input type="radio" name="delivery" checked={effectiveDelivery === "PICKUP"} onChange={() => setDelivery("PICKUP")} className={checkCls} />
@@ -217,6 +245,23 @@ export function CheckoutForm(props: Props) {
               </label>
             )}
           </div>
+
+          {effectiveDelivery === "PACKETA" && (
+            <PacketaPicker
+              apiKey={props.packetaApiKey}
+              mock={props.packetaMock}
+              value={packetaPoint}
+              onChange={(p) => {
+                setPacketaPoint(p);
+                setFieldErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.packetaPoint;
+                  return next;
+                });
+              }}
+              error={fieldErrors["packetaPoint"] ?? fieldErrors["packetaPoint.id"] ?? null}
+            />
+          )}
 
           {effectiveDelivery === "SHIPPING" && (
             <div className="mt-4 grid gap-4 sm:grid-cols-[2fr_1fr]">

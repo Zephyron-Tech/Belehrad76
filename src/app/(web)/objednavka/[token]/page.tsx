@@ -177,6 +177,11 @@ export default async function OrderPage({ params, searchParams }: Props) {
                   {settings.str("pickup.address")}
                   <span className="block text-small text-muted">{settings.text("pickup.note")}</span>
                 </>
+              ) : order.deliveryMethod === "PACKETA" ? (
+                <>
+                  Zásilkovna: {order.packetaPointName}
+                  {order.packetaPointAddress && <span className="block text-small text-muted">{order.packetaPointAddress}</span>}
+                </>
               ) : (
                 <>
                   {order.street}, {formatZip(order.zip)} {order.city}

@@ -52,7 +52,7 @@ Vzor vzhledu je ve složce `C:\Users\rychl\eshop\foto\`:
 - Hosting: Vercel, nebo VPS s dockerem. Jde o malý provoz s nárazovou špičkou po spuštění prodeje a po kampani.
 - E-maily: Resend nebo Postmark (transakční).
 - Platby: GoPay (viz bod 5).
-- Doprava: dopravce zatím neurčen (Zásilkovna odpadla), adresa se zadává ručně. Osobní převzetí na FAČR.
+- Doprava: kusovky Zásilkovnou na výdejní místo (ne Z-BOX), objednávka s boxem kurýrem na adresu. Osobní převzetí na FAČR.
 - Analytika: GA4 nebo Plausible, Meta Pixel a Conversions API, měření objednávek (purchase event).
 - Zálohy: denní zálohy DB (managed backup, retence 14+ dní) a export objednávek do CSV.
 
@@ -76,8 +76,8 @@ Vzor vzhledu je ve složce `C:\Users\rychl\eshop\foto\`:
 - Zaškrtávací pole „Chci se zúčastnit losování o vstup na večer 30. 11.“ (viz 4.5). Zobrazí se jen u košíku s boxem. Vstup pouze pro 1 osobu na 1 zakoupený box, jméno doprovodu se nesbírá.
 - **Doprava (potvrzeno):**
   - Košík obsahuje box: doprava 490 Kč, nebo osobní převzetí na adrese FAČR zdarma.
-  - Košík obsahuje jen kusovky: doprava 100 Kč za kus, nebo osobní převzetí na FAČR zdarma (potvrzeno).
-  - Smíšený košík (box + kusovky): doprava 490 Kč za box plus 100 Kč za každou kusovku (potvrzeno).
+  - Košík obsahuje jen kusovky: doprava Zásilkovnou na výdejní místo podle ceníku (max. 490 Kč, jinak kurýr), nebo osobní převzetí na FAČR zdarma (potvrzeno).
+  - Smíšený košík (box + kusovky): kurýr na adresu 490 Kč jednou za celou objednávku (potvrzeno).
   - Dopravce vybírá někdo jiný. Adresa se zadává ručně a dopravce se doplní, až bude znám.
   - Ceny dopravy jsou v konfigurační tabulce v databázi.
 - Platba: karta (GoPay), bankovní tlačítko (GoPay) a ruční převod s QR kódem, viz bod 5.
@@ -160,7 +160,7 @@ Design, fotografie boxu a lahví, finální texty (včetně příběhu, 13 hrá�
 - Test obnovy zálohy a testovací ostrá platba s vratkou.
 
 ## 11. Otevřené body
-Vyřešeno: sklad (144 boxů, kusovky neomezené), doprava (490 / 100 za kus), losování (řeší jiný), Zásilkovna odpadla, Nadace bez částky, dražba (8 boxů, jen text).
+Vyřešeno: sklad (144 boxů, kusovky neomezené), doprava (box 490 kurýr, kusovky Zásilkovna podle ceníku), losování (řeší jiný), Zásilkovna doplněna, Nadace bez částky, dražba (8 boxů, jen text).
 
 Zbývá (neblokuje vývoj):
 1. Dopravce řeší někdo jiný, ověřit lihoviny a věk 18+.
