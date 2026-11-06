@@ -12,6 +12,6 @@ test("mobil: bez vodorovného posouvání, menu a hlavní stránky", async ({ pa
     expect(overflow, `vodorovné přetečení na ${path}`).toBeLessThanOrEqual(1);
   }
   await page.goto("/");
-  await page.getByText("Menu").click();
+  await page.getByRole("button", { name: "Menu" }).click();
   await expect(page.getByRole("link", { name: "E-shop" }).last()).toBeVisible();
 });

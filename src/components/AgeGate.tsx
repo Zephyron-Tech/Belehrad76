@@ -39,7 +39,26 @@ export function AgeGate({ verified }: { verified: boolean }) {
     };
   }, [visible]);
 
-  if (!visible) return null;
+  // Po potvrzení brána krátce zprůhlední a až pak se odstraní (dřív zmizela z jednoho snímku na druhý)
+  const [mounted, setMounted] = useState(visible);
+  const [leaving, setLeaving] = useState(false);
+  useEffect(() => {
+    if (visible) {
+      setMounted(true);
+      setLeaving(false);
+      return;
+    }
+    if (!mounted) return;
+    setLeaving(true);
+    const t = window.setTimeout(() => {
+      setMounted(false);
+      setLeaving(false);
+    }, 280);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
+
+  if (!mounted) return null;
   const denied = deniedOn === pathname;
 
   // Fokus zůstává v dialogu (Tab i Shift+Tab kolují mezi jeho prvky)
@@ -60,6 +79,7 @@ export function AgeGate({ verified }: { verified: boolean }) {
 
   return (
     <div
+      data-leaving={leaving}
       className="age-gate fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden overscroll-contain bg-ink"
       role="dialog"
       aria-modal="true"

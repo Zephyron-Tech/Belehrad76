@@ -57,13 +57,32 @@ export const env = {
     };
   },
   get mailFrom() {
-    return read("MAIL_FROM", "Mistři Evropy 1976 <objednavky@belehrad76.cz>");
+    return read("MAIL_FROM", "Mistři Evropy 1976 <info@belehrad76.cz>");
   },
   get mailOutboxDir() {
     return read("MAIL_OUTBOX_DIR", ".mail-outbox");
   },
   get cronSecret() {
     return read("CRON_SECRET");
+  },
+  /** API klíč Zásilkovny pro widget výběru výdejního místa (klientská sekce Zásilkovny → Klientská podpora). */
+  get packetaApiKey() {
+    return read("PACKETA_API_KEY");
+  },
+  /** API heslo Zásilkovny (tajné) – zakládání zásilek a tisk štítků z administrace. */
+  get packetaApiPassword() {
+    return read("PACKETA_API_PASSWORD");
+  },
+  get packetaApiUrl() {
+    return read("PACKETA_API_URL", "https://www.zasilkovna.cz/api/rest");
+  },
+  /**
+   * Bez klíče Zásilkovny nabídne pokladna testovací výdejní místo – jen při vývoji
+   * nebo na vývojové verzi (DEV_BASIC_AUTH / DEV_NOINDEX), nikdy na ostré verzi.
+   */
+  get packetaMock() {
+    if (this.packetaApiKey) return false;
+    return process.env.NODE_ENV !== "production" || !!read("DEV_BASIC_AUTH") || read("DEV_NOINDEX") === "true";
   },
   get turnstileSiteKey() {
     return read("TURNSTILE_SITE_KEY");

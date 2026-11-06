@@ -36,6 +36,7 @@ export function RevealObserver() {
         io.observe(watch);
       });
     scan();
+    document.documentElement.dataset.reveal = "ready";
     const mo = new MutationObserver(scan);
     mo.observe(document.body, { childList: true, subtree: true });
     return () => {

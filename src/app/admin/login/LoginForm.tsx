@@ -1,13 +1,17 @@
 "use client";
 
 import Script from "next/script";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { loginAction } from "../actions";
 
 const inputCls = "mt-1 w-full border border-line bg-ink px-3 py-2 text-cream focus:border-gold focus:outline-none";
 
 export function LoginForm({ turnstileSiteKey }: { turnstileSiteKey?: string }) {
   const [state, action, pending] = useActionState(loginAction, undefined);
+  // Turnstile token je jednorázový: po neúspěšném přihlášení ho získat znovu
+  useEffect(() => {
+    if (state?.error) window.turnstile?.reset();
+  }, [state]);
   return (
     <form action={action} className="mt-6 space-y-4">
       {state?.error && (

@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
 import { useSyncedPricedCart } from "@/components/cart/usePricedCart";
 import { formatCzk } from "@/lib/format";
+import { useToast } from "@/components/Toast";
 
 export function CartView() {
-  const { setQuantity, remove } = useCart();
+  const { setQuantity, remove, add } = useCart();
+  const toast = useToast();
   const { data, loading, error, ready, notices } = useSyncedPricedCart();
 
   if (!ready || (loading && !data)) return <p className="mt-10 text-muted">Načítám košík…</p>;
@@ -89,7 +91,11 @@ export function CartView() {
                 <p className="tabular w-28 text-right font-semibold">{formatCzk(line.lineTotalCzk)}</p>
                 <button
                   type="button"
-                  onClick={() => remove(line.slug)}
+                  onClick={() => {
+                    const { slug, quantity, name } = { slug: line.slug, quantity: line.quantity, name: line.name };
+                    remove(slug);
+                    toast.show({ message: `${name} odebráno z košíku`, actionLabel: "Vrátit", onAction: () => add(slug, quantity) });
+                  }}
                   className="link min-h-11 text-muted hover:text-danger"
                   aria-label={`Odebrat – ${line.name}`}
                 >
@@ -110,10 +116,18 @@ export function CartView() {
             <dt className="text-muted">Zboží</dt>
             <dd className="tabular">{formatCzk(data.itemsTotalCzk)}</dd>
           </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-muted">Doprava na adresu</dt>
-            <dd className="tabular">{formatCzk(data.shipping.SHIPPING)}</dd>
-          </div>
+          {data.shipping.PACKETA !== null && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Zásilkovna – výdejní místo</dt>
+              <dd className="tabular">{formatCzk(data.shipping.PACKETA)}</dd>
+            </div>
+          )}
+          {data.shipping.SHIPPING !== null && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Kurýr na adresu</dt>
+              <dd className="tabular">{formatCzk(data.shipping.SHIPPING)}</dd>
+            </div>
+          )}
           {data.pickupEnabled && (
             <div className="flex justify-between gap-4">
               <dt className="text-muted">nebo osobní převzetí na FAČR</dt>
@@ -121,8 +135,8 @@ export function CartView() {
             </div>
           )}
           <div className="!mt-6 flex items-baseline justify-between gap-4 bg-panel-2 px-4 py-4">
-            <dt className="font-semibold">Celkem s dopravou na adresu</dt>
-            <dd className="display tabular text-[2rem] text-gold-light">{formatCzk(data.itemsTotalCzk + data.shipping.SHIPPING)}</dd>
+            <dt className="font-semibold">Celkem s dopravou</dt>
+            <dd className="display tabular text-[2rem] text-gold-light">{formatCzk(data.itemsTotalCzk + (data.shipping.PACKETA ?? data.shipping.SHIPPING ?? 0))}</dd>
           </div>
         </dl>
 

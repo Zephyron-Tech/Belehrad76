@@ -21,7 +21,7 @@ export function CartButton() {
   }, [count, ready]);
 
   return (
-    <Link href="/kosik" className="btn min-h-11 gap-1.5 px-2.5 text-[1rem] sm:gap-2 sm:px-4" aria-label={`Košík, ${count} položek`}>
+    <Link href="/kosik" className="btn relative min-h-11 gap-1.5 px-2.5 text-[1rem] sm:gap-2 sm:px-4" aria-label={`Košík, ${count} položek`}>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
         <path d="M6 6h15l-1.5 9h-12z" />
         <path d="M6 6 5 3H2" />
@@ -29,14 +29,15 @@ export function CartButton() {
         <circle cx="18" cy="20" r="1.5" />
       </svg>
       <span className="hidden sm:inline">Košík</span>
-      {ready && count > 0 && (
-        <span
-          className="cart-count tabular inline-flex min-w-[1.375rem] items-center justify-center rounded-full bg-seal px-1 text-[0.8125rem] leading-[1.375rem] text-cream"
-          data-bump={bump}
-        >
-          {count}
-        </span>
-      )}
+      {/* Odznak je vždy v DOM a leží v rohu tlačítka: po načtení košíku se hlavička neposune, odznak se jen prolne */}
+      <span
+        className="cart-count tabular"
+        data-visible={ready && count > 0}
+        data-bump={bump}
+        aria-hidden="true"
+      >
+        {count}
+      </span>
     </Link>
   );
 }

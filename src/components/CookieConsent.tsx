@@ -16,6 +16,7 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
   const [loaded, setLoaded] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   // Lišta se ukáže až po rolování za úvodní sekci (jinde po kousku rolování), ať nezakrývá první dojem
   const [armed, setArmed] = useState(false);
   const pathname = usePathname();
@@ -63,8 +64,13 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
     const hadTracking = consent && (consent.analytics || consent.marketing);
     writeCookie(CONSENT_COOKIE, serializeConsent(c), 180);
     setConsent(c);
-    setShowBanner(false);
-    setShowSettings(false);
+    // lišta sjede dolů a až pak se odstraní
+    setLeaving(true);
+    window.setTimeout(() => {
+      setShowBanner(false);
+      setShowSettings(false);
+      setLeaving(false);
+    }, 260);
     // Odvolání souhlasu: už načtené skripty odstraní až obnovení stránky
     if (hadTracking && (!c.analytics || !c.marketing)) window.location.reload();
   };
@@ -86,7 +92,9 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
       )}
 
       {showBanner && armed && (
-        <div className="cookie-bar fixed inset-x-0 bottom-0 z-[90] bg-panel-2 pb-[env(safe-area-inset-bottom)]" role="region" aria-label="Souhlas s cookies">
+        <div
+          data-leaving={leaving}
+          className="cookie-bar fixed inset-x-0 bottom-0 z-[90] bg-panel-2 pb-[env(safe-area-inset-bottom)]" role="region" aria-label="Souhlas s cookies">
           <div className="frame flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between md:gap-10 md:py-5">
             <p className="max-w-[72ch] text-small leading-normal text-cream md:text-[1rem]">
               Nezbytné cookies drží košík a ověření věku. Analytické (Google Analytics) a marketingové (Meta Pixel) zapneme jen
@@ -109,7 +117,7 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
                   Nastavení
                 </button>
               )}
-              <button type="button" onClick={() => save({ analytics: false, marketing: false })} className="btn btn-quiet min-h-11 flex-1 whitespace-nowrap !bg-ink px-4 text-[1rem] md:flex-none">
+              <button type="button" onClick={() => save({ analytics: false, marketing: false })} className="btn btn-ink min-h-11 flex-1 whitespace-nowrap px-4 text-[1rem] md:flex-none">
                 Jen nezbytné
               </button>
               <button type="button" onClick={() => save({ analytics: true, marketing: true })} className="btn min-h-11 flex-1 whitespace-nowrap px-4 text-[1rem] md:flex-none">
@@ -119,7 +127,7 @@ export function CookieConsent({ ga4Id, metaPixelId }: { ga4Id?: string; metaPixe
           </div>
 
           {showSettings && (
-            <div className="frame pb-5">
+            <div className="appear frame pb-5">
               <fieldset className="grid gap-2 sm:grid-cols-3">
                 <legend className="sr-only">Nastavení cookies</legend>
                 <label className="flex items-start gap-3 bg-panel p-3 text-small text-muted">

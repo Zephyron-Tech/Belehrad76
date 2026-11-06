@@ -1,6 +1,6 @@
 import { prisma } from "../db";
 import { env } from "../env";
-import { getSettings } from "../settings";
+import { getSettings, type Settings } from "../settings";
 import { sendMail } from "../mail/transport";
 import { orderReceivedMail, ownerPaidMail, paymentConfirmedMail, shippedMail } from "../mail/templates";
 import { paymentConfirmationPdf } from "../pdf";
@@ -28,6 +28,11 @@ async function once(orderId: number, field: ClaimField, action: () => Promise<un
   }
 }
 
+/** Kam odpovídá zákazník: mail.reply_to (může být víc adres oddělených čárkou), jinak contact.email. */
+function customerReplyTo(settings: Settings) {
+  return settings.str("mail.reply_to").trim() || settings.str("contact.email") || undefined;
+}
+
 function orderLink(token: string) {
   return `${env.appUrl}/objednavka/${token}`;
 }
@@ -40,15 +45,17 @@ export async function sendOrderReceived(orderId: number) {
   const attachments = [];
   if (order.paymentMethod === "BANK_TRANSFER") {
     transfer = transferInstructions(settings.str("bank.account"), order.totalCzk, order.number, settings.str("seller.name"));
-    attachments.push({ filename: "qr-platba.png", content: await qrPng(transfer.spd), cid: "qr-platba" });
+    if (settings.bool("payment.bank_transfer")) {
+      attachments.push({ filename: "qr-platba.png", content: await qrPng(transfer.spd), cid: "qr-platba" });
+    }
   }
 
   const mail = orderReceivedMail(order, settings, {
     orderUrl: orderLink(order.publicToken),
     transfer,
-    qrCid: transfer ? "qr-platba" : undefined,
+    qrCid: attachments.length > 0 ? "qr-platba" : undefined,
   });
-  await sendMail({ to: order.email, ...mail, attachments, replyTo: settings.str("contact.email") || undefined });
+  await sendMail({ to: order.email, ...mail, attachments, replyTo: customerReplyTo(settings) });
 }
 
 /** Po zaplacení: potvrzení s PDF zákazníkovi, upozornění provozovateli, Meta CAPI. */
@@ -63,7 +70,7 @@ export async function sendPaidNotifications(orderId: number, opts: { oversold?: 
     await sendMail({
       to: order.email,
       ...mail,
-      replyTo: settings.str("contact.email") || undefined,
+      replyTo: customerReplyTo(settings),
       attachments: [{ filename: `potvrzeni-platby-${order.number}.pdf`, content: pdf, contentType: "application/pdf" }],
     });
   }).catch((e) => errors.push(e));
@@ -96,6 +103,6 @@ export async function sendShippedNotification(orderId: number) {
   const settings = await getSettings();
   await once(orderId, "shippedMailSentAt", async () => {
     const mail = shippedMail(order, settings, { orderUrl: orderLink(order.publicToken) });
-    await sendMail({ to: order.email, ...mail, replyTo: settings.str("contact.email") || undefined });
+    await sendMail({ to: order.email, ...mail, replyTo: customerReplyTo(settings) });
   });
 }

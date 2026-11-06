@@ -28,7 +28,12 @@ export default async function OrderPage({ params, searchParams }: Props) {
 
   // Návrat z platební brány: stav ověříme přímo v GoPay
   if (platba === "navrat" && order.status === "PENDING" && order.paymentMethod === "GOPAY") {
-    await syncOrderPayments(order.id);
+    try {
+      await syncOrderPayments(order.id);
+    } catch (err) {
+      // GoPay nedostupná: stránku objednávky ukážeme dál, stav se ověří při dalším načtení nebo z oznámení brány
+      console.error("[objednavka] ověření platby selhalo", err);
+    }
     order = await prisma.order.findUniqueOrThrow({ where: { id: order.id }, include: { items: true } });
   }
 
@@ -95,7 +100,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
               <dt className="text-muted">Číslo účtu</dt>
               <dd className="font-semibold text-cream">{transfer.account}</dd>
               <dt className="text-muted">IBAN</dt>
-              <dd className="text-cream">{formatIban(transfer.iban)}</dd>
+              <dd className="break-words text-cream">{formatIban(transfer.iban)}</dd>
               <dt className="text-muted">Variabilní symbol</dt>
               <dd className="font-semibold text-cream">{transfer.variableSymbol}</dd>
               <dt className="text-muted">Částka</dt>
@@ -176,6 +181,11 @@ export default async function OrderPage({ params, searchParams }: Props) {
                 <>
                   {settings.str("pickup.address")}
                   <span className="block text-small text-muted">{settings.text("pickup.note")}</span>
+                </>
+              ) : order.deliveryMethod === "PACKETA" ? (
+                <>
+                  Zásilkovna: {order.packetaPointName}
+                  {order.packetaPointAddress && <span className="block text-small text-muted">{order.packetaPointAddress}</span>}
                 </>
               ) : (
                 <>

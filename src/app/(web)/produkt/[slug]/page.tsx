@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { getActiveProducts, getProductBySlug } from "@/lib/catalog";
+import { getActiveProducts, getProductBySlug, shippingRates } from "@/lib/catalog";
+import { bottleShippingFromCzk } from "@/lib/shipping";
 import { getSettings } from "@/lib/settings";
 import { formatCzk } from "@/lib/format";
 import { maybeExpireStaleOrders } from "@/lib/orders/expire";
@@ -40,7 +41,7 @@ export default async function ProductPage({ params }: Props) {
   const extraPhotos = product.galleryUrls.filter((u) => u !== product.imageUrl);
   const max = settings.num("order.max_bottles");
   const name = product.playerName ?? product.name;
-  const shippingText = `Doprava ${formatCzk(settings.num("shipping.bottle_czk"))} za lahev, s boxem v objednávce jen ${formatCzk(settings.num("shipping.box_czk"))} za celou zásilku.`;
+  const shippingText = `Doprava Zásilkovnou na výdejní místo od ${formatCzk(bottleShippingFromCzk(shippingRates(settings)))} za zásilku (podle hmotnosti), s boxem v objednávce kurýrem jen ${formatCzk(settings.num("shipping.box_czk"))} za celou zásilku.`;
 
   // Sousední hráči na soupisce (v kruhu)
   const bottles = products.filter((p) => p.type === "BOTTLE");

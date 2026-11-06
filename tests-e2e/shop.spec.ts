@@ -12,6 +12,12 @@ const BOX_SLUG = "box-mistri-evropy";
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async () => {
+  // Převod / QR je v provozu vypnutý, testy ho zapnou (po testech se nastavení vrátí na výchozí)
+  await prisma.setting.upsert({
+    where: { key: "payment.bank_transfer" },
+    update: { value: "true" },
+    create: { key: "payment.bank_transfer", value: "true", description: "e2e" },
+  });
   await prisma.adminUser.upsert({
     where: { email: ADMIN_EMAIL },
     update: { passwordHash: await bcrypt.hash(ADMIN_PASSWORD, 10), totpSecret: TOTP_SECRET, failedAttempts: 0, lockedUntil: null },
@@ -20,6 +26,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
+  await prisma.setting.deleteMany({ where: { key: "payment.bank_transfer" } });
   await prisma.adminUser.deleteMany({ where: { email: ADMIN_EMAIL } });
   await prisma.$disconnect();
 });
@@ -176,6 +183,8 @@ test("validace pokladny: chybějící údaje a souhlasy", async ({ page }) => {
   await gotoShop(page, "/produkt/jan-svehlik");
   await page.getByRole("button", { name: "Do košíku" }).click();
   await gotoShop(page, "/pokladna");
+  // Kusovky jdou Zásilkovnou (výdejní místo je povinné) – validaci ostatních polí ověříme s osobním převzetím
+  await page.getByRole("radio", { name: /Osobní převzetí/ }).check();
   await page.getByRole("button", { name: "Objednat a zaplatit" }).click();
   await expect(page.getByRole("alert").first()).toContainText("Zkontrolujte");
   await expect(page.getByText("Vyplňte jméno.")).toBeVisible();
@@ -216,12 +225,15 @@ test("administrace: bez přihlášení nic, přihlášení s 2FA, platba převod
 
   await page.getByLabel(/Vaše jméno nebo iniciály/).fill("E2E");
   await page.getByRole("button", { name: "Platba přijata → Zaplacená" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ano, zaplacená" }).click();
   await expect(page.getByText("Stav objednávky byl změněn.")).toBeVisible();
   await expect(page.locator("main").getByText("Zaplacená", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: "Připraveno k převzetí" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ano, připravena" }).click();
   await expect(page.getByText("Připravená k převzetí").first()).toBeVisible();
   await page.getByRole("button", { name: "Předáno zákazníkovi → Dokončená" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Ano, dokončit" }).click();
   await expect(page.getByText("Objednávka je uzavřená, další změny stavu nejsou možné.")).toBeVisible();
   await expect(page.getByText(/administrace · E2E/).first()).toBeVisible();
 
@@ -243,4 +255,16 @@ test("administrace: bez přihlášení nic, přihlášení s 2FA, platba převod
   await expect(page).toHaveURL(/\/admin\/login/);
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/admin\/login/);
+});
+
+test("košík: odebrání lze vrátit tlačítkem Vrátit", async ({ page }) => {
+  await passGates(page);
+  await gotoShop(page, "/produkt/jan-svehlik");
+  await page.getByRole("button", { name: "Do košíku" }).click();
+  await gotoShop(page, "/kosik");
+  await page.getByRole("button", { name: /Odebrat – / }).click();
+  await expect(page.getByText("Košík je prázdný")).toBeVisible();
+  await expect(page.getByRole("status").getByText(/odebráno z košíku/)).toBeVisible();
+  await page.getByRole("button", { name: "Vrátit" }).click();
+  await expect(page.getByRole("link", { name: /Švehlík/ }).first()).toBeVisible();
 });

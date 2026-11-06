@@ -19,7 +19,9 @@ export default async function CheckoutPage() {
         transferDays={settings.num("reservation.transfer_days")}
         gopayMinutes={settings.num("reservation.gopay_minutes")}
         boxShippingCzk={settings.num("shipping.box_czk")}
-        bottleShippingCzk={settings.num("shipping.bottle_czk")}
+        bankTransferEnabled={settings.bool("payment.bank_transfer")}
+        packetaApiKey={env.packetaApiKey || undefined}
+        packetaMock={env.packetaMock}
         turnstileSiteKey={env.turnstileSiteKey || undefined}
       />
     </div>
